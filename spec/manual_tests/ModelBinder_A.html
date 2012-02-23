@@ -114,8 +114,8 @@
 
         render:function () {
           var html = '\
-          Title: <div name="title"></div>\
-          No Name: <input type="text" id="phone"/><br>\
+          Title: <div name="foozgabba" style="color:red"></div>\
+          No Name: <input class="a b c smell" type="text" id="phone"/><br>\
           Phone: <input type="text" name="phone"/><br>\
           First Name: <input type="text" name="firstName"/><br>\
           Height: <input type="text" name="height"/><br><br>\
@@ -142,24 +142,28 @@
             </div><br>\
           Smell: <input type="text" class="smell honey" name="smell"/><br>\
           Another smell: <input type="text" class="smell sugar" name="anotherSmell"/><br>\
+          Big Text:<br> <textarea name="bigText" rows="4" cols="80"></textarea>\
           ';
 
           $(this.$el).html(html);
 
 
           var bindings = {
-            firstName: [{selector: '[name=firstName]:first'}, {selector: '[name=title]:first'}],
+            firstName: [{selector: '[name=firstName]:first'}, {selector: '[name=foozgabba]:first'}],
             driversLicense: '[name=driversLicense]',
             graduated: '[name=graduated]',
             eyeColor: '[name=eyeColor]',
+            bigText: '[name=bigText]',
             phone: {selector:'[name=phone]:first', converter: phoneConverter},
             dog: {selector:'[name=dog]:first', converter: (new Backbone.ModelBinder.CollectionConverter(dogs)).convert},
-            smell: [{selector:'[class~=smell]', elAttribute: 'class'}, {selector:'[name=smell]'}]
+            smell: [{selector:'[class~=smell]', elAttribute: 'enabled'}, {selector:'[name=smell]'}]
           };
 
-          this.binder.bind(this.model, this.$el, bindings);
-          window.b = this.binder;
           this.$('#placeForInnerDiv').html(this.viewB.render().el);
+
+          this.binder.bind(this.model, this.$el, bindings);
+
+
 
           return this;
         }

@@ -13,8 +13,8 @@ Backbone.ModelBinder = Backbone.Model.extend({
         this.rootEl = rootEl;
         this.attributeBindings = attributeBindings;
 
-        if (!this.rootEl) throw 'rootEl must be specified';
         if (!this.model) throw 'model must be specified';
+        if (!this.rootEl) throw 'rootEl must be specified';
 
         this._initializeAttributeBindings();
 
@@ -274,6 +274,9 @@ Backbone.ModelBinder = Backbone.Model.extend({
                 default:
                     $(el).val(convertedValue);
             }
+        }
+        else if(el.is('select') || el.is('textarea')){
+            el.val(convertedValue);
         }
         else {
             el.html(convertedValue);

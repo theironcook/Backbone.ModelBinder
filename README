@@ -1,4 +1,4 @@
-A simplification of Derick Bailey's Backbone Model binding plugin.
+Similar to Derick Bailey's Backbone Model binding plugin but a bit simpler.
 
 This plugin provides a way to be able to bind between model attributes and html elements.  It is meant to help you avoid
 writing boiler plate code to plumb up changes between your views and models.

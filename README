@@ -52,5 +52,13 @@ Example: Binding based on any attribute:
   binder.bind(this.model, this.$el, bindings);
 
 
-Example: Binding
+Example: Binding multiple elements at once
+  <div name="title"></div>
+  <input id="name"/>
+
+  // from inside a View.render() function
+    var binder = new Backbone.ModelBinder();
+    var bindings = {name: [{selector: '[name=title]'}, {selector: '#name'}]}
+    binder.bind(this.model, this.$el, bindings);
+
 

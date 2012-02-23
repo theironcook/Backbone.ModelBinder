@@ -114,6 +114,7 @@
 
         render:function () {
           var html = '\
+          Title: <div name="title"></div>\
           No Name: <input type="text" id="phone"/><br>\
           Phone: <input type="text" name="phone"/><br>\
           First Name: <input type="text" name="firstName"/><br>\
@@ -147,7 +148,7 @@
 
 
           var bindings = {
-            firstName: [{selector: '[name=firstName]:first'}, {selector: '[name=height]:first'}],
+            firstName: [{selector: '[name=firstName]:first'}, {selector: '[name=title]:first'}],
             driversLicense: '[name=driversLicense]',
             graduated: '[name=graduated]',
             eyeColor: '[name=eyeColor]',

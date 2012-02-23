@@ -256,23 +256,27 @@ Backbone.ModelBinder = Backbone.Model.extend({
     },
 
     _setElValue:function (el, convertedValue) {
-
-        switch (el.attr('type')) {
-            case 'radio':
-                if (el.attr('value') === convertedValue) {
-                    el.attr('checked', 'checked');
-                }
-                break;
-            case 'checkbox':
-                if (convertedValue) {
-                    el.attr('checked', 'checked');
-                }
-                else {
-                    el.removeAttr('checked');
-                }
-                break;
-            default:
-                $(el).val(convertedValue);
+        if(el.attr('type')){
+            switch (el.attr('type')) {
+                case 'radio':
+                    if (el.attr('value') === convertedValue) {
+                        el.attr('checked', 'checked');
+                    }
+                    break;
+                case 'checkbox':
+                    if (convertedValue) {
+                        el.attr('checked', 'checked');
+                    }
+                    else {
+                        el.removeAttr('checked');
+                    }
+                    break;
+                default:
+                    $(el).val(convertedValue);
+            }
+        }
+        else {
+            el.html(convertedValue);
         }
     },
 

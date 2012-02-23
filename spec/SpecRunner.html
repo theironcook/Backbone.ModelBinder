@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+  <title>Jasmine suite</title>
+  <link rel="stylesheet" href="javascripts/support/jasmine-standalone/jasmine.css" type="text/css" media="screen"/>
+  
+  <script type="text/javascript" src="javascripts/support/jasmine-standalone/jasmine.js"></script>
+  <script type="text/javascript" src="javascripts/support/jasmine-standalone/jasmine-html.js"></script>
+
+  <script type="text/javascript">
+    var jsApiReporter;
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+
+      jsApiReporter = new jasmine.JsApiReporter();
+      var trivialReporter = new jasmine.TrivialReporter();
+
+      jasmineEnv.addReporter(jsApiReporter);
+      jasmineEnv.addReporter(trivialReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return trivialReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
+      };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
+    })();
+  </script>
+
+
+  <!-- include source files here... -->
+  <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+  <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+  <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+  <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+
+  <!-- include spec files here... -->
+  <script type="text/javascript" src="javascripts/helpers/SpecHelper.js"></script>
+  <script type="text/javascript" src="javascripts/helpers/jasmine-jquery.js"></script>
+  <script type="text/javascript" src="javascripts/helpers/sample.backbone.app.js"></script>
+
+  <script type="text/javascript" src="javascripts/checkboxConventionBindings.spec.js"></script>
+  <script type="text/javascript" src="javascripts/configurableBindingAttributes.spec.js"></script>
+  <script type="text/javascript" src="javascripts/configureAllBindingAttributes.spec.js"></script>
+  todo<!--<script type="text/javascript" src="javascripts/dataBindConvention.spec.js"></script>-->
+  todo<!--<script type="text/javascript" src="javascripts/dataBindMultiple.spec.js"></script>-->
+  todo<!--<script type="text/javascript" src="javascripts/dataBindSubstitutions.spec.js"></script>-->
+  <script type="text/javascript" src="javascripts/globalConfiguraAllBindingAttributes.spec.js"></script>
+  <script type="text/javascript" src="javascripts/globalConfigurableBindingAttributes.spec.js"></script>
+  <script type="text/javascript" src="javascripts/html5inputConventionBinding.spec.js"></script>
+  <script type="text/javascript" src="javascripts/modelUnbinding.spec.js"></script>
+  <script type="text/javascript" src="javascripts/radioButtonConventionBinding.spec.js"></script>
+  <script type="text/javascript" src="javascripts/selectboxConventionBindings.spec.js"></script>
+  <script type="text/javascript" src="javascripts/textareaConventionBinding.spec.js"></script>
+  <script type="text/javascript" src="javascripts/textboxConventionBinding.spec.js"></script>
+  <script type="text/javascript" src="javascripts/nestedModelBinding.spec.js"></script>
+
+  Removed the _text attribute set my the select drop down binding
+  Removed the auto population from the view to the model in bind() - probably like 5 tests were removed
+  customConvention.spec.js type functionality not needed
+  Deleted the noconflict spec
+  <!--<script type="text/javascript" src="javascripts/customConvention.spec.js"></script>-->
+
+</head>
+  <body>
+    <div id="jasmine_content"></div>
+  </body>
+</html>

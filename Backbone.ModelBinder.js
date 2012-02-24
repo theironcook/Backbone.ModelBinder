@@ -139,7 +139,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
     _bindViewToModel:function () {
         var that = this;
 
-        $(this.rootEl).delegate('', 'change', function (event) {
+        $(this.rootEl).delegate('*', 'change', function (event) {
             that._onElChanged(event);
         });
     },
@@ -201,7 +201,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
             if (!elementBinding.isSetting) {
                 elementBinding.isSetting = true;
 
-                var convertedValue = this._getConvertedValue('ModelToView', elementBinding, value);
+                var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
 
                 for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
                     boundEl = elementBinding.boundEls[boundElCount];
@@ -275,7 +275,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
                     $(el).val(convertedValue);
             }
         }
-        else if(el.is('select') || el.is('textarea')){
+        else if(el.is('input') || el.is('select') || el.is('textarea')){
             el.val(convertedValue);
         }
         else {
@@ -308,7 +308,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
                 elVal = el.val();
         }
 
-        data[elementBinding.attributeBinding.attributeName] = this._getConvertedValue('ViewToModel', elementBinding, elVal);
+        data[elementBinding.attributeBinding.attributeName] = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
         this.model.set(data);
     },
 
@@ -320,6 +320,10 @@ Backbone.ModelBinder = Backbone.Model.extend({
         return value;
     }
 });
+
+Backbone.ModelBinder.Constants = {};
+Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
+Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
 
 Backbone.ModelBinder.CollectionConverter = Backbone.Model.extend({
     collection: undefined,
@@ -334,7 +338,7 @@ Backbone.ModelBinder.CollectionConverter = Backbone.Model.extend({
     },
 
     convert: function(direction, value){
-        if (direction === 'ModelToView') {
+        if (direction === Backbone.ModelBinder.Constants.ModelToView) {
             return value ? value.id : undefined;
         }
         else {

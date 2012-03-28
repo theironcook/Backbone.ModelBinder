@@ -3,18 +3,18 @@ This plugin provides a way to be able to bind between Backbone model attributes 
 Typically automatic view-model binding is most useful for edittable forms but view-model binding can also be useful for read only view elements that should be automatically updated when a model changes.  A model's attributes can be bound to a view element's text but also to an element's colors, layout etc.  This plugin can handle most of these situations.
 
 
-Plugin capabilities include:
-  Automatic view-model binding
-  Nested view-model binding
-  Partial view-model binding (only some view elements participate in binding)
-  Model binding to view element text value or any arbitrary view element attribute (disabled, border, etc.)
-  Support for almost all view element types (text area, radio button, etc.)
-  A single model attribute can be bound to multiple view elements
-  A single view element can be bound to multiple model attributes
-  An easy way to format values (phone numbers, dates, etc.)
-  An easy way to convert types (ids to models, models to names) - especially useful for select boxes
-  Order independent nested view/model binding
-  Binding does not require backbone views - especially useful for small nested templates where views are overkill
+##Plugin capabilities include:
+*Automatic view-model binding
+*Nested view-model binding
+*Partial view-model binding (only some view elements participate in binding)
+*Model binding to view element text value or any arbitrary view element attribute (disabled, border, etc.)
+*Support for almost all view element types (text area, radio button, etc.)
+*A single model attribute can be bound to multiple view elements
+*A single view element can be bound to multiple model attributes
+*An easy way to format values (phone numbers, dates, etc.)
+*An easy way to convert types (ids to models, models to names) - especially useful for select boxes
+*Order independent nested view/model binding
+*Binding does not require backbone views - especially useful for small nested templates where views are overkill
   
 
 Here are several examples demonstrating how to use this plugin.  

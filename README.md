@@ -70,6 +70,22 @@ The binding will still work because it's simply using a jquery selector to find 
 ````
 
 
+### Example: Binding to a view elements attribute (enabled in this example):
+The html element personName's enabled attribute is bound to the model's isPersonAttribute.
+If isPerson is true the element is enabled.
+If isPerson is false the element is disabled.
+If the elAttribute was not defined then the personName element's value would have been updated.
+
+````
+  <input name="personName"/>
+
+  // from inside a View.render() function
+  var binder = new Backbone.ModelBinder();
+  var bindings = {isPerson: {selector: '[name=personName]', elAttribute: 'enabled'}}
+  binder.bind(this.model, this.$el, bindings);
+````
+
+
 ### Example: Binding multiple elements at once
 Here the div title and the input with the id of color will both be update when the model's color changes.
 If a user changed the color in the input element, the model's color would be updated and the div title would also be updated.
@@ -137,7 +153,7 @@ The select element's values are defined with the possible model's ids.  The net 
   var binder = new Backbone.ModelBinder();
 
   var bindings = {phoneNumber: [{selector: '[name=phoneNumber]',
-                  converter: converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert}]}
+                  converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert}]}
   binder.bind(this.model, this.$el, bindings);
 ````
 

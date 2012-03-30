@@ -24,21 +24,26 @@ Bindings are initialized with the same syntax that you use to create your events
 Here are several examples demonstrating how to use this plugin.  
 They are ordered from simplest to complex.  Best practices are shown near the end.
 
-# Example:  Automatic binding to a form that has elements defined with the name attribute.
-The model attribute 'address' will be bound with the input element named address. Calling model.set({address: 'something'}) would update the input element's value. If a user updates the input element in the browser the value entered will be automatically pushed to the model's address attribute.
 
- The view's html
+### Example:  Automatic binding to a form that has elements defined with the name attribute.
+The model attribute 'address' will be bound with the input element named address.
+Changes to the model's address are automatically pushed to the html address element and changes to the view's address element are automatically pushed to the model's address.
+
+````
+The view's html
 <input name="address"/>
 
 // from inside a View.render() function
 var binder = new Backbone.ModelBinder();
 binder.bind(this.model, this.el);
+````
 
 
+### Example: Binding with elements with the id defined instead of name:
+Here the html elements rely on the id attribute rather than the name attribute.  In this case, we need to define a hash named 'bindings'.
+The bindings hash keys are the names of the model attributes. The values are jquery selectors that will resolve to view elements that are bound to the html elements.
 
-
-# Example: Binding with elements with the id defined instead of name:
-In this situation we needed to define a bindings hash because we didn't rely on the default name attribute.  The bindings hash keys are the model's attribute names.  The binding hash values are jquery selector statements that should return 1 or more view elements.  This jquery event style is very simliar to how the backbone view events block is defined.
+````
   <input id="address"/>
   <input id="phone"/>
 
@@ -46,10 +51,15 @@ In this situation we needed to define a bindings hash because we didn't rely on 
   var binder = new Backbone.ModelBinder();
   var bindings = {address: '#address', address: '#phone'}
   binder.bind(this.model, this.$el, bindings);
+````
 
 
-# Example: Binding based on any attribute:
-The jquery selector here is based off of the element's class for the address binding.  In the second binding for phone we've defined an arbitrary attribute named anyAttributeType.  The binding will still work because it's simply using a jquery selector to find the bound view element. 
+### Example: Binding based on any attribute:
+The bindings selector here is based off of the element's class for the address binding.
+In the second binding for phone we've defined an arbitrary attribute named anyAttributeType.
+The binding will still work because it's simply using a jquery selector to find the bound view element.
+
+````
   <input class="address"/>
   <input anyAttributeType="phone"/>
 
@@ -57,16 +67,76 @@ The jquery selector here is based off of the element's class for the address bin
   var binder = new Backbone.ModelBinder();
   var bindings = {address: '[class=address]', phone: '[anyAttributeType=phone'}
   binder.bind(this.model, this.$el, bindings);
+````
 
 
-# Example: Binding multiple elements at once
+### Example: Binding multiple elements at once
+Here the div title and the input with the id of color will both be update when the model's color changes.
+If a user changed the color in the input element, the model's color would be updated and the div title would also be updated.
+
+````
   <div name="title"></div>
-  <input id="name"/>
+  <input id="color"/>
 
   // from inside a View.render() function
-    var binder = new Backbone.ModelBinder();
-    var bindings = {name: [{selector: '[name=title]'}, {selector: '#name'}]}
-    binder.bind(this.model, this.$el, bindings);
+  var binder = new Backbone.ModelBinder();
+  var bindings = {color: [{selector: '[name=title]'}, {selector: '#color'}]}
+  binder.bind(this.model, this.$el, bindings);
+````
 
 
+### Example: Formatting a phone number
+Here the div title and the input with the id of color will both be update when the model's color changes.
+If a user changed the color in the input element, the model's color would be updated and the div title would also be updated.
+The big difference here is the converter : phoneConverter entry for the binding.  Any binding can take a converter as an argument.
+A converter is simply a function that takes a direction (ModelToView or ViewToModel) and the value to convert.
+In this situation it's a very simple phone formatter.
 
+````
+  <input name="phoneNumber"/>
+
+  // from inside a View.render() function
+  var binder = new Backbone.ModelBinder();
+
+  var phoneConverter = function(direction, value){
+    if (direction === Backbone.ModelBinder.Constants.ModelToView) {
+      if (value.length == 7){
+        return value.substring(0, 3) + '-' + value.substring(3, 7);
+      }
+      else{
+        return value;
+      }
+    }
+    else {
+      return value.replace(/[^0-9]/g, '');
+    }
+  };
+
+  var bindings = {phoneNumber: [{selector: '[name=phoneNumber]', converter: phoneConverter}]}
+  binder.bind(this.model, this.$el, bindings);
+````
+
+
+### Example: Converting a nested model's selection to a select box with text
+In this situation, the view shows a selection which represents a nested model that the outer model refers to.
+Here, the converter is leveraging the CollectionConverter - this converts between a model to a model id.
+The select element's values are defined with the possible model's ids.  The net result is that the nested model will point to whatever the user selected.
+
+````
+  <select name="nestedModel">
+    <option value="">Please Select Something</option>
+    <% _.each(nestedModelChoices, function (modelChoice) { %>
+      <option value="<%= modelChoice.id %>"><%= modelChoice.description %></option>
+    <% }); %>
+  </select>
+
+  // from inside a View.render() function
+  // an example of what might be passed to the template function
+  var nestedModelChoices = [{id: 1, description: 'This is One'}, {id: 2, description: 'This is Two'}];
+
+  var binder = new Backbone.ModelBinder();
+
+  var bindings = {phoneNumber: [{selector: '[name=phoneNumber]',
+                  converter: converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert}]}
+  binder.bind(this.model, this.$el, bindings);
+````

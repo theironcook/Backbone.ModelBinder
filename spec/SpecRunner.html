@@ -4,50 +4,50 @@
   <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
   <title>Jasmine suite</title>
   <link rel="stylesheet" href="javascripts/support/jasmine-standalone/jasmine.css" type="text/css" media="screen"/>
-  
-  <script type="text/javascript" src="javascripts/support/jasmine-standalone/jasmine.js"></script>
-  <script type="text/javascript" src="javascripts/support/jasmine-standalone/jasmine-html.js"></script>
 
-  <script type="text/javascript">
-    var jsApiReporter;
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
+    <script type="text/javascript" src="javascripts/support/jasmine-standalone/jasmine-html.js"></script>
 
-      jsApiReporter = new jasmine.JsApiReporter();
-      var trivialReporter = new jasmine.TrivialReporter();
+    <script type="text/javascript">
+        var jsApiReporter;
+        (function() {
+            var jasmineEnv = jasmine.getEnv();
 
-      jasmineEnv.addReporter(jsApiReporter);
-      jasmineEnv.addReporter(trivialReporter);
+            jsApiReporter = new jasmine.JsApiReporter();
+            var trivialReporter = new jasmine.TrivialReporter();
 
-      jasmineEnv.specFilter = function(spec) {
-        return trivialReporter.specFilter(spec);
-      };
+            jasmineEnv.addReporter(jsApiReporter);
+            jasmineEnv.addReporter(trivialReporter);
 
-      var currentWindowOnload = window.onload;
+            jasmineEnv.specFilter = function(spec) {
+                return trivialReporter.specFilter(spec);
+            };
 
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
+            var currentWindowOnload = window.onload;
 
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
+            window.onload = function() {
+                if (currentWindowOnload) {
+                    currentWindowOnload();
+                }
+                execJasmine();
+            };
 
-    })();
-  </script>
+            function execJasmine() {
+                jasmineEnv.execute();
+            }
 
-
-  <!-- include source files here... -->
-  <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
-  <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
-  <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
-  <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+        })();
+    </script>
 
 
-  <!-- include spec files here... -->
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+
+    <!-- include spec files here... -->  <script type="text/javascript" src="javascripts/support/jasmine-standalone/jasmine.js"></script>
+
   <script type="text/javascript" src="javascripts/helpers/SpecHelper.js"></script>
   <script type="text/javascript" src="javascripts/helpers/jasmine-jquery.js"></script>
   <script type="text/javascript" src="javascripts/helpers/sample.backbone.app.js"></script>

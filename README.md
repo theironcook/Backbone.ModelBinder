@@ -146,7 +146,7 @@ The select element's values are defined with the possible model's ids.  The net 
 
 # Legal Mumbo Jumbo (MIT License)
 
-Copyright (c) 2011 Derick Bailey, Muted Solutions, LLC
+Copyright (c) 2012 Bart Wood
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

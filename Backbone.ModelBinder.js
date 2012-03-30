@@ -1,20 +1,25 @@
 // Backbone.ModelBinder v0.1.0
+// (c) 2012 Bart Wood
 
 Backbone.ModelBinder = Backbone.Model.extend({
 
-    model:undefined,
-    rootEl:undefined,
-    attributeBindings:undefined,
+    _model:undefined,
+    _rootEl:undefined,
+    _attributeBindings:undefined,
 
     bind:function (model, rootEl, attributeBindings) {
         this.unbind();
 
-        this.model = model;
-        this.rootEl = rootEl;
-        this.attributeBindings = attributeBindings;
+        this._model = model;
+        this._rootEl = rootEl;
 
-        if (!this.model) throw 'model must be specified';
-        if (!this.rootEl) throw 'rootEl must be specified';
+        if (!this._model) throw 'model must be specified';
+        if (!this._rootEl) throw 'rootEl must be specified';
+
+        if(attributeBindings){
+            // Create a deep clone of the attribute bindings
+            this._attributeBindings = $.extend(true, {}, attributeBindings);
+        }
 
         this._initializeAttributeBindings();
 
@@ -26,9 +31,9 @@ Backbone.ModelBinder = Backbone.Model.extend({
         this._unbindModelToView();
         this._unbindViewToModel();
 
-        if(this.attributeBindings){
-            delete this.attributeBindings;
-            this.attributeBindings = undefined;
+        if(this._attributeBindings){
+            delete this._attributeBindings;
+            this._attributeBindings = undefined;
         }
     },
 
@@ -36,12 +41,12 @@ Backbone.ModelBinder = Backbone.Model.extend({
     _initializeAttributeBindings:function () {
         var attributeBindingKey, inputBinding, attributeBinding, elementBindingCount, elementBinding;
 
-        if(!this.attributeBindings){
+        if(!this._attributeBindings){
             this._initializeDefaultAttributeBindings();
         }
         else {
-            for (attributeBindingKey in this.attributeBindings) {
-                inputBinding = this.attributeBindings[attributeBindingKey];
+            for (attributeBindingKey in this._attributeBindings) {
+                inputBinding = this._attributeBindings[attributeBindingKey];
 
                 if (_.isString(inputBinding)) {
                     attributeBinding = {elementBindings: [{selector: inputBinding}]};
@@ -63,7 +68,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
                 }
 
                 attributeBinding.attributeName = attributeBindingKey;
-                this.attributeBindings[attributeBindingKey] = attributeBinding;
+                this._attributeBindings[attributeBindingKey] = attributeBinding;
             }
 
             this._linkBoundEls();
@@ -72,26 +77,33 @@ Backbone.ModelBinder = Backbone.Model.extend({
 
     _initializeDefaultAttributeBindings: function(){
         var elCount, namedEls, namedEl, name;
-        this.attributeBindings = {};
-        namedEls = $('[name]', this.rootEl);
+        this._attributeBindings = {};
+        namedEls = $('[name]', this._rootEl);
 
         for(elCount = 0; elCount < namedEls.length; elCount++){
             namedEl = namedEls[elCount];
             name = $(namedEl).attr('name');
-            var attributeBinding =  {attributeName: name};
-            attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
-            this.attributeBindings[name] = attributeBinding;
+
+            // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
+            if(!this._attributeBindings[name]){
+                var attributeBinding =  {attributeName: name};
+                attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
+                this._attributeBindings[name] = attributeBinding;
+            }
+            else{
+                this._attributeBindings[name].elementBindings.push({attributeBinding: attributeBinding, boundEls: [namedEl]});
+            }
         }
     },
 
     _linkBoundEls:function () {
         var bindingKey, attributeBinding, bindingCount, elementBinding, foundEls, elCount, el;
-        for (bindingKey in this.attributeBindings) {
-            attributeBinding = this.attributeBindings[bindingKey];
+        for (bindingKey in this._attributeBindings) {
+            attributeBinding = this._attributeBindings[bindingKey];
 
             for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
                 elementBinding = attributeBinding.elementBindings[bindingCount];
-                foundEls = $(elementBinding.selector, this.rootEl);
+                foundEls = $(elementBinding.selector, this._rootEl);
 
                 if (foundEls.length === 0) {
                     throw 'Bad binding found. No elements returned for binding selector ' + elementBinding.selector;
@@ -108,20 +120,20 @@ Backbone.ModelBinder = Backbone.Model.extend({
     },
 
     _bindModelToView: function () {
-        this.model.on('change', this._onModelChange, this);
+        this._model.on('change', this._onModelChange, this);
 
         this._copyModelAttributesToView();
     },
 
     // should only be called when initially binding the model to the view
     _copyModelAttributesToView: function(){
-        var attributes = _.keys(this.model.attributes);
+        var attributes = _.keys(this._model.attributes);
         var attributeCount, attribute, attributeBinding;
 
         for(attributeCount = 0; attributeCount < attributes.length; attributeCount++){
             attribute = attributes[attributeCount];
 
-            attributeBinding = this.attributeBindings[attribute];
+            attributeBinding = this._attributeBindings[attribute];
 
             if (attributeBinding) {
                 this._copyModelToView(attributeBinding);
@@ -130,23 +142,23 @@ Backbone.ModelBinder = Backbone.Model.extend({
     },
 
     _unbindModelToView: function(){
-        if(this.model){
-            this.model.off('change', this._onModelChange);
-            this.model = undefined;
+        if(this._model){
+            this._model.off('change', this._onModelChange);
+            this._model = undefined;
         }
     },
 
     _bindViewToModel:function () {
         var that = this;
 
-        $(this.rootEl).delegate('*', 'change', function (event) {
+        $(this._rootEl).delegate('*', 'change', function (event) {
             that._onElChanged(event);
         });
     },
 
     _unbindViewToModel: function(){
-        if(this.rootEl){
-            $(this.rootEl).undelegate('', 'change');
+        if(this._rootEl){
+            $(this._rootEl).undelegate('', 'change');
         }
     },
 
@@ -161,8 +173,8 @@ Backbone.ModelBinder = Backbone.Model.extend({
     _getElBinding:function (findEl) {
         var attributeName, attributeBinding, elementBindingCount, elementBinding, boundElCount, boundEl;
 
-        for (attributeName in this.attributeBindings) {
-            attributeBinding = this.attributeBindings[attributeName];
+        for (attributeName in this._attributeBindings) {
+            attributeBinding = this._attributeBindings[attributeName];
 
             for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
                 elementBinding = attributeBinding.elementBindings[elementBindingCount];
@@ -183,8 +195,8 @@ Backbone.ModelBinder = Backbone.Model.extend({
     _onModelChange:function () {
         var changedAttribute, attributeBinding;
 
-        for (changedAttribute in this.model.changedAttributes()) {
-            attributeBinding = this.attributeBindings[changedAttribute];
+        for (changedAttribute in this._model.changedAttributes()) {
+            attributeBinding = this._attributeBindings[changedAttribute];
             if (attributeBinding) {
                 this._copyModelToView(attributeBinding);
             }
@@ -193,7 +205,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
 
     _copyModelToView:function (attributeBinding) {
         var elementBindingCount, elementBinding, boundElCount, boundEl;
-        var value = this.model.get(attributeBinding.attributeName);
+        var value = this._model.get(attributeBinding.attributeName);
 
         for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
             elementBinding = attributeBinding.elementBindings[elementBindingCount];
@@ -201,14 +213,17 @@ Backbone.ModelBinder = Backbone.Model.extend({
             if (!elementBinding.isSetting) {
                 elementBinding.isSetting = true;
 
-                var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                try{
+                    var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
 
-                for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
-                    boundEl = elementBinding.boundEls[boundElCount];
-                    this._setEl($(boundEl), elementBinding, convertedValue);
+                    for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                        boundEl = elementBinding.boundEls[boundElCount];
+                        this._setEl($(boundEl), elementBinding, convertedValue);
+                    }
                 }
-
-                elementBinding.isSetting = false;
+                finally {
+                    elementBinding.isSetting = false;
+                }
             }
         }
     },
@@ -241,7 +256,7 @@ Backbone.ModelBinder = Backbone.Model.extend({
                 break;
             case 'class':
                 if(!convertedValue){
-                    var previousValue = this.model.previous(elementBinding.attributeBinding.attributeName);
+                    var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);
                     if(previousValue){
                         el.removeClass(previousValue);
                     }
@@ -286,8 +301,13 @@ Backbone.ModelBinder = Backbone.Model.extend({
     _copyViewToModel: function (elementBinding, el) {
         if (!elementBinding.isSetting) {
             elementBinding.isSetting = true;
-            this._setModel(elementBinding, $(el));
-            elementBinding.isSetting = false;
+
+            try {
+                this._setModel(elementBinding, $(el));
+            }
+            finally {
+                elementBinding.isSetting = false;
+            }
 
             // If there is a converter, copy the newly set model value back into the view to have the conversion applied
             if (elementBinding.converter) {
@@ -302,14 +322,14 @@ Backbone.ModelBinder = Backbone.Model.extend({
 
         switch (el.attr('type')) {
             case 'checkbox':
-                elVal = el.attr('checked') ? true : false;
+                elVal = el.prop('checked') ? true : false;
                 break;
             default:
                 elVal = el.val();
         }
 
         data[elementBinding.attributeBinding.attributeName] = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
-        this.model.set(data);
+        this._model.set(data);
     },
 
     _getConvertedValue: function (direction, elementBinding, value) {

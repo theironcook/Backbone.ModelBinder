@@ -56,7 +56,8 @@ SomeView = Backbone.View.extend({
 <br>
 The model binder plugin allows you to have your view and model automatically synchronized.
 The the bind() function takes a Backbone model and an html element that will contain all of the view elements to be bound.
-The bind() function must be called after your html elements exist.  They do not need to be rendered on a web page though.
+The bind() function must be called after your html elements exist.  
+They do not need to be rendered on a web page though.
 
 The model binder will synchronize the input that has name="address" to the model's address attribute because they have the same value.
 For very simple forms where you want each field bound to a single html element with no formatting this technique is sufficient.
@@ -269,13 +270,32 @@ Person.identifier and Invoice.identifier will be properly bound and there will n
 ````
 
 <br>
-Model values are copied to the view on when bind() is invoked.
+Model values are copied to the view on when bind() is invoked. 
+In the example below, the address html element will have the value of '1313 Mockingbird Lane' right after the .bind() function is invoked.
+View values are not copied to model attributes at bind() time.  The appropriate place to initialize models is with the Backbone Model defaults block.
+
+````
+<input type="text" name="address"/>
+
+SomeView = Backbone.View.extend({
+    initialize: function(){
+        this.modelBinder = new Backbone.ModelBinder();
+    },
+    render: function(){
+        this.$el.append(this.template());
+        this.model.set({address: '1313 Mockingbird Lane'});
+        this.modelBinder.bind(this.model, this.el);
+    }
+````
+
+<br>
+You can call bind multiple times with different models.  
+Calling bind will automatically internally call the model binder unbind() function to unbind the previous model.
 
 
-Nothing happens when you instantiate a new ModelBinder.
 
-
-You can call bind multiple times
+<br>
+When a view closes you should call the ModelBinder.unbind() function.
 
 
 

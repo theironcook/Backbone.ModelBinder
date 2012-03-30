@@ -211,7 +211,7 @@ The select element's values are defined with the possible model's ids.  The net 
 
   var binder = new Backbone.ModelBinder();
 
-  var bindings = {phoneNumber: [{selector: '[name=phoneNumber]',
+  var bindings = {nestedModel: [{selector: '[name=nestedModel]',
                   converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert}]}
   binder.bind(this.model, this.el, bindings);
 ````

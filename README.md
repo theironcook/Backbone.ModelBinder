@@ -10,8 +10,8 @@ The plugin is simple and flexible enough to handle almost any type of view-model
 ## Plugin capabilities include:
 * Nested views
 * Partial view binding - only some view elements are bound
-* Multiple binding types per view
-* Backbone views are not required. It relies on html elements.
+* Binding with multiple models in a single view
+* Backbone views are not required. It relies on html elements that may or may not be owned by a view.
 * Binding can be performed on an html element's value or any arbitrary attribute (disabled, border, etc.)
 * Support for almost all view element types (text area, radio button, etc.)
 * A single model attribute can be bound to multiple view elements

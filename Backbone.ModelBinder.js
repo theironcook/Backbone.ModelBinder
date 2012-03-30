@@ -1,5 +1,6 @@
 // Backbone.ModelBinder v0.1.0
 // (c) 2012 Bart Wood
+// Distributed Under MIT License
 
 Backbone.ModelBinder = Backbone.Model.extend({
 

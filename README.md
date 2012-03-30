@@ -20,12 +20,15 @@ The plugin is simple and flexible enough to handle almost any type of view-model
 * An easy way to convert types (ids to models, models to names) - especially useful for select boxes
 * Order independent nested view/model binding
 
-
+<br>
 The remaining documentation starts off with some simple examples and builds to more complicated situations.
+<hr>
 
-
+<br>
 In Backbone a typical view might looks something like the example below.  The view registers for a change on an element with the id of address.
 When the address element changes the model's address attribute will be updated.
+
+
 ````
 SomeView = Backbone.View.extend({
     events: {
@@ -36,9 +39,10 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 In some situations the model's address might be updated and you want to update the view.
 The view will need to listen for when the model changes and then update itself
+
 ````
 SomeView = Backbone.View.extend({
     initialize: function{
@@ -49,11 +53,10 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 The model binder plugin allows you to have your view and model automatically synchronized.
 The the bind() function takes a Backbone model and an html element that will contain all of the view elements to be bound.
 The bind() function must be called after your html elements exist.  They do not need to be rendered on a web page though.
-
 
 The model binder will synchronize the input that has name="address" to the model's address attribute because they have the same value.
 For very simple forms where you want each field bound to a single html element with no formatting this technique is sufficient.
@@ -72,10 +75,11 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 For more complicated situations such as binding to a view elements attribute rather than it's value or performing formatting operations you will need to define a binding definitions hash.
 The simplest binding definition defines model attributes as keys and a jQuery selector to locate the view elements to bind to.
 Here is how the previous example would have defined the binding definition to achieve the same result.
+
 ````
 // Snippet from the template file
 <input type="text" name="address"/>
@@ -91,10 +95,11 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 The bindings definition hash can also define multiple html elements.
 In this example the address will be bound to both the input element and the span with the name pageTitle.
 The bindings value can be an array of element bindings.
+
 ````
 // Snippet from the template file
 <span name="pageTitle"/>
@@ -111,14 +116,14 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 You can also bind to any arbitrary html attribute.
 In this example, we are binding the model's attribute addressWanted to the address html element's enabled attribute.
 This example also shows how the binding definitions value can have multiple fields defined.
 
-
 All previous examples just defined a jquery selector without explicitly naming it 'selector' but if you pass in multiple options you must specify the selector with a name.
 In this example we make use of the elAttribute.  This specifies which attribute will be updated.  In this case the enabled attribute.
+
 ````
 // Snippet from the template file
 <input type="text" name="address"/>
@@ -134,11 +139,12 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 Binding definitions simply use jquery.
 The binder will throw an exception if no elements are found but will work just fine if multiple elements are returned.
 In this example, all 3 html elements enabled attribute are bound to the model's isPartOneEnabled attribute.
 This is because the jquery selector '[class~=partOne]' returned all 3 elements.
+
 ````
 // Snippet from the template file
 <input type="text" class="partOne" name="address"/>
@@ -156,7 +162,7 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-
+<br>
 You can also format or convert values as part of the automatic binding. You can format phone numbers or convert model's to model descriptions.
 In this example the phoneNumber elementBinding defines a converter - a converter is simply a function that takes a direction and a value as inputs and should return a converted value.
 The direction will either be ModelToView or ViewToModel.  This allows your model's attributes to remain in a pristine state but the view to format them appropriately.
@@ -185,7 +191,7 @@ The direction will either be ModelToView or ViewToModel.  This allows your model
   binder.bind(this.model, this.el, bindings);
 ````
 
-
+<br>
 In this next example, the view shows a select element which represents a nested model that the outer model refers to.
 Here, the converter is leveraging the CollectionConverter - this converts models to ids.
 The select element's values are defined with the possible model's ids.  The net result is that the nested model will be whatever the user selected in the view with little effort.
@@ -209,11 +215,12 @@ The select element's values are defined with the possible model's ids.  The net 
   binder.bind(this.model, this.el, bindings);
 ````
 
-
+<br>
 You can use as many model binders as you want to in a view.
 In this example, the personInfoBinder binds appropriate elements to the personModel and the invoiceBinder binds the correct elements to the invoiceNumber.
 The next example shows how to make this work in an easier way.
- ````
+
+````
  // Snippet from the template file
  <input type="text" name="address"/>
  <input type="text" name="phone"/>
@@ -229,9 +236,9 @@ The next example shows how to make this work in an easier way.
          this.personInfoBinder.bind(this.personModel, this.el, {address: '[name=address]', phone: '[name=phone]' });
          this.invoiceBinder.bind(this.invoiceModel, this.el, {invoiceNumber: '[name=invoiceNumber]');
      }
- ````
+````
 
-
+<br>
 This example is just like the one above but the unique models are scoped with their own <span> tags.
 We could have also used <form>, <div> or anything else - as long as only fields belonging to a single model fell under the same root tag.
 This example did not define the bindings definition because the element's name attributes are the same as the model attributes and we didn't need to do any formatting.
@@ -261,7 +268,7 @@ Person.identifier and Invoice.identifier will be properly bound and there will n
       }
 ````
 
-
+<br>
 Model values are copied to the view on when bind() is invoked.
 
 
@@ -269,6 +276,7 @@ Nothing happens when you instantiate a new ModelBinder.
 
 
 You can call bind multiple times
+
 
 
 

@@ -34,9 +34,11 @@ TypicalView = Backbone.View.extend({
     initialize: function{
         this.model.on('change:address', this._onModelAddressChange, this);
     },
+
     _onModelAddressChange: function(){
         this.$('#address').val(this.model.get('address'));
     }
+});
 ````
 
 In the ex. above the view is registering for when the address changes and will update the view appropriately.
@@ -50,9 +52,11 @@ TypicalView = Backbone.View.extend({
     initialize: function{
         this.model.on('change', this.render, this);
     },
+
     render: function(){
         // Entire view
     }
+});
 ````
 
 <br>
@@ -63,9 +67,11 @@ TypicalView = Backbone.View.extend({
     events: {
         'change #address', '_onAddressChanged'
     },
+
     _onAddressChanged: function(){
         this.model.set({address: this.$('#address')});
     }
+});
 ````
 
 In the example above, we use Backbone's event block to register for when a element with an id="address" changes.
@@ -76,11 +82,12 @@ Some applications don't copy values from the View to the Model until the user cl
 
 <br>
 ## Simple Example of the ModelBinder
+To use a ModelBinder you create one with a no constructor argument. ModelBinders have 2 public functions - `bind()` and `unbind()`.
+An example of how to use `bind()` is shown below.
 
 ````
-// Snippet from the html template file
+// Snippet from the html template file - used to create your template() used in the render() function
 <input type="text" name="address"/>
-
 
 SomeView = Backbone.View.extend({
     initialize: function(){
@@ -91,16 +98,22 @@ SomeView = Backbone.View.extend({
         this.$el.append(this.template());
         this.modelBinder.bind(this.model, this.el);
     }
+});
 ````
 
-In the simple example above, the the `bind()` function takes a Backbone Model and an html `Root Element` as parameters.
-`bind()` find all of `Root Element's` child elements with a `name` defined and bind them to the Backbone Model.
+The `bind()` function takes 2 parameters.
+* The Backbone Model your binding to.
+* An html element that should contain all of the other elements your binding to - a `rootElement`
+* A 3rd optional parameter called the bindingsHash is also possible - this is reviewed in the next section.
 
-The model's address attribute will be synchronized to the text input that has name="address".
+The `bind()` function finds all of the child elements under `rootElement` that have a `name` attribute defined.
+**It then binds the Models attributes to elements with the same name.**
+
+For many simple views that that have elements with a `name` attribute that matches a Model's attribute name, this technique is sufficient.
 
 Note that the ModelBinder does not care about Backbone Views, although you'll typically create ModelBinders inside of Views.
 
-For many simple views that that have elements with a 'name' attribute that matches a Model's attribute name, this technique is sufficient.
+
 
 
 <br>

@@ -2,32 +2,30 @@ Special thanks to Derick Bailey for providing unit tests and the predecessor to 
 
 This simple, powerful plugin helps you automatically synchronize your Backbone Views and Models.
 
-<br>
-Your Backbone apps already sync your models and views but you usually have to write a lot of boiler plate code to make it happen - this plugin helps you eliminate that boiler plate code.
+Your Backbone apps already synchronize your models and views but you usually have to write a lot of boiler plate code to make it happen - this plugin helps you eliminate that boiler plate code.
 
 The core of the plugin is a simple javascript class named the `Backbone.ModelBinder`.
 
-`ModelBinder`s will live inside of your Backbone javascript files - typically a Backbone.View.
+`ModelBinders` will live inside of your Backbone javascript files - typically a Backbone.View.
 
 Usually your html will not require any modification - this is different than most of the other model binders out there such as `Knockout` that require modification to your html.
 
-<br>
 ## Simple but powerful
 The ModelBinder uses the same jQuery event binding mechanism that Backbone relies on to handle events on Views so it should be pretty easy to understand.
 
-The ModelBinder should be flexible enough to handle most situations you'll encounter including:
+The `ModelBinder` should be flexible enough to handle most situations you'll encounter including:
 
 * Deeply nested models and views
 * Partial view binding (only some html elements are bound while others are ignored by the binder)
 * Easy formatting and type conversion
-* Binding a Model's attribute to multiple html elements
+* Binding a model's attribute to multiple html elements
 * Binding to any html attribute (Color, size, font etc.)
 * Dynamic re-binding when swapping models
 
 
 <br>
-## Typical boilerplate code for view-model binding - code you can stop writing
-**(skip this section if your proficient with Backbone)**
+## Typical boilerplate code - the ModelBinder helps you get rid of most of this
+**(Skip to the next section if your proficient with Backbone)**
 
 A typical Backbone app will have code that looks something like this...
 
@@ -42,10 +40,10 @@ TypicalView = Backbone.View.extend({
 ````
 
 In the ex. above the view is registering for when the address changes and will update the view appropriately.
-In some smaller apps registering for model changes probably isn't necessary but for larger apps where the model can change from other views it's very necessary.
+In some smaller apps registering for model changes might not always be necessary.
 
 <br>
-In most apps the handlers aren't so fine grained - typically if any model attribute changes the whole view is re-rendered as shown below. This could be wasteful for some situations...
+In most apps the event handlers aren't so fine grained - typically if any model attribute changes the whole view is re-rendered as shown below. This could be wasteful for some situations...
 
 ````
 TypicalView = Backbone.View.extend({
@@ -71,7 +69,8 @@ TypicalView = Backbone.View.extend({
 ````
 
 In the example above, we use Backbone's event block to register for when a element with an id="address" changes.
-In _onAddressChanged we update the model's address attribute with the new value.
+In the `_onAddressChanged` handler we update the Model's address attribute with the new value in the view element.
+
 Some applications don't copy values from the View to the Model until the user clicks on a submit button and then perform a simple copy from all field elements to the Model attributes.
 
 
@@ -79,7 +78,7 @@ Some applications don't copy values from the View to the Model until the user cl
 ## Simple Example of the ModelBinder
 
 ````
-// Snippet from the template file
+// Snippet from the html template file
 <input type="text" name="address"/>
 
 
@@ -94,11 +93,14 @@ SomeView = Backbone.View.extend({
     }
 ````
 
-In the simple example above, the the bind() function takes a Backbone Model and an html element that will contain all of the view elements to be bound.
+In the simple example above, the the `bind()` function takes a Backbone Model and an html `Root Element` as parameters.
+`bind()` find all of `Root Element's` child elements with a `name` defined and bind them to the Backbone Model.
+
+The model's address attribute will be synchronized to the text input that has name="address".
+
 Note that the ModelBinder does not care about Backbone Views, although you'll typically create ModelBinders inside of Views.
-After calling bind(), the Model's 'address' attribute will be synchronized with the text field with a name='address'.
-The bind() function must be called after your html elements exist.
-For many simple views that that define a 'name' attribute that matches a Model's attribute name, this technique is sufficient.
+
+For many simple views that that have elements with a 'name' attribute that matches a Model's attribute name, this technique is sufficient.
 
 
 <br>
@@ -220,7 +222,7 @@ All previous examples just defined a jQuery selector without explicitly naming i
 ````
 
 In the example above, the phoneNumber elementBinding defines a Converter. A Converter is simply a function that takes a direction and a value as inputs and should return a converted value.
-The direction will either be ModelToView or ViewToModel.  This allows your model's attributes to remain in a pristine state but the view to format them appropriately.
+The direction will either be ModelToView or ViewToModel.  This allows your Model's attributes to remain in a pristine state but the view to format them appropriately.
 
 
 <br><br>
@@ -246,8 +248,8 @@ You can also use Converters for more advanced operations like easily selecting a
 ````
 
 Here, the converter is leveraging the Backbone.ModelBinder.CollectionConverter - this converts Backbone Models to ids.
-The select element's values are defined with the possible model's ids.
-The net result is that the nested model will be whatever the user selected in the view with little effort.
+The select element's values are defined with the possible Model's ids.
+The net result is that the nested Model will be whatever the user selected in the view with little effort.
 
 
 <br><br>

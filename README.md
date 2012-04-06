@@ -9,12 +9,13 @@ The core of the plugin is a simple javascript class named the Backbone.ModelBind
 The ModelBinder uses the same jQuery event binding mechanism that Backbone relies on to handle events on Views so it should be pretty easy to understand.
 
 It should simple and flexible enough to handle almost any type of view-model configuration your app requires including
- * Deeply nested models and views
- * Partial view binding (only some elements are bound while others are ignored)
- * Easy formatting and type conversion
- * Binding a Model's attribute to multiple html elements
- * Binding to any html attribute (Color, size, text etc.)
- * Dynamic re-binding when swapping models
+
+* Deeply nested models and views
+* Partial view binding (only some elements are bound while others are ignored)
+* Easy formatting and type conversion
+* Binding a Model's attribute to multiple html elements
+* Binding to any html attribute (Color, size, text etc.)
+* Dynamic re-binding when swapping models
 
 
 <br>

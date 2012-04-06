@@ -82,7 +82,7 @@ Some applications don't copy values from the View to the Model until the user cl
 
 <br>
 ## Simple Example of the ModelBinder
-To use a ModelBinder you create one with a no constructor argument. ModelBinders have 2 public functions - `bind()` and `unbind()`.
+ModelBinder has a no argument constructor and 2 public functions - `bind()` and `unbind()`.
 An example of how to use `bind()` is shown below.
 
 ````
@@ -101,28 +101,28 @@ SomeView = Backbone.View.extend({
 });
 ````
 
-The `bind()` function takes 2 parameters.
+The `bind()` function takes 3 parameters.  The 3rd parameter is optional.
+
 * The Backbone Model your binding to.
-* An html element that should contain all of the other elements your binding to - a `rootElement`
+* An html `rootElement` that should contain all of the other elements your binding to - probably a form, div or span element.
 * A 3rd optional parameter called the bindingsHash is also possible - this is reviewed in the next section.
 
 The `bind()` function finds all of the child elements under `rootElement` that have a `name` attribute defined.
-**It then binds the Models attributes to elements with the same name.**
+**It then binds those child elements to Models attributes with the same `name`.**
 
 For many simple views that that have elements with a `name` attribute that matches a Model's attribute name, this technique is sufficient.
+Otherwise, you'll need to define the `bindingsHash` discussed in the next section.
 
 Note that the ModelBinder does not care about Backbone Views, although you'll typically create ModelBinders inside of Views.
-
-
 
 
 <br>
 ## The Bindings Hash
 
-The ModelBinder.bind() function can take a Bindings Hash as a 3rd parameter.
-The Bindings Hash uses a very similar format as the Backbone View events block.
+The `ModelBinder.bind()` function can take a `bindingsHash` as a 3rd optional parameter.
+The `bindingsHash` uses a very similar format as the Backbone View events block.
 It relies on jQuery selectors to locate which html elements to bind to.
-Here is how the previous simple example of the ModelBinder will look like with a Bindings Hash to achieve the same result.
+Here is how the previous simple example will look like with a `bindingsHash` to achieve the exact same binding behavior.
 
 ````
 // Snippet from the template file
@@ -132,8 +132,10 @@ SomeView = Backbone.View.extend({
     initialize: function(){
         this.modelBinder = new Backbone.ModelBinder();
     },
+
     render: function(){
         this.$el.append(this.template());
+
         var bindingsHash = {address: '[name=address]'};
         this.modelBinder.bind(this.model, this.el, bindingsHash);
     }
@@ -141,7 +143,7 @@ SomeView = Backbone.View.extend({
 
 <br>
 ## Basic Bindings Hash syntax
-The Bindings Hash follows this basic structure:
+The `bindingsHash` follows this basic structure:
 
 ````
     bindingsHash: {
@@ -149,19 +151,18 @@ The Bindings Hash follows this basic structure:
         // Basic syntax
         'modelAttributeName' : 'jQuerySelector',
 
-        // If your binding to an html element with id="attribute"
-        'address'            : '#address',
+        // If your binding to an html element with name="address"
+        'phone'            : '[name=address]',
 
-        // If your binding to an html element with name="attribute"
-        'phone'            : '[name=phone]'
-
+        // If your binding to an html element with id="phone"
+        'address'            : '#phone'
     }
 ````
 
-The Binding Hash can take any jQuery selector to locate which html element(s) to bind to - just like the Backbone View events block.
+The `bindingsHash` can take any jQuery selector to locate which html element(s) to bind to - just like the Backbone View events block.
 
 <br>
-The bindings definition hash can also define multiple html elements with an array.
+The `bindingsHash` can also define multiple html selectors with an array as shown below.
 
 ````
 // Snippet from the template file
@@ -180,34 +181,15 @@ SomeView = Backbone.View.extend({
 ````
 
 In the example above, address will be bound to both the input element and the span with the name pageTitle.
-The bindings value can be an array of element bindings.
-
-<br><br>
-You can also bind to any arbitrary html attribute.
-
-````
-// Snippet from the template file
-<input type="text" name="address"/>
-
-SomeView = Backbone.View.extend({
-    initialize: function(){
-        this.modelBinder = new Backbone.ModelBinder();
-    },
-    render: function(){
-        this.$el.append(this.template());
-        var bindingsHash = {address: '[name=address]', addressWanted: {selector: '[name=address]',  elAttribute: 'enabled'}};
-        this.modelBinder.bind(this.model, this.el, bindingsHash);
-    }
-````
-
-In the example above, we are binding the Model's attribute addressWanted to the address html element's enabled attribute.
-
+Both elements will be updated with the Model's address attribute changes.
 
 <br><br>
 ## Bindings Hash syntax - Converters
-You can also define Converters with your bindings.
-Converters are just functions that allow you to keep your views formatted differently than your Model attributes or perform type conversion.
-All previous examples just defined a jQuery selector without explicitly naming it 'selector' but if you pass in multiple options you must specify the selector with a name.
+You can also define `converters` with your bindings.
+`Converters` are just functions that allow you to keep your views formatted differently than your Model attributes or perform type conversion.
+
+All previous examples just defined a jQuery selector without explicitly naming it `'selector'` but if you pass in multiple options you must specify the `selector` with a name.
+The example below shows a `converter` doing simple formatting.
 
 ````
   <input name="phoneNumber"/>
@@ -234,12 +216,12 @@ All previous examples just defined a jQuery selector without explicitly naming i
   binder.bind(this.model, this.el, bindingsHash);
 ````
 
-In the example above, the phoneNumber elementBinding defines a Converter. A Converter is simply a function that takes a direction and a value as inputs and should return a converted value.
+A `Converter` is simply a function that takes a `direction` and a `value` as parameters and should return a converted value.
 The direction will either be ModelToView or ViewToModel.  This allows your Model's attributes to remain in a pristine state but the view to format them appropriately.
 
 
 <br><br>
-You can also use Converters for more advanced operations like easily selecting a nested Model.
+You can also use `Converters` for more advanced operations like easily selecting a nested Model.
 
 ````
   <select name="nestedModel">
@@ -256,17 +238,17 @@ You can also use Converters for more advanced operations like easily selecting a
   var binder = new Backbone.ModelBinder();
 
   var bindingsHash = {nestedModel: { selector: '[name=nestedModel]',
-                                 converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert} }
+                                     converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert} }
   binder.bind(this.model, this.el, bindingsHash);
 ````
 
-Here, the converter is leveraging the Backbone.ModelBinder.CollectionConverter - this converts Backbone Models to ids.
+Here, the `converter` is leveraging the Backbone.ModelBinder.CollectionConverter - this converts Backbone Models to ids.
 The select element's values are defined with the possible Model's ids.
 The net result is that the nested Model will be whatever the user selected in the view with little effort.
 
 
 <br><br>
-## Bindings Hash syntax - Binding to Any Html Attribute with elAttribute
+## Bindings Hash syntax - Binding to any html attribute with `elAttribute`
 
 All previous example bound to the text of the html elements but you can also bind to attributes like Color, Enabled, Size etc.
 
@@ -280,6 +262,7 @@ SomeView = Backbone.View.extend({
     },
     render: function(){
         this.$el.append(this.template());
+
         var bindingsHash = {isAddressEnabled: {selector: '[name=address]',  elAttribute: 'enabled'}};
         this.modelBinder.bind(this.model, this.el, bindings);
     }

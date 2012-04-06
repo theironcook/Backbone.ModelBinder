@@ -1,27 +1,35 @@
 Special thanks to Derick Bailey for providing unit tests and the predecessor to this plugin.
 
-This simple lightweight plugin helps you automatically synchronize your Backbone Views and Models together - when a model changes the view is updated or when the view changes the model is updated.
-Your Backbone applications already do this but you usually have to include a lot of boiler plate code to make it happen - this plugin helps you eliminate that boiler plate code.
+This simple, powerful plugin helps you automatically synchronize your Backbone Views and Models.
 
+<br>
+Your Backbone apps already sync your models and views but you usually have to write a lot of boiler plate code to make it happen - this plugin helps you eliminate that boiler plate code.
 
-The core of the plugin is a simple javascript class named the Backbone.ModelBinder that will live inside of your Backbone javascript files - typically a Backbone.View. You probably won't need to modify any of your existing html to use the ModelBinder.
+The core of the plugin is a simple javascript class named the `Backbone.ModelBinder`.
 
+`ModelBinder`s will live inside of your Backbone javascript files - typically a Backbone.View.
+
+Usually your html will not require any modification - this is different than most of the other model binders out there such as `Knockout` that require modification to your html.
+
+<br>
+## Simple but powerful
 The ModelBinder uses the same jQuery event binding mechanism that Backbone relies on to handle events on Views so it should be pretty easy to understand.
 
-It should simple and flexible enough to handle almost any type of view-model configuration your app requires including
+The ModelBinder should be flexible enough to handle most situations you'll encounter including:
 
 * Deeply nested models and views
-* Partial view binding (only some elements are bound while others are ignored)
+* Partial view binding (only some html elements are bound while others are ignored by the binder)
 * Easy formatting and type conversion
 * Binding a Model's attribute to multiple html elements
-* Binding to any html attribute (Color, size, text etc.)
+* Binding to any html attribute (Color, size, font etc.)
 * Dynamic re-binding when swapping models
 
 
 <br>
-## Typical Boilerplate code for view-model binding (Skip this if your proficient with Backbone)
+## Typical boilerplate code for view-model binding - code you can stop writing
+**(skip this section if your proficient with Backbone)**
 
-A Backbone typical app will have code that looks something like this...
+A typical Backbone app will have code that looks something like this...
 
 ````
 TypicalView = Backbone.View.extend({
@@ -98,7 +106,7 @@ For many simple views that that define a 'name' attribute that matches a Model's
 
 The ModelBinder.bind() function can take a Bindings Hash as a 3rd parameter.
 The Bindings Hash uses a very similar format as the Backbone View events block.
-It relies on JQuery selectors to locate which html elements to bind to.
+It relies on jQuery selectors to locate which html elements to bind to.
 Here is how the previous simple example of the ModelBinder will look like with a Bindings Hash to achieve the same result.
 
 ````
@@ -124,7 +132,7 @@ The Bindings Hash follows this basic structure:
     bindingsHash: {
 
         // Basic syntax
-        'modelAttributeName' : 'JQuerySelector',
+        'modelAttributeName' : 'jQuerySelector',
 
         // If your binding to an html element with id="attribute"
         'address'            : '#address',
@@ -135,7 +143,7 @@ The Bindings Hash follows this basic structure:
     }
 ````
 
-The Binding Hash can take any JQuery selector to locate which html element(s) to bind to - just like the Backbone View events block.
+The Binding Hash can take any jQuery selector to locate which html element(s) to bind to - just like the Backbone View events block.
 
 <br>
 The bindings definition hash can also define multiple html elements with an array.
@@ -184,7 +192,7 @@ In the example above, we are binding the Model's attribute addressWanted to the 
 ## Bindings Hash syntax - Converters
 You can also define Converters with your bindings.
 Converters are just functions that allow you to keep your views formatted differently than your Model attributes or perform type conversion.
-All previous examples just defined a JQuery selector without explicitly naming it 'selector' but if you pass in multiple options you must specify the selector with a name.
+All previous examples just defined a jQuery selector without explicitly naming it 'selector' but if you pass in multiple options you must specify the selector with a name.
 
 ````
   <input name="phoneNumber"/>
@@ -267,8 +275,8 @@ You could also extend this to html element colors, sizes, the sky is the limit!
 
 
 <br><br>
-## Exposing the Power of JQuery Selectors, Selecting by Classes etc.
-Binding definitions simply use jquery.  You can select based off of a class attribute or anything else you'd like.
+## Exposing the Power of jQuery Selectors, Selecting by Classes etc.
+Binding definitions simply use jQuery.  You can select based off of a class attribute or anything else you'd like.
 
 ````
 // Snippet from the template file
@@ -288,7 +296,7 @@ SomeView = Backbone.View.extend({
 ````
 
 In this example, all 3 html elements enabled attribute are bound to the Model's isPartOneEnabled attribute.
-This is because the jquery selector '[class~=partOne]' returned all 3 elements.
+This is because the jQuery selector '[class~=partOne]' returned all 3 elements.
 
 
 

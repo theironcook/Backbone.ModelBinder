@@ -152,10 +152,10 @@ The `bindingsHash` follows this basic structure:
         'modelAttributeName' : 'jQuerySelector',
 
         // If your binding to an html element with name="address"
-        'phone'            : '[name=address]',
+        'address'            : '[name=address]',
 
         // If your binding to an html element with id="phone"
-        'address'            : '#phone'
+        'phone'              : '#phone'
     }
 ````
 

@@ -18,7 +18,7 @@
       dogs.add({id:2, name:'Biff', collar: 'red'});
       dogs.add({id:3, name:'Candy', collar: 'green'});
 
-      modelA = new Backbone.Model({firstName: 'Bob', graduated: 'maybe'});
+      modelA = new Backbone.Model({firstName: 'Bob', graduated: 'maybe', title: 'Captain'});
       modelB = new Backbone.Model();
       modelA.set({modelB:modelB});
 
@@ -114,7 +114,7 @@
 
         render:function () {
           var html = '\
-          Title: <div name="foozgabba" style="color:red"></div>\
+          Title: <div name="title" style="color:red"></div>\
           No Name: <input class="a b c smell" type="text" id="phone"/><br>\
           Phone: <input type="text" name="phone"/><br>\
           First Name: <input type="text" name="firstName"/><br>\
@@ -149,7 +149,9 @@
 
 
           var bindings = {
-            firstName: [{selector: '[name=firstName]:first'}, {selector: '[name=foozgabba]:first'}],
+            title: {selector: '[name=title]'},
+            titleColor: {selector: '[name=title]', elAttribute: 'style'},
+            firstName: [{selector: '[name=firstName]:first'}],
             driversLicense: '[name=driversLicense]',
             graduated: '[name=graduated]',
             eyeColor: '[name=eyeColor]',

@@ -507,7 +507,14 @@ The last bound Model will be unbound, the new Model will be bound and the new Mo
 <br><br>
 ## Why no '.' syntax for nested Models?
 It might be nice to be able to facilitate using '.' syntax to reference nested models with the `bindingHash`.
-For example, ff my personModel has a nested model named homeAddress that has a street attribute it would be great if I could bind using the syntax shown below.
+For example, if my personModel has a nested model named homeAddress that has a street attribute it would be great if I could bind using the syntax shown below.
+
+````
+PersonView = Backbone.View.extend({
+    render: function(){
+        this.personInfoBinder.bind(this.personModel, this.el, {homeAddress.street: '[name=street]'});
+    }
+````
 
 I work on a relatively large project and we haven't had a dramatic need for this yet.
 
@@ -518,12 +525,7 @@ Right now, we handle this with another ModelBinder and works well but it would h
 
 If you feel like having the '.' syntax is critical for nested Models let me know.
 
-````
-PersonView = Backbone.View.extend({
-    render: function(){
-        this.personInfoBinder.bind(this.personModel, this.el, {homeAddress.street: '[name=street]'});
-    }
-````
+
 
 
 

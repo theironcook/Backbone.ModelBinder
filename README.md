@@ -430,7 +430,7 @@ Now we'll create a View that lets a user edit the person Model and the person's 
 SomeView = Backbone.View.extend({
     render: function(){
         this.personInfoBinder.bind(this.personModel, this.el, {firstName: '[name=firstName]', lastName: '[name=lastName]'});
-        this.addressBinder.bind(this.personModel.get('homeAddress'), this.el, {street: '[name=street]', street: '[name=street]'});
+        this.addressBinder.bind(this.personModel.get('homeAddress'), this.el, {street: '[name=street]', city: '[name=city]'});
     }
 ````
 
@@ -460,13 +460,13 @@ PersonView = Backbone.View.extend({
         $(this.el).append(this.addressTemplate({model: this.personModel.get('homeAddress').toJSON()}));
 
         this.personInfoBinder.bind(this.personModel, this.el, {firstName: '[name=firstName]', lastName: '[name=lastName]'});
-        this.addressBinder.bind(this.personModel.get('homeAddress'), this.el, {street: '[name=street]', street: '[name=street]'});
+        this.addressBinder.bind(this.personModel.get('homeAddress'), this.el, {street: '[name=street]', city: '[name=city]'});
     }
 ````
 
 In most cases with nested models you'll need to define `bindingHash` arguments to ensure that your bindings are properly scoped.
 
-Occasionally you'll be able to scope nested models in their individual <div> or <span> tags but the safest bet is to just define the `bindingsHash`.
+Occasionally you'll be able to scope nested models in their individual `<div>` or `<span>` tags but the safest bet is to just define the `bindingsHash`.
 
 
 <br><br>

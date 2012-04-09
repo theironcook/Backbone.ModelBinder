@@ -274,7 +274,7 @@
                     }
                     break;
                 default:
-                    el.attr(elAttribute, convertedValue);
+                    el.attr(elementBinding.elAttribute, convertedValue);
             }
         },
 

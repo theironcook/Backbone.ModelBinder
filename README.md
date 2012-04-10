@@ -291,6 +291,15 @@ Here, the `Converter` is leveraging the Backbone.ModelBinder.CollectionConverter
 The select element's values are defined with the possible Model's ids.
 The net result is that the nested Model will be whatever the user selected in the view with little effort.
 
+<br><br>
+## Converter options
+Converter callback functions are passed 4 parameters
+
+* Direction, either ViewToModel or ModelToView
+* Value, the current value in the View or the Model
+* The Model's attribute name that has changed
+* The Model
+
 
 <br><br>
 ## Bindings Hash `elAttribute` - binding to any html attribute

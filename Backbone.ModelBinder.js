@@ -79,7 +79,7 @@
                     this._attributeBindings[attributeBindingKey] = attributeBinding;
                 }
 
-                this._linkBoundEls();
+                this._initializeElBindings();
             }
         },
 
@@ -99,12 +99,12 @@
                     this._attributeBindings[name] = attributeBinding;
                 }
                 else{
-                    this._attributeBindings[name].elementBindings.push({attributeBinding: attributeBinding, boundEls: [namedEl]});
+                    this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
                 }
             }
         },
 
-        _linkBoundEls:function () {
+        _initializeElBindings:function () {
             var bindingKey, attributeBinding, bindingCount, elementBinding, foundEls, elCount, el;
             for (bindingKey in this._attributeBindings) {
                 attributeBinding = this._attributeBindings[bindingKey];

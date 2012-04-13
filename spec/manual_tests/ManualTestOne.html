@@ -22,6 +22,12 @@
       modelB = new Backbone.Model();
       modelA.set({modelB:modelB});
 
+      welcomeModel = new Backbone.Model();
+
+      welcomeModel.bind('change', function () {
+        $('#placeFoWelcome').html(JSON.stringify(welcomeModel.toJSON()));
+      });
+
       modelA.bind('change', function () {
         $('#placeForModelA').html(JSON.stringify(modelA.toJSON()));
       });
@@ -114,7 +120,13 @@
 
         render:function () {
           var html = '\
-          Title: <div name="title" style="color:red"></div>\
+          \
+          <div id="welcome"> Welcome, <span name="welcomeFirstName"></span> <span name="welcomeLastName"></span>\
+          \
+            Edit your information:\
+                <input type="text" name="welcomeFirstName"/>\
+                <input type="text" name="welcomeLastName"/></div>\
+          Title: <div name="firstName" style="color:red"></div><br><br>\
           No Name: <input class="a b c smell" type="text" id="phone"/><br>\
           Phone: <input type="text" name="phone"/><br>\
           First Name: <input type="text" name="firstName"/><br>\
@@ -143,15 +155,15 @@
           Smell: <input type="text" class="smell honey" name="smell"/><br>\
           Another smell: <input type="text" class="smell sugar" name="anotherSmell"/><br>\
           Big Text:<br> <textarea name="bigText" rows="4" cols="80"></textarea>\
+          \
           ';
 
           $(this.$el).html(html);
 
 
           var bindings = {
-            title: {selector: '[name=title]'},
-            titleColor: {selector: '[name=title]', elAttribute: 'style'},
-            firstName: [{selector: '[name=firstName]:first'}],
+            titleColor: {selector: '[name=firstName]:first', elAttribute: 'style'},
+            firstName: [{selector: '[name=firstName]'}],
             driversLicense: '[name=driversLicense]',
             graduated: '[name=graduated]',
             eyeColor: '[name=eyeColor]',
@@ -165,7 +177,8 @@
 
           this.binder.bind(this.model, this.$el, bindings);
 
-
+          welcomeBinder = new Backbone.ModelBinder();
+          welcomeBinder.bind(welcomeModel, this.$('#welcome'));
 
           return this;
         }
@@ -179,6 +192,9 @@
 
 </head>
 <body>
+Welcome:
+<div id="placeForWelcome"></div>
+<br><br>
 Model A:
 <div id="placeForModelA"></div>
 <br><br>

@@ -351,7 +351,7 @@
         }
     });
 
-    Backbone.ModelBinder.CollectionConverter = function(collection, formatter){
+    Backbone.ModelBinder.CollectionConverter = function(collection){
         this._collection = collection;
 
         if(!this._collection){

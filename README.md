@@ -543,6 +543,14 @@ If you feel like having the '.' syntax is critical for nested Models let me know
 
 
 
+<br>
+<br>
+
+## Release Notes / Versions
+
+### v 0.1.0
+
+* Initial version starting April 16th.  Future api changes will have updated version numbers.
 
 
 

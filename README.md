@@ -4,7 +4,7 @@ This simple, flexible and powerful plugin helps you automatically synchronize yo
 
 Your Backbone applications already have to synchronize your Models and Views but you usually have to write a lot of boiler plate code to make it happen. This plugin helps you eliminate most of that boiler plate code.
 
-The core of the plugin is a simple javascript class named the `Backbone.ModelBinder`.  `ModelBinders` are used inside of your Backbone javascript files - typically Backbone Views.
+This plugin is a simple javascript class named the `Backbone.ModelBinder`.  `ModelBinders` are used inside of your Backbone javascript files - typically Backbone Views.
 
 Your html should not require any modification - this style is different than most of the other View-Model binding apis out there such as `Knockout` that require modification to your html.
 
@@ -19,6 +19,13 @@ The `ModelBinder` should be flexible enough to handle most situations you'll enc
 * Binding a Model's attribute to multiple html elements
 * Binding to any html attribute (Color, size, font etc.)
 * Dynamic re-binding when swapping Models in a View
+
+
+## Prerequisites
+
+* Backbone.js v0.9.0
+* Underscore.js v1.3.1
+* jQuery v1.7.1
 
 
 <br>

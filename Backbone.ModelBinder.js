@@ -9,6 +9,8 @@
     }
 
     Backbone.ModelBinder = function(){};
+    // Current version of the library. Keep in sync with `package.json`.
+    Backbone.ModelBinder.VERSION = '0.1.0';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -349,17 +351,16 @@
         }
     });
 
-    Backbone.ModelBinder.CollectionConverter = function(){};
-    _.extend(Backbone.ModelBinder.CollectionConverter, {
-        constructor: function(collection, formatter){
-            this._collection = collection;
+    Backbone.ModelBinder.CollectionConverter = function(collection, formatter){
+        this._collection = collection;
 
-            if(!this._collection){
-                throw 'Collection must be defined';
-            }
-            _.bindAll(this, 'convert');
-        },
+        if(!this._collection){
+            throw 'Collection must be defined';
+        }
+        _.bindAll(this, 'convert');
+    };
 
+    _.extend(Backbone.ModelBinder.CollectionConverter.prototype, {
         convert: function(direction, value){
             if (direction === Backbone.ModelBinder.Constants.ModelToView) {
                 return value ? value.id : undefined;

@@ -558,8 +558,6 @@ If you feel like having the '.' syntax is critical for nested Models let me know
 
 
 
-  a
-
 # Legal Info (MIT License)
 
 Copyright (c) 2012 Bart Wood

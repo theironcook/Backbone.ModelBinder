@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Example 1</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../../Backbone.ModelBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+
+            model = new Backbone.Model();
+
+            model.set({firstName: 'Bob'});
+
+            model.bind('change', function () {
+                $('#modelData').html(JSON.stringify(model.toJSON()));
+            });
+
+
+            ViewClass = Backbone.View.extend({
+
+                _modelBinder: undefined,
+
+                initialize:function () {
+                    this._modelBinder = new Backbone.ModelBinder();
+                },
+
+                close: function(){
+                    this._modelBinder.unbind();
+
+                },
+
+                render:function () {
+                    var html = '\
+                      \
+                      <div id="welcome"> Welcome, <span name="firstName"></span> <span name="lastName"></span>\
+                      <br><br>\
+                        Edit your information:\
+                            <input type="text" name="firstName"/>\
+                            <input type="text" name="lastName"/></div>\
+                      \
+                      ';
+
+                    $(this.$el).html(html);
+
+                    this._modelBinder.bind(model, this.el);
+
+                    return this;
+                }
+            });
+
+            view = new ViewClass();
+
+            $('#viewContent').append(view.render().$el);
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+Model data: <div id="modelData"></div>
+
+<hr><br>
+<div id="viewContent"></div>
+
+</body>
+</html>

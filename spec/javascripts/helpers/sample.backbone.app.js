@@ -156,6 +156,25 @@ GlobalAllBindingAttributesView = Backbone.View.extend({
     }
 });
 
+SelectorBindingView = Backbone.View.extend({
+    render:function () {
+        var html = $("\
+          <textarea id='comment'></textarea>\
+        ");
+        this.$el.append(html);
+
+        var binder = new Backbone.ModelBinder();
+        var bindings = {
+            type: {
+				selector: '',
+				elAttribute: 'data-type'
+			},
+            comment: '#comment'
+        };
+        binder.bind(this.model, this.$el, bindings);
+    }
+});
+
 AnotherView = Backbone.View.extend({
     render:function () {
         var html = $("\

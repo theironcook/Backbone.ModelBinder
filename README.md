@@ -27,6 +27,7 @@ The `ModelBinder` should be flexible enough to handle most situations you'll enc
 * Underscore.js v1.3.1
 * jQuery v1.7.1
 
+<br>
 ### Some examples can be found here but I'd recomend reading the docs first.
 [Examples](https://github.com/theironcook/Backbone.ModelBinder/wiki/Examples)
 

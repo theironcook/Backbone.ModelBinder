@@ -113,7 +113,7 @@
 
                 for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
                     elementBinding = attributeBinding.elementBindings[bindingCount];
-                    if (elementBinding.selector.length !== 0) {
+                    if (elementBinding.selector !== '') {
                         foundEls = $(elementBinding.selector, this._rootEl);
                     }
                     else {

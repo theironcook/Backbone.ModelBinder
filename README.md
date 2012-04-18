@@ -548,6 +548,10 @@ If you feel like having the '.' syntax is critical for nested Models let me know
 
 ## Release Notes / Versions
 
+### v 0.1.1
+
+* An empty selector string will now bind to the rootEl
+
 ### v 0.1.0
 
 * Initial version starting April 16th.  Future api changes will have updated version numbers.

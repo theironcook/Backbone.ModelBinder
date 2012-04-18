@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Example 2</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+
+            dogs = new Backbone.Collection({model:Backbone.Model});
+            dogs.add({id:1, name:'Andy', collar: 'yellow'});
+            dogs.add({id:2, name:'Biff', collar: 'red'});
+            dogs.add({id:3, name:'Candy', collar: 'green'});
+
+
+            var phoneConverter = function (direction, value) {
+                if (direction === Backbone.ModelBinder.Constants.ModelToView) {
+                    var formattedPhone = '';
+                    if (value) {
+                        formattedPhone = value.replace(/[^0-9]/g, '');
+
+                        if (formattedPhone.length == 7) {
+                            formattedPhone = formattedPhone.substring(0, 3) + '-' + formattedPhone.substring(3, 7);
+                        }
+                        else if (formattedPhone.length == 10) {
+                            formattedPhone = '(' + formattedPhone.substring(0, 3) + ') ' + formattedPhone.substring(3, 6) + '-' + formattedPhone.substring(6, 10);
+                        }
+                        else if (formattedPhone.length == 11 && formattedPhone[0] === '1') {
+                            formattedPhone = '1 (' + formattedPhone.substring(1, 4) + ') ' + formattedPhone.substring(4, 7) + '-' + formattedPhone.substring(7, 11);
+                        }
+                    }
+
+                    return formattedPhone;
+                }
+                else {
+                    return value.replace(/[^0-9]/g, '');
+                }
+            };
+
+
+            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', title:'Captain', phone: '1234567'});
+
+            model.bind('change', function () {
+                $('#modelData').html(JSON.stringify(model.toJSON()));
+            });
+
+            model.trigger('change'); // just to show the #modelData values initially, not needed for the ModelBinder
+
+
+            ViewClass = Backbone.View.extend({
+
+                _modelBinder:undefined,
+
+                initialize:function () {
+                    this._modelBinder = new Backbone.ModelBinder();
+                },
+
+                render:function () {
+                    var html = '\
+                        Edit your information:<br><br>\
+                            First Name: <input type="text" name="firstName"/><br>\
+                            Last Name: <input type="text" name="lastName"/><br>\
+                              Phone: <input type="text" name="phone"/><br>\
+                              Height: <input type="text" name="height"/><br><br>\
+                              \
+                              Graduated:  Yes: <input type="radio" id="graduated_yes" name="graduated" value="yes">\
+                              No: <input type="radio" id="graduated_no" name="graduated" value="no">\
+                              Maybe: <input type="radio" id="graduated_maybe" name="graduated" value="maybe"><br>\
+                              \
+                              Eye Color:  Green: <input type="radio" id="graduated_yes" name="eyeColor" value="green">\
+                              Blue: <input type="radio" id="graduated_no" name="eyeColor" value="blue">\
+                              Brown: <input type="radio" id="graduated_maybe" name="eyeColor" value="brown"><br><br>\
+                              \
+                              Drivers licence: <input type="checkbox" name="driversLicense"/><br>\
+                              Motorcycle license: <input type="checkbox" name="motorcycle_license" /><br><br>\
+                              Dog: \
+                              <select name="dog">\
+                                <option value="">Please Select</option>\
+                                <option value="1">Andy</option>\
+                                <option value="2">Biff</option>\
+                                <option value="3">Candy</option>\
+                              </select> <br><br>\
+                              Big Text:<br> <textarea name="bigText" rows="4" cols="80"></textarea>\
+                              ';
+
+                    this.$el.html(html);
+
+                    var bindings = {
+                        firstName: '[name=firstName]',
+                        lastName: '[name=lastName]',
+                        driversLicense:'[name=driversLicense]',
+                        motorcycle_license:'[name=motorcycle_license]',
+                        graduated:'[name=graduated]',
+                        eyeColor:'[name=eyeColor]',
+                        phone:{selector:'[name=phone]', converter:phoneConverter},
+                        dog:{selector:'[name=dog]', converter:(new Backbone.ModelBinder.CollectionConverter(dogs)).convert},
+                        bigText:'[name=bigText]'
+                    };
+
+                    this._modelBinder.bind(this.model, this.el, bindings);
+
+                    return this;
+                }
+            });
+
+            view = new ViewClass({model:model});
+            $('#viewContent').append(view.render().el);
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+Model data:
+<div id="modelData"></div>
+
+<hr>
+<br>
+
+<div id="viewContent"></div>
+
+</body>
+</html>

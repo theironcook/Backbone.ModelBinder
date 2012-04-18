@@ -113,7 +113,12 @@
 
                 for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
                     elementBinding = attributeBinding.elementBindings[bindingCount];
-                    foundEls = $(elementBinding.selector, this._rootEl);
+                    if (elementBinding.selector === '') {
+						foundEls = $(this._rootEl);
+                    }
+                    else {
+                        foundEls = $(elementBinding.selector, this._rootEl);
+                    }
 
                     if (foundEls.length === 0) {
                         throw 'Bad binding found. No elements returned for binding selector ' + elementBinding.selector;

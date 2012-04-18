@@ -44,7 +44,7 @@
             };
 
 
-            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', title:'Captain', phone: '1234567'});
+            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', phone: '1234567'});
 
             model.bind('change', function () {
                 $('#modelData').html(JSON.stringify(model.toJSON()));

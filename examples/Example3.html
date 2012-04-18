@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Example 3</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+
+            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', eyeColor: 'green'});
+
+            model.bind('change', function () {
+                $('#modelData').html(JSON.stringify(model.toJSON()));
+            });
+
+            model.trigger('change'); // just to show the #modelData values initially, not needed for the ModelBinder
+
+
+            ViewClass = Backbone.View.extend({
+
+                _modelBinder:undefined,
+
+                initialize:function () {
+                    this._modelBinder = new Backbone.ModelBinder();
+                },
+
+                render:function () {
+                    var html = '\
+                        Edit your information: <span name="firstName"></span><br><br>\
+                            Eye Color:  Green: <input type="radio" id="graduated_yes" name="eyeColor" value="green">\
+                            Blue: <input type="radio" id="graduated_no" name="eyeColor" value="blue">\
+                              Brown: <input type="radio" id="graduated_maybe" name="eyeColor" value="brown"><br><br>\
+                            <span class="label"> First Name: </span> <input type="text" name="firstName"/><br>\
+                            <span class="label"> Last Name: </span> <input type="text" name="lastName"/><br>\
+                            <span class="label"> Height: </span> <input type="text" name="height"/><br><br>\
+                              \
+                              Graduated:  Yes: <input type="radio" id="graduated_yes" name="graduated" value="yes">\
+                                      No: <input type="radio" id="graduated_no" name="graduated" value="no">\
+                                      Maybe: <input type="radio" id="graduated_maybe" name="graduated" value="maybe"><br><br>\
+                              \
+                              Drivers licence: <input type="checkbox" name="driversLicense"/><br>\
+                              Motorcycle license: <input type="checkbox" name="motorcycleLicense" /><br><br>\
+                              ';
+
+                    this.$el.html(html);
+
+                    var bindings = {
+                        firstName: '[name=firstName]',
+                        lastName: '[name=lastName]',
+                        driversLicense:'[name=driversLicense]',
+                        motorcycleLicense:'[name=motorcycleLicense]',
+                        graduated:[{selector: '[name=graduated]'}, {selector: '[name=driversLicense],[name=motorcycleLicense]', elAttribute: 'enabled', converter: function(direction, value){return value === 'yes';}}],
+                        eyeColor: [{selector: '[name=eyeColor]'}, {selector: 'span.label', elAttribute: 'style', converter: function(direction, value){return 'color:' + value}}]
+                    };
+
+                    this._modelBinder.bind(this.model, this.el, bindings);
+
+                    return this;
+                }
+            });
+
+            view = new ViewClass({model:model});
+            $('#viewContent').append(view.render().el);
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+In this example, the first, last and height labels are bound to the eye color attribute.  The drivers license checkboxes are only enabled if the person graduated.
+
+<br>
+<br>
+Model data:
+<div id="modelData"></div>
+
+<hr>
+<br>
+
+<div id="viewContent"></div>
+
+</body>
+</html>

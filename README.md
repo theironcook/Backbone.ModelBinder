@@ -554,6 +554,7 @@ If you feel like having the '.' syntax is critical for nested Models let me know
 ### v 0.1.1
 
 * An empty selector string will now bind to the rootEl
+* Removed elementBinding.isSetting guard which was unnecessary and short circuited updating multiple bound elements with the same name
 
 ### v 0.1.0
 

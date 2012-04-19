@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v0.1.0
+// Backbone.ModelBinder v0.1.1
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -10,7 +10,7 @@
 
     Backbone.ModelBinder = function(){};
     // Current version of the library. Keep in sync with `package.json`.
-    Backbone.ModelBinder.VERSION = '0.1.0';
+    Backbone.ModelBinder.VERSION = '0.1.1';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -225,20 +225,11 @@
             for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
                 elementBinding = attributeBinding.elementBindings[elementBindingCount];
 
-                if (!elementBinding.isSetting) {
-                    elementBinding.isSetting = true;
+                var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
 
-                    try{
-                        var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
-
-                        for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
-                            boundEl = elementBinding.boundEls[boundElCount];
-                            this._setEl($(boundEl), elementBinding, convertedValue);
-                        }
-                    }
-                    finally {
-                        elementBinding.isSetting = false;
-                    }
+                for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                    boundEl = elementBinding.boundEls[boundElCount];
+                    this._setEl($(boundEl), elementBinding, convertedValue);
                 }
             }
         },
@@ -316,18 +307,8 @@
         _copyViewToModel: function (elementBinding, el) {
             if (!elementBinding.isSetting) {
                 elementBinding.isSetting = true;
-
-                try {
-                    this._setModel(elementBinding, $(el));
-                }
-                finally {
-                    elementBinding.isSetting = false;
-                }
-
-                // If there is a converter, copy the newly set model value back into the view to have the conversion applied
-                if (elementBinding.converter) {
-                    this._copyModelToView(elementBinding.attributeBinding);
-                }
+                this._setModel(elementBinding, $(el));
+                elementBinding.isSetting = false;
             }
         },
 

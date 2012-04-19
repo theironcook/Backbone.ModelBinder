@@ -32,7 +32,7 @@
 
                 render:function () {
                     var html = '\
-                        Edit your information: <span name="firstName"></span><br><br>\
+                        Edit your information: <span name="firstName"></span> <span name="lastName"></span><br><br>\
                             Eye Color:  Green: <input type="radio" id="graduated_yes" name="eyeColor" value="green">\
                             Blue: <input type="radio" id="graduated_no" name="eyeColor" value="blue">\
                               Brown: <input type="radio" id="graduated_maybe" name="eyeColor" value="brown"><br><br>\
@@ -53,6 +53,7 @@
                     var bindings = {
                         firstName: '[name=firstName]',
                         lastName: '[name=lastName]',
+                        height: '[name=height]',
                         driversLicense:'[name=driversLicense]',
                         motorcycleLicense:'[name=motorcycleLicense]',
                         graduated:[{selector: '[name=graduated]'}, {selector: '[name=driversLicense],[name=motorcycleLicense]', elAttribute: 'enabled', converter: function(direction, value){return value === 'yes';}}],

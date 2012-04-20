@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Example - Nested Attributes</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="backbone-nested.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+            model = new Backbone.NestedModel({firstName:'Bob', home:{squareFeet:'2000 sq ft', garage:{carCapacity:'2 car'}}});
+
+            model.bind('change', function () {
+                $('#modelData').html(JSON.stringify(model.toJSON()));
+            });
+
+            model.trigger('change'); // just to show the #modelData values initially, not needed for the ModelBinder
+
+            ViewClass = Backbone.View.extend({
+
+                _modelBinder:undefined,
+
+                initialize:function () {
+                    this._modelBinder = new Backbone.ModelBinder();
+                },
+
+                render:function () {
+                    var html = '\
+                        Edit your information: <span name="firstName"></span> <br><br>\
+                            <span class="label"> \
+                            firstName: </span> <input type="text" name="firstName"/><br>\
+                            home.squareFeet: <input type="text" name="home.squareFeet"/><br>\
+                            home.garage.carCapacity: <input type="text" name="home.garage.carCapacity"/><br>\
+                              ';
+
+                    this.$el.html(html);
+
+                    var bindings = {
+                        'firstName' : '[name=firstName]',
+                        'home.squareFeet': {selector: '[name="home.squareFeet"]', converter: function(direction, value){return value + " sq feet";}},
+                        'home.garage.carCapacity': '[name="home.garage.carCapacity"]'
+                    };
+
+                    this._modelBinder.bind(this.model, this.el, bindings);
+
+                    return this;
+                }
+            });
+
+            view = new ViewClass({model:model});
+            $('#viewContent').append(view.render().el);
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+Example to discuss : <a href="https://github.com/theironcook/Backbone.ModelBinder/issues/3"> ModelBinder Issue 3 </a>
+<br>
+How to bind to nested attributes that are not Backbone Models.
+
+<br>
+<br>
+Model data:
+<div id="modelData"></div>
+
+<hr>
+<br>
+
+<div id="viewContent"></div>
+
+</body>
+</html>

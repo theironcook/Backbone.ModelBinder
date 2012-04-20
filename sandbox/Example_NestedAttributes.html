@@ -13,7 +13,7 @@
 
     <script>
         $().ready(function () {
-            model = new Backbone.NestedModel({firstName:'Bob', home:{squareFeet:'2000 sq ft', garage:{carCapacity:'2 car'}}});
+            model = new Backbone.NestedModel({firstName:'Bob', home:{squareFeet:'2000', garage:{carCapacity:'2'}}});
 
             model.bind('change', function () {
                 $('#modelData').html(JSON.stringify(model.toJSON()));
@@ -42,7 +42,16 @@
 
                     var bindings = {
                         'firstName' : '[name=firstName]',
-                        'home.squareFeet': {selector: '[name="home.squareFeet"]', converter: function(direction, value){return value + " sq feet";}},
+                        'home.squareFeet': {selector: '[name="home.squareFeet"]', converter: function(direction, value){
+                                if(direction === Backbone.ModelBinder.Constants.ModelToView){
+                                    console.log('foo ', value);
+                                    return value + ' sq feet';
+                                }
+                                else {
+                                    return value.replace(' sq feet', '');
+                                }
+
+                            }},
                         'home.garage.carCapacity': '[name="home.garage.carCapacity"]'
                     };
 

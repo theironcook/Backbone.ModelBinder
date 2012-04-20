@@ -142,15 +142,11 @@
 
         // should only be called when initially binding the model to the view
         _copyModelAttributesToView: function(){
-            var attributes = _.keys(this._model.attributes);
-            var attributeCount, attribute, attributeBinding;
+            var attributeName, attributeBinding;
 
-            for(attributeCount = 0; attributeCount < attributes.length; attributeCount++){
-                attribute = attributes[attributeCount];
-
-                attributeBinding = this._attributeBindings[attribute];
-
-                if (attributeBinding) {
+            for (attributeName in this._attributeBindings) {
+                if(this._model.has(attributeName)){
+                    attributeBinding = this._attributeBindings[attributeName];
                     this._copyModelToView(attributeBinding);
                 }
             }
@@ -308,6 +304,11 @@
             if (!elementBinding.isSetting) {
                 elementBinding.isSetting = true;
                 this._setModel(elementBinding, $(el));
+
+                if(elementBinding.converter){
+                    this._copyModelToView(elementBinding.attributeBinding);
+                }
+
                 elementBinding.isSetting = false;
             }
         },

@@ -8,12 +8,12 @@
     <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
     <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
     <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
-    <script type="text/javascript" src="backbone-nested.js"></script>
+    <script type="text/javascript" src="deep-model.js"></script>
     <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
 
     <script>
         $().ready(function () {
-            model = new Backbone.NestedModel({firstName:'Bob', home:{squareFeet:'2000', garage:{carCapacity:'2'}}});
+            model = new Backbone.DeepModel({firstName:'Bob', home:{squareFeet:'2000', garage:{carCapacity:'2'}}});
 
             model.bind('change', function () {
                 $('#modelData').html(JSON.stringify(model.toJSON()));
@@ -44,7 +44,6 @@
                         'firstName' : '[name=firstName]',
                         'home.squareFeet': {selector: '[name="home.squareFeet"]', converter: function(direction, value){
                                 if(direction === Backbone.ModelBinder.Constants.ModelToView){
-                                    console.log('foo ', value);
                                     return value + ' sq feet';
                                 }
                                 else {

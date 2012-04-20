@@ -524,25 +524,16 @@ The last bound Model will be unbound, the new Model will be bound and the new Mo
 
 
 <br><br>
-## Why no '.' syntax for nested Models?
-It might be nice to be able to facilitate using '.' syntax to reference nested models with the `bindingHash`.
-For example, if my personModel has a nested model named homeAddress that has a street attribute it would be great if I could bind using the syntax shown below.
+## The '.' syntax for nested models.
 
-````
-PersonView = Backbone.View.extend({
-    render: function(){
-        this.personInfoBinder.bind(this.personModel, this.el, {homeAddress.street: '[name=street]'});
-    }
-````
+The ModelBinder doesn't directly support '.' to reference nested Models when binding.
+If you have a Backbone.Model implementation that is able to support the '.' syntax for nested models you'll be able to use the ModelBinder.
 
-I work on a relatively large project and we haven't had a dramatic need for this yet.
+I've done a bit of testing with the [backbone-deep-model](https://github.com/powmedia/backbone-deep-model) and it seems to work well with the ModelBinder.
 
-In most situations, our nested Views are duplicated in many other Views so we end up having a separate html template and a separate Backbone View which lends itself very well to having a separate `ModelBinder`.
+(here)[https://github.com/theironcook/Backbone.ModelBinder/blob/master/sandbox/Example_NestedAttributes.html] is a simple of example showing how to use backbone-deep-model with the ModelBinder.
 
-The other complication is that when you not only change the guts of the nested Model but when you can change which nested Model your referencing it becomes much more difficult to handle.
-Right now, we handle this with another ModelBinder and works well but it would hard to shove this functionality into the ModelBinder.
-
-If you feel like having the '.' syntax is critical for nested Models let me know.
+The nested models are just plain javascript objects with the deep-model plugin.  If your nested objects are Backbone.Models you'll need something similar to the deep-model plugin.
 
 
 

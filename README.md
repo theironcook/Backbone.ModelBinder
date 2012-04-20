@@ -531,7 +531,7 @@ If you have a Backbone.Model implementation that is able to support the '.' synt
 
 I've done a bit of testing with the [backbone-deep-model](https://github.com/powmedia/backbone-deep-model) and it seems to work well with the ModelBinder.
 
-(here)[https://github.com/theironcook/Backbone.ModelBinder/blob/master/sandbox/Example_NestedAttributes.html] is a simple of example showing how to use backbone-deep-model with the ModelBinder.
+[here](https://github.com/theironcook/Backbone.ModelBinder/blob/master/sandbox/Example_NestedAttributes.html) is a simple of example showing how to use backbone-deep-model with the ModelBinder.
 
 The nested models are just plain javascript objects with the deep-model plugin.  If your nested objects are Backbone.Models you'll need something similar to the deep-model plugin.
 

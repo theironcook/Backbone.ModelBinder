@@ -14,7 +14,7 @@ The `Backbone.ModelBinder` class:
 * Is simple as possible yet still be flexible and powerful
 * Leverages the exact same jQuery syntax that the Backbone.View event blocks use
 * Allows you to define type formatting and type conversion in your bindings
-* Provides a simple javascript only solution rather than mixing syntax in html templates and javascript files
+* Provides a simple javascript only solution rather than mixing binding syntax in html templates and javascript files.  I personally find mixing binding logic in my html files to be messy and confusing.
 
 <br>
 You can use this ModelBinder class to bind backbone model attributes to:
@@ -24,7 +24,28 @@ You can use this ModelBinder class to bind backbone model attributes to:
 * To editable Form elements such as `<input>`, `<textarea>` etc. This type of binding is bidirectional between the html elements and the Model's attributes.
 
 <br>
-I've posted some [examples](https://github.com/theironcook/Backbone.ModelBinder/wiki/Examples) of how to use the ModelBinder but I'd recommend reading the docs first.
+###The ModelBinder is more efficient###
+It seems like many of the backbone view examples I've seen register for the model's change event and then re-render the entire view like the example shown below.
+
+````
+SomeView = Backbone.View.extend({
+    initialize: function(){
+        this.model.on('change', this.render, this);
+    },
+
+    render: function() {
+        $(this.el).html(this.template(this.model.toJSON()));
+        return this;
+    }
+});
+````
+
+While the style above technically works just fine it can be more efficient.
+Especially for larger client applications that are not frequently refreshed.
+
+If render is called multiple times, the previously created html elements are just thrown away.
+Converting the model to json is also an unnecessary conversion.
+The ModelBinder eliminates both of these inefficiencies.
 
 <br>
 ## Prerequisites
@@ -32,6 +53,9 @@ I've posted some [examples](https://github.com/theironcook/Backbone.ModelBinder/
 * Backbone.js v0.9.0
 * Underscore.js v1.3.1
 * jQuery v1.7.1
+
+<br>
+I've posted some [examples](https://github.com/theironcook/Backbone.ModelBinder/wiki/Examples) of how to use the ModelBinder but I'd recommend reading the docs first.
 
 <br>
 ##Defining Binding Scope with jQuery##

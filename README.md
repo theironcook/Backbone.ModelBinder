@@ -177,7 +177,7 @@ The bindings parameter is a javascript hash object.
 
 They bindings hash keys are the model's attribute names and the values, in the simplest case, are jQuery selectors that must return at least 1 html element.
 
-The example below binds model.address to the element <input type="text" id="address"/>:
+The example below binds model.address to the element "<input type='text' id='address'/>":
 
 ````
 var bindings = {address: '#address'};

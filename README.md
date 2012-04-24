@@ -1,4 +1,5 @@
-Special thanks to [Derick Bailey](http://lostechies.com/derickbailey) for creating predecessor to this plugin. I've been able to reuse unit tests he created for his Backbone.ModelBinding plugin.
+Special thanks to [Derick Bailey](http://lostechies.com/derickbailey) for creating predecessor to this plugin.
+I've been able to reuse unit tests he created for his [Backbone.ModelBinding](https://github.com/derickbailey/backbone.modelbinding) plugin.
 
 <br>
 Backbone is a great platform for writing client side applications but I've found that as views grow in complexity, synchronizing my models and views can be a pain.

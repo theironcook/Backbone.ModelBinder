@@ -33,7 +33,7 @@ I've posted some [examples](https://github.com/theironcook/Backbone.ModelBinder/
 * jQuery v1.7.1
 
 <br>
-**Defining Binding Scope with jQuery**
+##Defining Binding Scope with jQuery##
 
 One of the most powerful capabilities of the ModelBinder class is that it allows you to define scope when you create your bindings using jQuery.
 
@@ -44,7 +44,7 @@ Both scoping mechanisms will be discussed throughout the rest of this document.
 
 ***
 
-**Basic ModelBinder functionality**
+##Basic ModelBinder functionality##
 
 The `ModelBinder` class contains all of the logic to facilitate bi-directional view-model binding.
 
@@ -85,7 +85,7 @@ SomeView = Backbone.View.extend({
 ````
 
 <br>
-** Binding after elements created, rootEl **
+## Binding after elements created, rootEl ##
 
 The bind() functions `rootEl` parameter should contain all of the elements that you want to bind to.
 Your rootEl might be the view.el property or it could be any valid html element.  It does not matter if the rootEl is displayed in a browser.
@@ -109,7 +109,7 @@ SomeView = Backbone.View.extend({
 ````
 
 <br>
-** Elements are recursively bound **
+## Elements are recursively bound ##
 
 If you do not pass the `bindings` 3rd parameter to the bind() function, <b>all</b> child elements under the rootEl with a "name" attribute are bound.
 This includes any nested child elements that define the "name" attribute.
@@ -137,7 +137,7 @@ SomeView = Backbone.View.extend({
 
 
 <br>
-** Binding multiple html elements to the same model attribute **
+## Binding multiple html elements to the same model attribute ##
 
 In the example below, the `<span>` and the `<input>` elements are both bound to the model.firstName attribute.
 If you modified the firstName input element you would see the span automatically updated because the Model would have been updated.
@@ -161,7 +161,7 @@ SomeView = Backbone.View.extend({
 
 <br>
 If your View element definitions are simple you can rely on having properly defined "name" attributes in your html elements that match your Model attribute names.
-Remember that **all** of the rootEl's child elements (recursive) with a "name" attribute will be bound to your Model.
+Remember that ##all## of the rootEl's child elements (recursive) with a "name" attribute will be bound to your Model.
 
 <br>
 If your views require formatting, conversion or more scoping due to nested or complex views you'll need to define a `bindings` parameter to the `bind()` function as discussed in the next section.
@@ -169,7 +169,7 @@ If your views require formatting, conversion or more scoping due to nested or co
 
 ***
 
-**The bindings parameter to the bind() function**
+##The bindings parameter to the bind() function##
 
 For more complicated things like formatting or defining scope for composite or nested Views you'll need to define a `bindings` parameter - the optional 3rd parameter to the `bind()` function.
 The bindings parameter is a javascript hash object.
@@ -237,7 +237,7 @@ Here are a few more examples of the bindings hash syntax.
 ````
 
 <br>
-** You can define multiple jQuery selectors **
+## You can define multiple jQuery selectors ##
 
 The binding entries can be defined as strings as shown in all previous examples but internally the string is converted to the type of entry shown below.
 
@@ -260,7 +260,7 @@ The jQuery bindings leverage the jQuery delegate mechanism - which means they sh
 <br>
 ***
 
-**Formatting and converting values**
+##Formatting and converting values##
 
 The bindings can also define a `converter` parameter.
 A converter is simply a function that is called whenever a model's attribute is copied to an html element or when an html elements value is copied into a model's attribute.
@@ -324,7 +324,7 @@ SomeView = Backbone.View.extend({
 ````
 
 <br>
-** Converters can display calculated attributes **
+## Converters can display calculated attributes ##
 
 Sometimes your models will have computed attributes.
 You could cache computed values inside a model's attribute collection and it would be bound like any other attribute.
@@ -367,7 +367,7 @@ If converters need any other special logic they can be defined in another functi
 
 ***
 
-**Binding to html element attributes**
+##Binding to html element attributes##
 
 You can also define bindings to be bound to any html element's attribute like enabled, class, style or any other attribute you define.
 The example below shows how to use the `elAttribute` option.  In this example, the address element will be enabled depending on what the Model.isAddressEnabled attribute is.
@@ -408,7 +408,7 @@ In this example, the model.gender value is either "M" or "F".  The CSS files def
 
 ***
 
-**Proper scope helps you bind to complex nested views**
+##Proper scope helps you bind to complex nested views##
 
 Sometimes you'll have nested models displayed in nested views.
 An example of a nested backbone model is shown below.  The personModel has a nested homeAddressModel.
@@ -430,7 +430,7 @@ There are 2 basic ways to bind nested Models in a View:
 2. With scoped bindings selectors in the bindings hash.
 
 <br>
-**Nested View option 1: A scoped `rootEl`**
+##Nested View option 1: A scoped `rootEl`##
 
 If your nested view can be defined under a single parent element such as a `<div>` you can pass that parent element as the `rootEl` for your nested ModelBinder as shown in the example below.
 It refers to the personModel and homeAddressModels defined in a previous code snippet.
@@ -460,7 +460,7 @@ If the personModel fields were defined on a level that also included the homeAdd
 The next option shows how to avoid that situation.
 
 <br>
-**Nested View option 2: scoped bindings**
+##Nested View option 2: scoped bindings##
 
 If your parent and nested Model html elements cannot live under their own parent elements then you'll need to define the `bindings` with jQuery selectors that are properly scoped as shown in the example below.
 
@@ -486,7 +486,7 @@ addressBinder.bind(this.personModel.get('homeAddress'), this.el, addressBindings
 
 ***
 
-**The ModelBinder can be a partial solution**
+##The ModelBinder can be a partial solution##
 
 In some situations, you might have very complex views where you only want some of your view's elements bound by the ModelBinder.
 To limit the scope of which fields are bound, you just need to properly scope your bindings hash.
@@ -512,7 +512,7 @@ modelBinder.bind(this.personModel, this.el, personBindings);
 
 ***
 
-** The Power of jQuery **
+## The Power of jQuery ##
 You your jQuery selectors can be based off of a class attribute or anything else you'd like as shown in the example below.
 
 ````
@@ -542,19 +542,19 @@ This is because the jQuery selector '[class~=partOne]' returned all 3 elements.
 
 ***
 
-** Calling bind() multiple times **
+## Calling bind() multiple times ##
 
 Calling ModelBinder.bind() will automatically internally call the unbind() function to unbind the previous model.
 You can reuse the same ModelBinder instance with multiple models or even rootEls - just be aware that all previous bindings will be removed.
 
 <br>
-** Model values are copied to views when bind() is called **
+## Model values are copied to views when bind() is called ##
 
 The model's attributes are bound are copied from the model to bound elements when the bind() function is called.
 View element default values are not copied to the model when bind() is called as some sort of initialization - if you want that type of behavior, the proper location is the Backbone.Model defaults block.
 
 <br>
-** Cleaning up with unbind() **
+## Cleaning up with unbind() ##
 
 When your view's are closed you should always call the unbind() function.  The unbind() function will un-register from the model's change events and the view's jQuery change delegate.
 
@@ -563,7 +563,7 @@ If you don't call unbind() you might end up with zombie views and ModelBinders. 
 
 
 <br>
-** The '.' syntax for nested models **
+## The '.' syntax for nested models ##
 
 The ModelBinder doesn't directly support '.' to reference nested Models when binding.
 If you have a Backbone.Model implementation that is able to support the '.' syntax for nested models you'll be able to use the ModelBinder.

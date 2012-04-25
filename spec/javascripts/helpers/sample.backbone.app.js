@@ -61,6 +61,7 @@ AView = Backbone.View.extend({
       <input type='url' id='url'>\
       <input type='tel' id='tel'>\
       <input type='search' id='search'>\
+      <div contenteditable name='paragraph1'>\
       ");
         this.$el.append(html);
         this.binder = new Backbone.ModelBinder();
@@ -86,7 +87,8 @@ AView = Backbone.View.extend({
                 us_citizen:'[name=us_citizen]',
                 age_level:'#age_level',
                 operating_system:'#operating_system',
-                noType:'#noType'
+                noType:'#noType',
+                paragraph1:'[name=paragraph1]'
             }
         }
         ;

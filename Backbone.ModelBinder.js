@@ -8,7 +8,10 @@
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
     }
 
-    Backbone.ModelBinder = function(){};
+    Backbone.ModelBinder = function(){
+        _.bindAll(this, '_onElChanged');
+    };
+
     // Current version of the library. Keep in sync with `package.json`.
     Backbone.ModelBinder.VERSION = '0.1.1';
     Backbone.ModelBinder.Constants = {};
@@ -160,16 +163,14 @@
         },
 
         _bindViewToModel:function () {
-            var that = this;
-
-            $(this._rootEl).delegate('*', 'change', function (event) {
-                that._onElChanged(event);
-            });
+            $(this._rootEl).delegate('*', 'change', this._onElChanged);
+            // The change event doesn't work properly for contenteditable elements - but blur does
+            $(this._rootEl).delegate('[contenteditable]', 'blur', this._onElChanged);
         },
 
         _unbindViewToModel: function(){
             if(this._rootEl){
-                $(this._rootEl).undelegate('', 'change');
+                $(this._rootEl).undelegate('', 'change', this._onElChanged);
             }
         },
 
@@ -313,19 +314,25 @@
             }
         },
 
-        _setModel: function (elementBinding, el) {
-            var data = {};
-            var elVal;
-
+        _getElValue: function(elementBinding, el){
             switch (el.attr('type')) {
                 case 'checkbox':
-                    elVal = el.prop('checked') ? true : false;
-                    break;
+                    return el.prop('checked') ? true : false;
                 default:
-                    elVal = el.val();
+                    if(el.attr('contenteditable') !== undefined){
+                        return el.html();
+                    }
+                    else {
+                        return el.val();
+                    }
             }
+        },
 
-            data[elementBinding.attributeBinding.attributeName] = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
+        _setModel: function (elementBinding, el) {
+            var data = {};
+            var elVal = this._getElValue(elementBinding, el);
+            elValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
+            data[elementBinding.attributeBinding.attributeName] = elValue;
             this._model.set(data);
         },
 

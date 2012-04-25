@@ -171,6 +171,7 @@
         _unbindViewToModel: function(){
             if(this._rootEl){
                 $(this._rootEl).undelegate('', 'change', this._onElChanged);
+                $(this._rootEl).undelegate('[contenteditable]', 'blur', this._onElChanged);
             }
         },
 

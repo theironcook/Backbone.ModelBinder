@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Bind to img src attribute</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+
+            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', eyeColor: 'green'});
+
+            images = ['http://www.clickerzoneuk.co.uk/czone/wp-content/uploads/PuppySmall.jpg',
+                      'http://cdn-www.dailypuppy.com/images/widget_box_example.jpg',
+                      'http://1.bp.blogspot.com/-aMSukH1sRQo/TxANGNKjP9I/AAAAAAAAAA4/vjXU24foAUQ/s640/Cute+funny+dogs+puppy+eats+puppy.jpg'];
+
+            model.bind('change', function () {
+                $('#modelData').html(JSON.stringify(model.toJSON()));
+            });
+
+            model.trigger('change'); // just to show the #modelData values initially, not needed for the ModelBinder
+
+
+            ViewClass = Backbone.View.extend({
+
+                _modelBinder:undefined,
+                events: {
+                    'click #button': '_onButtonClick'
+                },
+
+                initialize:function () {
+                    this._modelBinder = new Backbone.ModelBinder();
+                },
+
+                render:function () {
+                    var html = '<button id="button">Click Me </button> to load the images via model binding.<br><br>';
+                    var bindings = {};
+                    var imageName;
+
+                    for(var i = 0; i < images.length; i++){
+                        imageName = 'image' + i;
+                        html += 'Image ' + i + ' : ' + '<img name="' + imageName + '"/><br>';
+                        bindings[imageName] = {selector: '[name=' + imageName + ']', elAttribute: 'src'};
+                    }
+
+                    this.$el.html(html);
+
+                    this._modelBinder.bind(this.model, this.el, bindings);
+
+                    return this;
+                },
+
+                _onButtonClick: function(){
+                    for(var i = 0; i < images.length; i++){
+                        var data = {};
+                        data['image' + i] = images[i];
+                        model.set(data);
+                    }
+                }
+            });
+
+            view = new ViewClass({model:model});
+            $('#viewContent').append(view.render().el);
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+How to bind to images.<br>
+
+<br>
+<br>
+Model data:
+<div id="modelData"></div>
+<hr>
+<br>
+<div id="viewContent"></div>
+
+</body>
+</html>

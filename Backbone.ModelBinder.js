@@ -332,8 +332,8 @@
         _setModel: function (elementBinding, el) {
             var data = {};
             var elVal = this._getElValue(elementBinding, el);
-            elValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
-            data[elementBinding.attributeBinding.attributeName] = elValue;
+            elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
+            data[elementBinding.attributeBinding.attributeName] = elVal;
             this._model.set(data);
         },
 

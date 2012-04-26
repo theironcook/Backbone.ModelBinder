@@ -261,6 +261,8 @@
                 case 'class':
                     if(!convertedValue){
                         var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);
+                        previousValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, previousValue);
+
                         if(previousValue){
                             el.removeClass(previousValue);
                         }
@@ -334,7 +336,7 @@
             var elVal = this._getElValue(elementBinding, el);
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
             data[elementBinding.attributeBinding.attributeName] = elVal;
-            this._model.set(data);
+            this._model.set(data, {changeSource: 'ModelBinder'});
         },
 
         _getConvertedValue: function (direction, elementBinding, value) {

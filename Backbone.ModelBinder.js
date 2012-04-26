@@ -9,7 +9,7 @@
     }
 
     Backbone.ModelBinder = function(){
-        _.bindAll(this, '_onElChanged');
+        _.bindAll(this);
     };
 
     // Current version of the library. Keep in sync with `package.json`.

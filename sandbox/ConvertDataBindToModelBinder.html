@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Example 1</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+            var ConverterView = Backbone.View.extend({
+
+                events: {
+                    'click #convertButton': '_onConvertButtonClicked'
+                },
+
+                initialize: function(){
+                    this.setElement($('#converterDiv'));
+                },
+
+                _onConvertButtonClicked : function(){
+                    this._convert();
+                },
+
+                _convert: function(){
+                    var input = this.$('#input').val();
+                    var bindings = {};
+
+                    tmpView = new Backbone.View();
+                    tmpView.$el.html(input);
+
+                    _.each(tmpView.$('[data-bind]'), function(el){
+                        var dataBindString = $(el).attr('data-bind');
+                        var dataBindVals = dataBindString.match(/[^ ]+/g)
+                        var elName = dataBindVals[0];
+                        var attName = dataBindVals[1];
+
+                        var elementBinding = {selector: '[name=' + attName + ']', elAttribute: elName};
+
+                        if(!bindings[attName]){
+                            bindings[attName] = [];
+                        }
+
+                        bindings[attName].push(elementBinding);
+
+                        $(el).removeAttr('data-bind');
+                        $(el).attr('name', attName);
+                    });
+
+                    this.$('#outputBindingsHash').html('var bindings = ' + JSON.stringify(bindings));
+                    this.$('#outputHtml').html(tmpView.$el.html());
+                }
+            });
+
+            view = new ConverterView();
+
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+
+<div id="converterDiv">
+    Enter your data-bind html template here:<br>
+    <textarea id="input" rows="10" cols="100">
+        <a class="avavatar-link" data-bind="href avatar_url"></a>
+        <div>
+            <img data-bind="href avatar_img"/>
+        </div>
+    </textarea><br>
+    <button id="convertButton">Convert to ModelBinder syntax</button>
+    <hr>
+    Output bindings hash:
+    <br>
+    <textarea id="outputBindingsHash" rows="10" cols="100"></textarea>
+
+    <br><br>
+    Output html:
+    <br>
+    <textarea id="outputHtml" rows="10" cols="100"></textarea>
+
+</div>
+
+</body>
+</html>

@@ -13,7 +13,7 @@
     };
 
     // Current version of the library. Keep in sync with `package.json`.
-    Backbone.ModelBinder.VERSION = '0.1.1';
+    Backbone.ModelBinder.VERSION = '0.1.2';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';

@@ -611,6 +611,11 @@ The nested models are just plain javascript objects with the deep-model plugin. 
 
 ## Release Notes / Versions
 
+### v 0.1.2
+
+* Added the {source: 'ModelBinder'} option to the model.set call - allows you to know the source of a model's change event
+* Bug fix - when binding the elAttribute to class I wasn't going through the converter function
+
 ### v 0.1.1
 
 * An empty selector string will now bind to the rootEl

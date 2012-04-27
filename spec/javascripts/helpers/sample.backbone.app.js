@@ -177,6 +177,26 @@ SelectorBindingView = Backbone.View.extend({
     }
 });
 
+CssBindingView = Backbone.View.extend({
+    render:function () {
+        var binder = new Backbone.ModelBinder();
+        var bindings = {
+            number: {
+                selector: '',
+                elAttribute: 'css',
+                cssAttribute: 'width',
+                converter: function(dir,val){return val + "px";}
+            },
+            color:{
+                selector: '',
+                elAttribute: 'css',
+                cssAttribute: 'background-color'
+            }
+        };
+        binder.bind(this.model, this.$el, bindings);
+    }
+});
+
 AnotherView = Backbone.View.extend({
     render:function () {
         var html = $("\

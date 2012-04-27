@@ -176,6 +176,11 @@
         },
 
         _onElChanged:function (event) {
+            // Seeing validate called multiple times due to event bubbling which may lead to 
+            // performance issues; possible fix by stopping the original event bubble.
+            // Could be because of the way the change event is being attached to the view using
+            // the * selector in _bindViewToModel
+            event.stopPropagation();
             var el = $(event.target)[0];
             var elementBinding = this._getElBinding(el);
             if (elementBinding) {

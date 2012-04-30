@@ -322,3 +322,26 @@ NestedOuterView = Backbone.View.extend({
     }
 });
 
+SimpleView = Backbone.View.extend({
+    render:function () {
+        var html = $("\
+          <input type='text' name='firstName'>\
+          <input type='text' name='lastName'>\
+          <select name='education'> \
+            <option value='none'>none</option> \
+            <option value='grade_school'>i dun learned at grade skool</option> \
+            <option value='high school'>high school</option> \
+            <option value='college'>college</option> \
+            <option value='graduate'>graduate</option> \
+          </select> \
+          <input type='radio' id='graduated_yes' name='graduated' value='yes'>\
+          <input type='radio' id='graduated_no' name='graduated' value='no'>\
+          <input type='radio' id='graduated_maybe' name='graduated' value='maybe'>\
+          <input type='checkbox' name='isActive' value='yes'>\
+        ");
+        this.$el.append(html);
+
+        return this;
+    }
+});
+

@@ -258,6 +258,9 @@
                 case 'hidden':
                     el[convertedValue ? 'hide' : 'show']();
                     break;
+                case 'css':
+                    el.css(elementBinding.cssAttribute, convertedValue);
+                    break;
                 case 'class':
                     if(!convertedValue){
                         var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);

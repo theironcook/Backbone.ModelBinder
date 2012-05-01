@@ -545,6 +545,7 @@ modelBinder.bind(this.personModel, this.el, personBindings);
 ##Quickly create and modify bindings##
 
 In some situations, you might have a large amount of elements that need to be bound but only a few of them need a converter or elAttribute defined.
+You probably don't want to define all of the element bindings manually just to add a converter to a few of them.
 The utility function Backbone.ModelBinder.createDefaultBindings can help you in this situation.
 
 The Backbone.ModelBinder.createDefaultBindings( ) is shown below.
@@ -555,14 +556,26 @@ The Backbone.ModelBinder.createDefaultBindings( ) is shown below.
 // attributeType - probably 'name' or 'id' in most cases
 // converter(optional) - the default converter you want applied to all your bindings
 // elAttribute(optional) - the default elAttribute you want applied to all your bindings
-function(rootEl, attributeType, converter, elAttribute){
+Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
     ...
 }
 ````
 
-You can use this function to gather all of the elements under the rootEl with a "name" attribute and quickly create all of the bindings and then modify those bindings.
+You can use this function to gather all of the elements under the rootEl with a "name" or "id" attribute and quickly create all of the bindings and then modify those bindings.
 You might want to delete one or more of the bindings, add converters or elAttributes to bindings etc.
+Be careful when you use this with radio buttons - you might not get the proper selectors if your not careful.
 
+An example of how you might use createDefaultBindings( ) is shown below.
+
+````
+// The view has several form element with a name attribute that should be bound
+// but one binding requires a converter and one of the bindings should be removed
+var bindings = Backbone.ModelBinder.createDefaultBindings(this.el, 'name');
+bindings['phone'].converter = this._phoneConverterFunction;
+delete bindings['complicatedAttribute'];
+
+this._modelBinder.bind(this.model, this.el, bindings);
+````
 
 <br>
 

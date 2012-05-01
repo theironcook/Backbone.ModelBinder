@@ -18,12 +18,5 @@ describe("css bindings", function(){
         });
     });
 
-    describe("Color bound", function(){
-        it("binds bg-color of element to color", function(){
-            expect(this.view.$el.css('background-color')).toEqual('white');
-            this.model.set('color', '#ff00ff');
-            expect(this.view.$el.css('background-color')).toEqual('rgb(255, 0, 255)');
-        });
-    });
 
 });

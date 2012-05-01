@@ -581,6 +581,8 @@ this._modelBinder.bind(this.model, this.el, bindings);
 
 ***
 
+<br>
+
 ## The Power of jQuery ##
 You your jQuery selectors can be based off of a class attribute or anything else you'd like as shown in the example below.
 

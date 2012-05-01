@@ -542,6 +542,32 @@ modelBinder.bind(this.personModel, this.el, personBindings);
 
 ***
 
+##Quickly create and modify bindings##
+
+In some situations, you might have a large amount of elements that need to be bound but only a few of them need a converter or elAttribute defined.
+The utility function Backbone.ModelBinder.createDefaultBindings can help you in this situation.
+
+The Backbone.ModelBinder.createDefaultBindings( ) is shown below.
+
+````
+// A static helper function to create a default set of bindings that you can customize before calling the bind() function
+// rootEl - where to find all of the bound elements
+// attributeType - probably 'name' or 'id' in most cases
+// converter(optional) - the default converter you want applied to all your bindings
+// elAttribute(optional) - the default elAttribute you want applied to all your bindings
+function(rootEl, attributeType, converter, elAttribute){
+    ...
+}
+````
+
+You can use this function to gather all of the elements under the rootEl with a "name" attribute and quickly create all of the bindings and then modify those bindings.
+You might want to delete one or more of the bindings, add converters or elAttributes to bindings etc.
+
+
+<br>
+
+***
+
 ## The Power of jQuery ##
 You your jQuery selectors can be based off of a class attribute or anything else you'd like as shown in the example below.
 

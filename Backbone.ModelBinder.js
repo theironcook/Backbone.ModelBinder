@@ -12,7 +12,61 @@
         _.bindAll(this);
     };
 
-    // Current version of the library. Keep in sync with `package.json`.
+    // A static helper function to create a default set of bindings that you can customize before calling the bind() function
+    // rootEl - where to find all of the bound elements
+    // attributeType - probably 'name' or 'id' in most cases
+    // converter(optional) - the default converter you want applied to all your bindings
+    // elAttribute(optional) - the default elAttribute you want applied to all your bindings
+    Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
+        var foundEls, elCount, foundEl, attributeName;
+        var bindings = {};
+
+        foundEls = $('[' + attributeType + ']', rootEl);
+
+        for(elCount = 0; elCount < foundEls.length; elCount++){
+            foundEl = foundEls[elCount];
+            attributeName = $(foundEl).attr(attributeType);
+
+            if(!bindings[attributeName]){
+                var attributeBinding =  {selector: '[' + attributeType + '=' + attributeName + ']'};
+                bindings[attributeName] = attributeBinding;
+
+                if(converter){
+                    bindings[attributeName].converter = converter;
+                }
+
+                if(elAttribute){
+                    bindings[attributeName].elAttribute = elAttribute;
+                }
+            }
+        }
+
+        return bindings;
+    };
+
+    // Helps you to combine 2 sets of bindings
+    Backbone.ModelBinder.combineBindings = function(destination, source){
+        _.each(source, function(value, key){
+            var elementBinding = {selector: value.selector};
+
+            if(value.converter){
+                elementBinding.converter = value.converter;
+            }
+
+            if(value.elAttribute){
+                elementBinding.elAttribute = value.elAttribute;
+            }
+
+            if(!destination[key]){
+                destination[key] = elementBinding;
+            }
+            else {
+                destination[key] = [destination[key], elementBinding];
+            }
+        });
+    };
+
+    // Current version of the library.
     Backbone.ModelBinder.VERSION = '0.1.2';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
@@ -32,9 +86,13 @@
             if(attributeBindings){
                 // Create a deep clone of the attribute bindings
                 this._attributeBindings = $.extend(true, {}, attributeBindings);
-            }
 
-            this._initializeAttributeBindings();
+                this._initializeAttributeBindings();
+                this._initializeElBindings();
+            }
+            else {
+                this._initializeDefaultBindings();
+            }
 
             this._bindModelToView();
             this._bindViewToModel();
@@ -54,41 +112,35 @@
         _initializeAttributeBindings:function () {
             var attributeBindingKey, inputBinding, attributeBinding, elementBindingCount, elementBinding;
 
-            if(!this._attributeBindings){
-                this._initializeDefaultAttributeBindings();
-            }
-            else {
-                for (attributeBindingKey in this._attributeBindings) {
-                    inputBinding = this._attributeBindings[attributeBindingKey];
+            for (attributeBindingKey in this._attributeBindings) {
+                inputBinding = this._attributeBindings[attributeBindingKey];
 
-                    if (_.isString(inputBinding)) {
-                        attributeBinding = {elementBindings: [{selector: inputBinding}]};
-                    }
-                    else if (_.isArray(inputBinding)) {
-                        attributeBinding = {elementBindings: inputBinding};
-                    }
-                    else if(_.isObject(inputBinding)){
-                        attributeBinding = {elementBindings: [inputBinding]};
-                    }
-                    else {
-                        throw 'Unsupported type passed to Model Binder ' + attributeBinding;
-                    }
-
-                    // Add a linkage from the element binding back to the attribute binding
-                    for(elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++){
-                        elementBinding = attributeBinding.elementBindings[elementBindingCount];
-                        elementBinding.attributeBinding = attributeBinding;
-                    }
-
-                    attributeBinding.attributeName = attributeBindingKey;
-                    this._attributeBindings[attributeBindingKey] = attributeBinding;
+                if (_.isString(inputBinding)) {
+                    attributeBinding = {elementBindings: [{selector: inputBinding}]};
+                }
+                else if (_.isArray(inputBinding)) {
+                    attributeBinding = {elementBindings: inputBinding};
+                }
+                else if(_.isObject(inputBinding)){
+                    attributeBinding = {elementBindings: [inputBinding]};
+                }
+                else {
+                    throw 'Unsupported type passed to Model Binder ' + attributeBinding;
                 }
 
-                this._initializeElBindings();
+                // Add a linkage from the element binding back to the attribute binding
+                for(elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++){
+                    elementBinding = attributeBinding.elementBindings[elementBindingCount];
+                    elementBinding.attributeBinding = attributeBinding;
+                }
+
+                attributeBinding.attributeName = attributeBindingKey;
+                this._attributeBindings[attributeBindingKey] = attributeBinding;
             }
         },
 
-        _initializeDefaultAttributeBindings: function(){
+        // If the bindings are not specified, the default binding is performed on the name attribute
+        _initializeDefaultBindings: function(){
             var elCount, namedEls, namedEl, name;
             this._attributeBindings = {};
             namedEls = $('[name]', this._rootEl);

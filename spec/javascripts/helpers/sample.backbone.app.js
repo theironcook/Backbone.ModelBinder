@@ -325,6 +325,9 @@ NestedOuterView = Backbone.View.extend({
 SimpleView = Backbone.View.extend({
     render:function () {
         var html = $("\
+          <div type='text' id='firstName'></div>\
+          <div type='text' id='lastName'></div>\
+          <div type='text' id='address'></div>\
           <input type='text' name='firstName'>\
           <input type='text' name='lastName'>\
           <select name='education'> \

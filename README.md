@@ -6,12 +6,12 @@ Backbone is a great platform for writing client side applications but I've found
 I've spent the past few months trying to use existing view-model binding libraries that others were kind enough to create and share with the world.
 Unfortunately in the majority of my backbone application I wasn't able to leverage the existing view-model binding libraries due to various limitations.
 
-I've spent some time to create a new `Backbone.ModelBinder` class that I have leveraged in the majority of a large client side application.
-The ModelBinder class helped me to remove a lot of cluttered boiler plate code that existed to synchronize my models and views.  Hopefully you'll find it useful too.
+I created a new `Backbone.ModelBinder` class that I have leveraged in the majority of a large client side application.
+The ModelBinder class helped me remove a lot of cluttered boilerplate code that existed to synchronize my models and views.  Hopefully you'll find it useful too.
 
 The `Backbone.ModelBinder` class:
 
-* Is simple as possible yet still be flexible and powerful
+* Is as simple as possible yet still flexible and powerful
 * Leverages the exact same jQuery syntax that the Backbone.View event blocks use
 * Allows you to define type formatting and type conversion in your bindings
 * Provides a simple javascript only solution rather than mixing binding syntax in html templates and javascript files.  I personally find mixing binding logic in my html files to be messy and confusing.
@@ -19,9 +19,9 @@ The `Backbone.ModelBinder` class:
 <br>
 You can use this ModelBinder class to bind backbone model attributes to:
 
-* Read only html elements such as `<span>`, `<div>` etc.
+* Read-only html elements such as `<span>`, `<div>` etc.
 * Html element attributes such as enabled, displayed, style etc.
-* To editable Form elements such as `<input>`, `<textarea>` etc. This type of binding is bidirectional between the html elements and the Model's attributes.
+* Editable form elements such as `<input>`, `<textarea>` etc. This type of binding is bidirectional between the html elements and the Model's attributes.
 
 <br>
 ###The ModelBinder is more efficient###
@@ -40,8 +40,7 @@ SomeView = Backbone.View.extend({
 });
 ````
 
-While the style above technically works just fine it can be more efficient.
-Especially for larger client applications that are not frequently refreshed.
+While the style above technically works just fine it can be more efficient - especially for larger client applications that are not frequently refreshed.
 
 If render is called multiple times, the previously created html elements are just thrown away.
 Converting the model to json is also an unnecessary conversion.
@@ -79,7 +78,7 @@ The ModelBinder class exposes 3 public functions shown below:
 // no arguments passed to the constructor
 constructor();
 
-// model is required, it is the backbone Model your binding to
+// model is required, it is the backbone Model you're binding to
 // rootEl is required, is the root html element containing the elements you want to bind to
 // bindings is optional, it's discussed a bit later
 bind(model, rootEl, bindings);
@@ -186,9 +185,8 @@ SomeView = Backbone.View.extend({
 
 <br>
 If your View element definitions are simple you can rely on having properly defined "name" attributes in your html elements that match your Model attribute names.
-Remember that ##all## of the rootEl's child elements (recursive) with a "name" attribute will be bound to your Model.
+Remember that **all** of the rootEl's child elements (recursive) with a "name" attribute will be bound to your Model.
 
-<br>
 If your views require formatting, conversion or more scoping due to nested or complex views you'll need to define a `bindings` parameter to the `bind()` function as discussed in the next section.
 
 
@@ -199,7 +197,7 @@ If your views require formatting, conversion or more scoping due to nested or co
 For more complicated things like formatting or defining scope for composite or nested Views you'll need to define a `bindings` parameter - the optional 3rd parameter to the `bind()` function.
 The bindings parameter is a javascript hash object.
 
-They bindings hash keys are the model's attribute names and the values, in the simplest case, are jQuery selectors that must return at least 1 html element.
+The bindings hash keys are the model's attribute names and the values, in the simplest case, are jQuery selectors that must return at least 1 html element.
 
 The example below binds model.address to the element with the id="address":
 
@@ -220,7 +218,7 @@ var bindings = {homeAddress: '[name=homeAddress]', workAddress : '[name=workAddr
 modelBinder.bind(this.model, this.el, bindings);
 ````
 
-The example below binds model.city to <input type="text" id="city"/>:
+The example below binds model.city to `<input type="text" id="city"/>`:
 
 ````
 var bindings = {city: '#city'};
@@ -240,6 +238,7 @@ Edit your information:
 ````
 
 ````
+<!-- The javascript -->
 var bindings = {firstName: '[name=firstName]'};
 modelBinder.bind(this.model, this.el, bindings);
 ````
@@ -315,7 +314,7 @@ A converter function is passed 4 parameters.
 * Direction - either ModelToView or ViewToModel
 * Value - the model's attribute value or the view element's value
 * Attribute Name
-* Model - this is more useful when your dealing with calculated attributes
+* Model - this is more useful when you're dealing with calculated attributes
 
 If your binding to a read-only element like a `<div>` you'll just ignore the direction parameter - it's always ModelToView.
 In most cases, you'll be able to ignore the attribute name and model parameters but they can be helpful in some situations discussed later.
@@ -543,7 +542,7 @@ modelBinder.bind(this.personModel, this.el, personBindings);
 ***
 
 ## The Power of jQuery ##
-You your jQuery selectors can be based off of a class attribute or anything else you'd like as shown in the example below.
+Your jQuery selectors can be based off of a class attribute or anything else you'd like as shown in the example below.
 
 ````
 <!-- html -->
@@ -581,12 +580,12 @@ You can reuse the same ModelBinder instance with multiple models or even rootEls
 ## Model values are copied to views when bind() is called ##
 
 The model's attributes are bound are copied from the model to bound elements when the bind() function is called.
-View element default values are not copied to the model when bind() is called as some sort of initialization - if you want that type of behavior, the proper location is the Backbone.Model defaults block.
+View element default values are not copied to the model when bind() is called. That type of behavior belongs in the Backbone.Model defaults block.
 
 <br>
 ## Cleaning up with unbind() ##
 
-When your view's are closed you should always call the unbind() function.  The unbind() function will un-register from the model's change events and the view's jQuery change delegate.
+When your views are closed you should always call the unbind() function.  The unbind() function will un-register from the model's change events and the view's jQuery change delegate.
 
 If you don't call unbind() you might end up with zombie views and ModelBinders.  This is particularly important for large client side applications that are not frequently refreshed.
 
@@ -600,7 +599,7 @@ If you have a Backbone.Model implementation that is able to support the '.' synt
 
 I've done a bit of testing with the [backbone-deep-model](https://github.com/powmedia/backbone-deep-model) and it seems to work well with the ModelBinder.
 
-[here](https://github.com/theironcook/Backbone.ModelBinder/blob/master/sandbox/Example_NestedAttributes.html) is a simple of example showing how to use backbone-deep-model with the ModelBinder.
+[Here](https://github.com/theironcook/Backbone.ModelBinder/blob/master/sandbox/Example_NestedAttributes.html) is a simple example showing how to use backbone-deep-model with the ModelBinder.
 
 The nested models are just plain javascript objects with the deep-model plugin.  If your nested objects are Backbone.Models you'll need something similar to the deep-model plugin.
 

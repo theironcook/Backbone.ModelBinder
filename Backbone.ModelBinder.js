@@ -355,7 +355,7 @@
                 el.val(convertedValue);
             }
             else {
-                el.html(convertedValue);
+                el.text(convertedValue);
             }
         },
 

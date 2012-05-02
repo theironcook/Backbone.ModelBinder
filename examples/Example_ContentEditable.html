@@ -43,7 +43,7 @@
 
                     this.$el.html(html);
 
-                    this._modelBinder.bind(model, this.el);
+                    this._modelBinder.bind(model, this.el, {firstParagraph: {selector: '[name=firstParagraph]', elAttribute: 'html'}});
 
                     return this;
                 }

@@ -199,7 +199,6 @@
 
         _bindModelToView: function () {
             this._model.on('change', this._onModelChange, this);
-            console.log("DONGLE");
 
             this._copyModelAttributesToView();
         },
@@ -278,7 +277,6 @@
         },
 
         _copyModelToView:function (attributeBinding) {
-            console.log(attributeBinding);
             var elementBindingCount, elementBinding, boundElCount, boundEl;
             var value = this._model.get(attributeBinding.attributeName);
 

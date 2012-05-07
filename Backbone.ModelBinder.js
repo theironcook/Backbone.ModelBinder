@@ -2,7 +2,15 @@
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
-(function(){
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['underscore', 'jquery', 'backbone'], factory);
+    } else {
+        // Browser globals
+        factory(_, $, Backbone);
+    }
+}(function(_, $, Backbone){
 
     if(!Backbone){
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
@@ -191,6 +199,7 @@
 
         _bindModelToView: function () {
             this._model.on('change', this._onModelChange, this);
+            console.log("DONGLE");
 
             this._copyModelAttributesToView();
         },
@@ -269,6 +278,7 @@
         },
 
         _copyModelToView:function (attributeBinding) {
+            console.log(attributeBinding);
             var elementBindingCount, elementBinding, boundElCount, boundEl;
             var value = this._model.get(attributeBinding.attributeName);
 
@@ -423,4 +433,6 @@
         }
     });
 
-}).call(this);
+    return Backbone.ModelBinder;
+
+}));

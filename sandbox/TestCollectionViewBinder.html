@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Test the CollectionViewBinder</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+    <script type="text/javascript" src="../Backbone.CollectionViewBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+
+            collection = new Backbone.Collection([
+                {id: 0, firstName: 'Adam', lastName: 'Zebra'},
+                {id: 1, firstName: 'Bob', phone: '1234567'}
+            ]);
+
+            view = new Backbone.View();
+            view.setElement($('#viewContent'));
+
+            collectionViewBinder = new Backbone.CollectionViewBinder();
+            var rowHtml = '<tr><td data-name="firstName"></td><td data-name="lastName"></td><td data-name="phone"></td></tr>';
+            var elCreator = collectionViewBinder.makeElCreator(view.$('tbody'), rowHtml, true);
+
+            collectionViewBinder.createBoundEls(collection, elCreator, true);
+
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+
+View content:<hr>
+<div id="viewContent">
+
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

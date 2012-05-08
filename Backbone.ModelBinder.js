@@ -209,7 +209,7 @@
 
         _unbindModelToView: function(){
             if(this._model){
-                this._model.off('change', this._onModelChange);
+                this._model.off('change', this._onModelChange, this);
                 this._model = undefined;
             }
         },

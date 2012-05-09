@@ -651,6 +651,10 @@ The nested models are just plain javascript objects with the deep-model plugin. 
 
 ## Release Notes / Versions
 
+### v 0.1.3 May 9, 2012
+
+* Started properly tagging my versions :)
+
 ### v 0.1.2
 
 * Added the {source: 'ModelBinder'} option to the model.set call - allows you to know the source of a model's change event

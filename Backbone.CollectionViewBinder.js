@@ -1,3 +1,7 @@
+// Backbone.CollectionViewBinder v0.1.0
+// (c) 2012 Bart Wood
+// Distributed Under MIT License
+
 (function(){
 
     if(!Backbone){
@@ -11,6 +15,8 @@
     Backbone.CollectionViewBinder = function(){
         _.bindAll(this);
     };
+
+    Backbone.CollectionViewBinder.VERSION = '0.1.0';
 
     _.extend(Backbone.CollectionViewBinder.prototype, {
 
@@ -139,7 +145,8 @@
     });
 
 
-    // The DefaultElManagerFactory is used for els that are just html templates
+    // The DefaultElManagerFactory is used for els that are created and owned by backbone views.
+    // There is no bindings option because the view should take care of any binding
     // rootEl - where you want the created els to be appended
     // viewClass - how the model's html will be rendered
     // viewCollection (optional) - you probably should hold a reference to the created views to clean up on your view's close

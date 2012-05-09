@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v0.1.1
+// Backbone.ModelBinder v0.1.3
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -12,62 +12,8 @@
         _.bindAll(this);
     };
 
-    // A static helper function to create a default set of bindings that you can customize before calling the bind() function
-    // rootEl - where to find all of the bound elements
-    // attributeType - probably 'name' or 'id' in most cases
-    // converter(optional) - the default converter you want applied to all your bindings
-    // elAttribute(optional) - the default elAttribute you want applied to all your bindings
-    Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
-        var foundEls, elCount, foundEl, attributeName;
-        var bindings = {};
-
-        foundEls = $('[' + attributeType + ']', rootEl);
-
-        for(elCount = 0; elCount < foundEls.length; elCount++){
-            foundEl = foundEls[elCount];
-            attributeName = $(foundEl).attr(attributeType);
-
-            if(!bindings[attributeName]){
-                var attributeBinding =  {selector: '[' + attributeType + '=' + attributeName + ']'};
-                bindings[attributeName] = attributeBinding;
-
-                if(converter){
-                    bindings[attributeName].converter = converter;
-                }
-
-                if(elAttribute){
-                    bindings[attributeName].elAttribute = elAttribute;
-                }
-            }
-        }
-
-        return bindings;
-    };
-
-    // Helps you to combine 2 sets of bindings
-    Backbone.ModelBinder.combineBindings = function(destination, source){
-        _.each(source, function(value, key){
-            var elementBinding = {selector: value.selector};
-
-            if(value.converter){
-                elementBinding.converter = value.converter;
-            }
-
-            if(value.elAttribute){
-                elementBinding.elAttribute = value.elAttribute;
-            }
-
-            if(!destination[key]){
-                destination[key] = elementBinding;
-            }
-            else {
-                destination[key] = [destination[key], elementBinding];
-            }
-        });
-    };
-
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '0.1.2';
+    Backbone.ModelBinder.VERSION = '0.1.3';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -422,5 +368,59 @@
             }
         }
     });
+
+    // A static helper function to create a default set of bindings that you can customize before calling the bind() function
+    // rootEl - where to find all of the bound elements
+    // attributeType - probably 'name' or 'id' in most cases
+    // converter(optional) - the default converter you want applied to all your bindings
+    // elAttribute(optional) - the default elAttribute you want applied to all your bindings
+    Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
+        var foundEls, elCount, foundEl, attributeName;
+        var bindings = {};
+
+        foundEls = $('[' + attributeType + ']', rootEl);
+
+        for(elCount = 0; elCount < foundEls.length; elCount++){
+            foundEl = foundEls[elCount];
+            attributeName = $(foundEl).attr(attributeType);
+
+            if(!bindings[attributeName]){
+                var attributeBinding =  {selector: '[' + attributeType + '=' + attributeName + ']'};
+                bindings[attributeName] = attributeBinding;
+
+                if(converter){
+                    bindings[attributeName].converter = converter;
+                }
+
+                if(elAttribute){
+                    bindings[attributeName].elAttribute = elAttribute;
+                }
+            }
+        }
+
+        return bindings;
+    };
+
+    // Helps you to combine 2 sets of bindings
+    Backbone.ModelBinder.combineBindings = function(destination, source){
+        _.each(source, function(value, key){
+            var elementBinding = {selector: value.selector};
+
+            if(value.converter){
+                elementBinding.converter = value.converter;
+            }
+
+            if(value.elAttribute){
+                elementBinding.elAttribute = value.elAttribute;
+            }
+
+            if(!destination[key]){
+                destination[key] = elementBinding;
+            }
+            else {
+                destination[key] = [destination[key], elementBinding];
+            }
+        });
+    };
 
 }).call(this);

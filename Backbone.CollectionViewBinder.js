@@ -14,15 +14,15 @@
 
     _.extend(Backbone.CollectionViewBinder.prototype, {
 
-        createBoundEls: function(collection, elCreator){
+        createBoundEls: function(collection, elManagerFactory){
             this.unbind();
 
-            this.elBindings = {};
+            this._elManagers = {};
             this._collection = collection;
-            this._elCreator = elCreator;
+            this._elManagerFactory = elManagerFactory;
 
             this._collection.each(function(model){
-                this.elBindings[model.cid] = this._elCreator(model);
+                this._onCollectionAdd(model);
             }, this);
 
             this._collection.on('add', this._onCollectionAdd, this);
@@ -38,74 +38,152 @@
                 this._collection.off('reset', this._onCollectionReset);
             }
 
-            this._removeAllElBindings();
+            this._removeAllElManagers();
         },
 
         _onCollectionAdd: function(model){
-            this.elBindings[model.cid] = this._elCreator(model);
+            this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
+            this._elManagers[model.cid].createEl(model);
         },
 
         _onCollectionRemove: function(model){
-            this._removeBinding(model);
+            this._removeElManager(model);
         },
 
         _onCollectionReset: function(){
-            this._removeAllElBindings();
+            this._removeAllElManagers();
 
             this._collection.each(function(model){
                 this._onCollectionAdd(model);
             }, this);
         },
 
-        _removeAllElBindings: function(){
-            _.each(this.elBindings, function(elBinding){
-                this._removeBinding(elBinding.model);
+        _removeAllElManagers: function(){
+            _.each(this._elManagers, function(elManager){
+                elManager.removeEl();
+                delete this._elManagers[elManager._model.cid];
             }, this);
 
-            this.elBindings = {};
+            this._elManagers = {};
         },
 
-        _removeBinding: function(model){
-            if(this.elBindings[model.cid] !== undefined){
-
-                if(this.elBindings[model.cid].binder !== undefined){
-                    this.elBindings[model.cid].binder.unbind();
-                }
-
-                this.elBindings[model.cid].el.remove();
-                delete this.elBindings[model.cid];
+        _removeElManager: function(model){
+            if(this._elManagers[model.cid] !== undefined){
+                this._elManagers[model.cid].removeEl();
+                delete this._elManagers[model.cid];
             }
-        },
+        }
+    });
 
-        // You can create your own creator functions, but the default below probably should be sufficient
-        // A creator function takes a model and returns an elBinding that has the following fields:
-        //      el: the root el that is created
-        //      model: the model that you created the rootEl for
-        //      binder (optional): the Backbone.ModelBinder used to bind the el's elements to the model
-        makeElCreator: function(rootEl, html, bindings){
-            return function(model){
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Default El Manager Factories Below /////////////////////////////////////////////////////////
 
-                var newEl =  $(html);
-                $(rootEl).append(newEl);
+    // You can implement your own elManager factory for your own custom needs.  A elManager factory
+    // needs to implement the makeElManager(model) function which returns an elManager.
+    // An elManager needs to implement the functions createEl(model) and removeEl()
+    // createEl(model) creates the necessary html to render the model, removeEl cleans up.
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-                var elBinding = {el: newEl, model: model};
 
-                if(bindings){
-                    if(_.isBoolean(bindings)){
-                        elBinding['binder'] = new Backbone.ModelBinder();
-                        elBinding['binder'].bind(model, newEl, Backbone.ModelBinder.createDefaultBindings(newEl, 'data-name'));
+    // The DefaultElManagerFactory is used for els that are just html templates
+    // rootEl - where you want the created els to be appended
+    // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
+    // bindings (optional) - either a string which is the binding attribute (name, id, data-name) or a normal bindings hash
+    Backbone.CollectionViewBinder.DefaultElManagerFactory = function(rootEl, elHtml, bindings){
+        _.bindAll(this);
+
+        this._rootEl = rootEl;
+        this._elHtml = elHtml;
+        this._bindings = bindings;
+
+        if(this._rootEl === undefined) throw 'rootEl must be a valid DOM element';
+        if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
+    };
+
+    _.extend(Backbone.CollectionViewBinder.DefaultElManagerFactory.prototype, {
+        makeElManager: function(model){
+            var elManager = {
+                createEl: function(model){
+                    this._model = model;
+
+                    this._el =  $(this._elHtml);
+                    $(this._rootEl).append(this._el);
+
+                    if(this._bindings){
+                        if(_.isString(this._bindings)){
+                            this._modelBinder = new Backbone.ModelBinder();
+                            this._modelBinder.bind(this._model, this._el, Backbone.ModelBinder.createDefaultBindings(this._el, this._bindings));
+                        }
+                        else if(_.isObject(this._bindings)){
+                            this._modelBinder = new Backbone.ModelBinder();
+                            this._modelBinder.bind(this._model, this._el, this._bindings);
+                        }
+                        else {
+                            throw 'Unsupported bindings type, please use a boolean or a bindings hash';
+                        }
                     }
-                    else if(_.isObject(bindings)){
-                        elBinding['binder'] = new Backbone.ModelBinder();
-                        elBinding['binder'].bind(model, newEl, bindings);
+                },
+
+                removeEl: function(){
+                    if(this._modelBinder !== undefined){
+                        this._modelBinder.unbind();
+                    }
+
+                    this._el.remove();
+                }
+            };
+
+            _.extend(elManager, this);
+            return elManager;
+        }
+    });
+
+
+    // The DefaultElManagerFactory is used for els that are just html templates
+    // rootEl - where you want the created els to be appended
+    // viewClass - how the model's html will be rendered
+    // viewCollection (optional) - you probably should hold a reference to the created views to clean up on your view's close
+    Backbone.CollectionViewBinder.DefaultViewManagerFactory = function(rootEl, viewClass, viewCollection){
+        _.bindAll(this);
+
+        this._rootEl = rootEl;
+        this._viewClass = viewClass;
+        this._viewCollection = viewCollection;
+
+        if(! _.isElement(this._rootEl)) throw 'rootEl must be a valid DOM element';
+        if(this._viewClass === undefined) throw 'viewClass must be a valid backbone view';
+    };
+
+    _.extend(Backbone.CollectionViewBinder.DefaultViewManagerFactory.prototype, {
+        makeElManager: function(model){
+            var elManager = {
+                createEl: function(model){
+                    this._model = model;
+                    this._view = new this._viewClass();
+                    $(this._rootEl).append(this._view.render(this._model).el);
+
+                    if(this._viewCollection !== undefined){
+                        this._viewCollection.add(this._view);
+                    }
+                },
+
+                removeEl: function(){
+                    if(this._view.close !== undefined){
+                        this._view.close();
                     }
                     else {
-                        throw 'Unsupported bindings type, please use a boolean or a bindings hash';
+                        this._view.el.remove();
+                        console.log('warning, you should implement a close() function for your view, you might end up with zombies');
+                    }
+
+                    if(this._viewCollection !== undefined){
+                        this._viewCollection.remove(this._view);
                     }
                 }
-
-                return elBinding;
             };
+
+            _.extend(elManager, this);
+            return elManager;
         }
     });
 

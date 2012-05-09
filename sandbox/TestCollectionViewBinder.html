@@ -24,9 +24,9 @@
 
             collectionViewBinder = new Backbone.CollectionViewBinder();
             var rowHtml = '<tr><td data-name="firstName"></td><td data-name="lastName"></td><td data-name="phone"></td></tr>';
-            var elCreator = collectionViewBinder.makeElCreator(view.$('tbody'), rowHtml, true);
+            var elManagerFactory = new Backbone.CollectionViewBinder.DefaultElManagerFactory(view.$('tbody'), rowHtml, "data-name");
 
-            collectionViewBinder.createBoundEls(collection, elCreator, true);
+            collectionViewBinder.createBoundEls(collection, elManagerFactory);
 
         });
 

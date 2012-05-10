@@ -87,6 +87,7 @@
 
             delete this._elManagers;
             this._elManagers = undefined;
+            this._elManagers = {};
         },
 
         _removeElManager: function(model){

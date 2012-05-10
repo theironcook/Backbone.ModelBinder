@@ -70,6 +70,10 @@
                     modelUpdateCount++;
                 }
             });
+
+            $('#resetCollection').on('click', function(){
+                collection.reset();
+            });
         });
 
     </script>
@@ -80,6 +84,8 @@
 <input type="button" id="createModel" value="Create Model"/>
 <input type="button" id="removeModel" value="Remove Last Model"/>
 <input type="button" id="updateModel" value="Update Last Model's Phone"/>
+&nbsp;&nbsp;&nbsp;
+<input type="button" id="resetCollection" value="Reset Collection"/>
 <br>
 <br>
 

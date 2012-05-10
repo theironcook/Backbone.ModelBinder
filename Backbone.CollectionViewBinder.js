@@ -23,9 +23,9 @@
         createBoundEls: function(collection, elManagerFactory){
             this.unbind();
 
-            this._elManagers = {};
             this._collection = collection;
             this._elManagerFactory = elManagerFactory;
+            this._elManagers = {};
 
             this._collection.each(function(model){
                 this._onCollectionAdd(model);
@@ -47,9 +47,24 @@
             this._removeAllElManagers();
         },
 
+        getModelForEl: function(el){
+            var i, elManager, elManagers = _.values(this._elManagers);
+
+            for(i = 0; i < elManagers.length; i++){
+                elManager = elManagers[i];
+
+                if(elManager.isElContained(el)){
+                    return elManager.model;
+                }
+            }
+
+            return undefined;
+        },
+
         _onCollectionAdd: function(model){
             this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
             this._elManagers[model.cid].createEl(model);
+            this._elManagers[model.cid].model = model;
         },
 
         _onCollectionRemove: function(model){
@@ -70,7 +85,8 @@
                 delete this._elManagers[elManager._model.cid];
             }, this);
 
-            this._elManagers = {};
+            delete this._elManagers;
+            this._elManagers = undefined;
         },
 
         _removeElManager: function(model){
@@ -86,34 +102,34 @@
 
     // You can implement your own elManager factory for your own custom needs.  A elManager factory
     // needs to implement the makeElManager(model) function which returns an elManager.
-    // An elManager needs to implement the functions createEl(model) and removeEl()
+    // An elManager needs to implement the functions createEl(model), removeEl() and isElContained(el)
     // createEl(model) creates the necessary html to render the model, removeEl cleans up.
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // The DefaultElManagerFactory is used for els that are just html templates
-    // rootEl - where you want the created els to be appended
+    // parentEl - where you want the created els to be appended
     // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
-    // bindings (optional) - either a string which is the binding attribute (name, id, data-name) or a normal bindings hash
-    Backbone.CollectionViewBinder.DefaultElManagerFactory = function(rootEl, elHtml, bindings){
+    // bindings (optional) - either a string which is the binding attribute (name, id, data-name, etc.) or a normal bindings hash
+    Backbone.CollectionViewBinder.DefaultElManagerFactory = function(parentEl, elHtml, bindings){
         _.bindAll(this);
 
-        this._rootEl = rootEl;
+        this._parentEl = parentEl;
         this._elHtml = elHtml;
         this._bindings = bindings;
 
-        if(this._rootEl === undefined) throw 'rootEl must be a valid DOM element';
+        if(this._parentEl === undefined) throw 'parentEl must be a valid DOM element';
         if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
     };
 
-    _.extend(Backbone.CollectionViewBinder.DefaultElManagerFactory.prototype, {
+    _.extend(Backbone.CollectionViewBinder.DefaultElManagerFactory.prototype, Backbone.Events, {
         makeElManager: function(model){
             var elManager = {
                 createEl: function(model){
                     this._model = model;
 
                     this._el =  $(this._elHtml);
-                    $(this._rootEl).append(this._el);
+                    $(this._parentEl).append(this._el);
 
                     if(this._bindings){
                         if(_.isString(this._bindings)){
@@ -128,6 +144,8 @@
                             throw 'Unsupported bindings type, please use a boolean or a bindings hash';
                         }
                     }
+
+                    this.trigger('elCreated', this._model, this._el);
                 },
 
                 removeEl: function(){
@@ -136,6 +154,11 @@
                     }
 
                     this._el.remove();
+                    this.trigger('elRemoved', this._model, this._el);
+                },
+
+                isElContained: function(findEl){
+                    return this._el === findEl || $(this._el).has(findEl).length > 0;
                 }
             };
 
@@ -147,17 +170,17 @@
 
     // The DefaultElManagerFactory is used for els that are created and owned by backbone views.
     // There is no bindings option because the view should take care of any binding
-    // rootEl - where you want the created els to be appended
+    // parentEl - where you want the created els to be appended
     // viewClass - how the model's html will be rendered
     // viewCollection (optional) - you probably should hold a reference to the created views to clean up on your view's close
-    Backbone.CollectionViewBinder.DefaultViewManagerFactory = function(rootEl, viewClass, viewCollection){
+    Backbone.CollectionViewBinder.DefaultViewManagerFactory = function(parentEl, viewClass, viewCollection){
         _.bindAll(this);
 
-        this._rootEl = rootEl;
+        this._parentEl = parentEl;
         this._viewClass = viewClass;
         this._viewCollection = viewCollection;
 
-        if(! _.isElement(this._rootEl)) throw 'rootEl must be a valid DOM element';
+        if(! _.isElement(this._parentEl)) throw 'parentEl must be a valid DOM element';
         if(this._viewClass === undefined) throw 'viewClass must be a valid backbone view';
     };
 
@@ -167,7 +190,7 @@
                 createEl: function(model){
                     this._model = model;
                     this._view = new this._viewClass();
-                    $(this._rootEl).append(this._view.render(this._model).el);
+                    $(this._parentEl).append(this._view.render(this._model).el);
 
                     if(this._viewCollection !== undefined){
                         this._viewCollection.add(this._view);
@@ -186,6 +209,10 @@
                     if(this._viewCollection !== undefined){
                         this._viewCollection.remove(this._view);
                     }
+                },
+
+                isElContained: function(findEl){
+                    return this._view.el === findEl || this._view.$el.has(findEl).length > 0;
                 }
             };
 

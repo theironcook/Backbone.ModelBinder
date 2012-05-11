@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v0.1.3
+// Backbone.ModelBinder v0.1.4
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -21,7 +21,7 @@
     };
 
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '0.1.3';
+    Backbone.ModelBinder.VERSION = '0.1.4';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';

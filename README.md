@@ -644,12 +644,24 @@ I've done a bit of testing with the [backbone-deep-model](https://github.com/pow
 
 The nested models are just plain javascript objects with the deep-model plugin.  If your nested objects are Backbone.Models you'll need something similar to the deep-model plugin.
 
+***
+
+<br>
+## AMD / Require.js support
+
+AMD / Require.js support was added in version 0.1.4
+
 
 
 <br>
 <br>
 
 ## Release Notes / Versions
+
+### v 0.1.4 May 11, 2012
+
+* AMD / Require.js support added
+* Initial version of the CollectionViewBinder added
 
 ### v 0.1.3 May 9, 2012
 

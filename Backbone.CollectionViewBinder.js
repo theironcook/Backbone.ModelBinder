@@ -1,4 +1,4 @@
-// Backbone.CollectionViewBinder v0.1.0
+// Backbone.CollectionViewBinder
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -15,8 +15,6 @@
     Backbone.CollectionViewBinder = function(){
         _.bindAll(this);
     };
-
-    Backbone.CollectionViewBinder.VERSION = '0.1.0';
 
     _.extend(Backbone.CollectionViewBinder.prototype, {
 

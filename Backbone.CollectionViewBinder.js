@@ -1,4 +1,4 @@
-// Backbone.CollectionViewBinder
+// Backbone.CollectionViewBinder v0.1.0
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -15,6 +15,8 @@
     Backbone.CollectionViewBinder = function(){
         _.bindAll(this);
     };
+
+    Backbone.CollectionViewBinder.VERSION = '0.1.0';
 
     _.extend(Backbone.CollectionViewBinder.prototype, {
 
@@ -45,14 +47,28 @@
             this._removeAllElManagers();
         },
 
-        getModelForEl: function(el){
+        getManagerForEl: function(el){
             var i, elManager, elManagers = _.values(this._elManagers);
 
             for(i = 0; i < elManagers.length; i++){
                 elManager = elManagers[i];
 
                 if(elManager.isElContained(el)){
-                    return elManager.model;
+                    return elManager;
+                }
+            }
+
+            return undefined;
+        },
+
+        getManagerForModel: function(model){
+            var i, elManager, elManagers = _.values(this._elManagers);
+
+            for(i = 0; i < elManagers.length; i++){
+                elManager = elManagers[i];
+
+                if(elManager.getModel() === model){
+                    return elManager;
                 }
             }
 
@@ -62,7 +78,6 @@
         _onCollectionAdd: function(model){
             this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
             this._elManagers[model.cid].createEl(model);
-            this._elManagers[model.cid].model = model;
         },
 
         _onCollectionRemove: function(model){
@@ -85,7 +100,6 @@
 
             delete this._elManagers;
             this._elManagers = undefined;
-            this._elManagers = {};
         },
 
         _removeElManager: function(model){
@@ -101,8 +115,12 @@
 
     // You can implement your own elManager factory for your own custom needs.  A elManager factory
     // needs to implement the makeElManager(model) function which returns an elManager.
-    // An elManager needs to implement the functions createEl(model), removeEl() and isElContained(el)
-    // createEl(model) creates the necessary html to render the model, removeEl cleans up.
+    // An elManager needs to implement the functions
+    // createEl(model)
+    // removeEl()
+    // isElContained(el) - returns true if the el is the rootEl or under the rootEl
+    // getModel()
+    // getEl()
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -158,6 +176,14 @@
 
                 isElContained: function(findEl){
                     return this._el === findEl || $(this._el).has(findEl).length > 0;
+                },
+
+                getModel: function(){
+                    return this._model;
+                },
+
+                getEl: function(){
+                    return this._el;
                 }
             };
 
@@ -168,19 +194,17 @@
 
 
     // The DefaultElManagerFactory is used for els that are created and owned by backbone views.
-    // There is no bindings option because the view should take care of any binding
+    // There is no bindings option because the view made by the viewCreator should take care of any binding
     // parentEl - where you want the created els to be appended
-    // viewClass - how the model's html will be rendered
-    // viewCollection (optional) - you probably should hold a reference to the created views to clean up on your view's close
-    Backbone.CollectionViewBinder.DefaultViewManagerFactory = function(parentEl, viewClass, viewCollection){
+    // viewCreator - a callback that will create backbone view instances for a model passed to the callback
+    Backbone.CollectionViewBinder.DefaultViewManagerFactory = function(parentEl, viewCreator){
         _.bindAll(this);
 
         this._parentEl = parentEl;
-        this._viewClass = viewClass;
-        this._viewCollection = viewCollection;
+        this._viewCreator = viewCreator;
 
-        if(! _.isElement(this._parentEl)) throw 'parentEl must be a valid DOM element';
-        if(this._viewClass === undefined) throw 'viewClass must be a valid backbone view';
+        if(this._parentEl === undefined) throw 'parentEl must be a valid DOM element';
+        if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
     };
 
     _.extend(Backbone.CollectionViewBinder.DefaultViewManagerFactory.prototype, {
@@ -188,12 +212,8 @@
             var elManager = {
                 createEl: function(model){
                     this._model = model;
-                    this._view = new this._viewClass();
+                    this._view = this._viewCreator(model);
                     $(this._parentEl).append(this._view.render(this._model).el);
-
-                    if(this._viewCollection !== undefined){
-                        this._viewCollection.add(this._view);
-                    }
                 },
 
                 removeEl: function(){
@@ -204,14 +224,18 @@
                         this._view.el.remove();
                         console.log('warning, you should implement a close() function for your view, you might end up with zombies');
                     }
-
-                    if(this._viewCollection !== undefined){
-                        this._viewCollection.remove(this._view);
-                    }
                 },
 
                 isElContained: function(findEl){
                     return this._view.el === findEl || this._view.$el.has(findEl).length > 0;
+                },
+
+                getModel: function(){
+                    return this._model;
+                },
+
+                getEl: function(){
+                    return this._view.el;
                 }
             };
 

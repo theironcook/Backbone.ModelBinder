@@ -77,7 +77,7 @@
 
         _onCollectionAdd: function(model){
             this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
-            this._elManagers[model.cid].createEl(model);
+            this._elManagers[model.cid].createEl();
         },
 
         _onCollectionRemove: function(model){
@@ -99,7 +99,7 @@
             }, this);
 
             delete this._elManagers;
-            this._elManagers = undefined;
+            this._elManagers = {};
         },
 
         _removeElManager: function(model){
@@ -116,7 +116,7 @@
     // You can implement your own elManager factory for your own custom needs.  A elManager factory
     // needs to implement the makeElManager(model) function which returns an elManager.
     // An elManager needs to implement the functions
-    // createEl(model)
+    // createEl()
     // removeEl()
     // isElContained(el) - returns true if the el is the rootEl or under the rootEl
     // getModel()
@@ -128,7 +128,7 @@
     // parentEl - where you want the created els to be appended
     // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
     // bindings (optional) - either a string which is the binding attribute (name, id, data-name, etc.) or a normal bindings hash
-    Backbone.CollectionViewBinder.DefaultElManagerFactory = function(parentEl, elHtml, bindings){
+    Backbone.CollectionViewBinder.ElManagerFactory = function(parentEl, elHtml, bindings){
         _.bindAll(this);
 
         this._parentEl = parentEl;
@@ -139,11 +139,13 @@
         if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
     };
 
-    _.extend(Backbone.CollectionViewBinder.DefaultElManagerFactory.prototype, Backbone.Events, {
+    _.extend(Backbone.CollectionViewBinder.ElManagerFactory.prototype, Backbone.Events, {
         makeElManager: function(model){
             var elManager = {
-                createEl: function(model){
-                    this._model = model;
+
+                _model: model,
+
+                createEl: function(){
 
                     this._el =  $(this._elHtml);
                     $(this._parentEl).append(this._el);
@@ -193,11 +195,11 @@
     });
 
 
-    // The DefaultElManagerFactory is used for els that are created and owned by backbone views.
+    // The ElManagerFactory is used for els that are created and owned by backbone views.
     // There is no bindings option because the view made by the viewCreator should take care of any binding
     // parentEl - where you want the created els to be appended
     // viewCreator - a callback that will create backbone view instances for a model passed to the callback
-    Backbone.CollectionViewBinder.DefaultViewManagerFactory = function(parentEl, viewCreator){
+    Backbone.CollectionViewBinder.ViewManagerFactory = function(parentEl, viewCreator){
         _.bindAll(this);
 
         this._parentEl = parentEl;
@@ -207,13 +209,17 @@
         if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
     };
 
-    _.extend(Backbone.CollectionViewBinder.DefaultViewManagerFactory.prototype, {
+    _.extend(Backbone.CollectionViewBinder.ViewManagerFactory.prototype, Backbone.Events, {
         makeElManager: function(model){
             var elManager = {
-                createEl: function(model){
-                    this._model = model;
+
+                _model: model,
+
+                createEl: function(){
                     this._view = this._viewCreator(model);
                     $(this._parentEl).append(this._view.render(this._model).el);
+
+                    this.trigger('elCreated', this._model, this._view);
                 },
 
                 removeEl: function(){
@@ -224,6 +230,8 @@
                         this._view.el.remove();
                         console.log('warning, you should implement a close() function for your view, you might end up with zombies');
                     }
+
+                    this.trigger('elRemoved', this._model, this._view);
                 },
 
                 isElContained: function(findEl){

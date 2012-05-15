@@ -12,20 +12,27 @@
         throw 'Please include Backbone.ModelBinder.js before Backbone.CollectionViewBinder.js';
     }
 
-    Backbone.CollectionViewBinder = function(){
+    Backbone.CollectionViewBinder = function(elManagerFactory){
         _.bindAll(this);
+
+        this._elManagerFactory = elManagerFactory;
+        if(!this._elManagerFactory) throw 'elManagerFactory must be defined.';
+
+        // Let the factory just use the trigger function on the view binder
+        this._elManagerFactory.trigger = this.trigger;
     };
 
     Backbone.CollectionViewBinder.VERSION = '0.1.0';
 
-    _.extend(Backbone.CollectionViewBinder.prototype, {
-
-        createBoundEls: function(collection, elManagerFactory){
+    _.extend(Backbone.CollectionViewBinder.prototype, Backbone.Events, {
+        createBoundEls: function(collection, parentEl){
             this.unbind();
 
+            if(!collection) throw 'collection must be defined';
+            if(!parentEl) throw 'parentEl must be defined';
+
             this._collection = collection;
-            this._elManagerFactory = elManagerFactory;
-            this._elManagers = {};
+            this._elManagerFactory.setParentEl(parentEl);
 
             this._collection.each(function(model){
                 this._onCollectionAdd(model);
@@ -110,39 +117,26 @@
         }
     });
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // Default El Manager Factories Below /////////////////////////////////////////////////////////
-
-    // You can implement your own elManager factory for your own custom needs.  A elManager factory
-    // needs to implement the makeElManager(model) function which returns an elManager.
-    // An elManager needs to implement the functions
-    // createEl()
-    // removeEl()
-    // isElContained(el) - returns true if the el is the rootEl or under the rootEl
-    // getModel()
-    // getEl()
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
     // The DefaultElManagerFactory is used for els that are just html templates
-    // parentEl - where you want the created els to be appended
     // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
     // bindings (optional) - either a string which is the binding attribute (name, id, data-name, etc.) or a normal bindings hash
-    Backbone.CollectionViewBinder.ElManagerFactory = function(parentEl, elHtml, bindings){
+    Backbone.CollectionViewBinder.ElManagerFactory = function(elHtml, bindings){
         _.bindAll(this);
 
-        this._parentEl = parentEl;
         this._elHtml = elHtml;
         this._bindings = bindings;
 
-        if(this._parentEl === undefined) throw 'parentEl must be a valid DOM element';
         if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
     };
 
-    _.extend(Backbone.CollectionViewBinder.ElManagerFactory.prototype, Backbone.Events, {
-        makeElManager: function(model){
-            var elManager = {
+    _.extend(Backbone.CollectionViewBinder.ElManagerFactory.prototype, {
+        setParentEl: function(parentEl){
+            this._parentEl = parentEl;
+        },
 
+        makeElManager: function(model){
+
+            var elManager = {
                 _model: model,
 
                 createEl: function(){
@@ -197,19 +191,19 @@
 
     // The ElManagerFactory is used for els that are created and owned by backbone views.
     // There is no bindings option because the view made by the viewCreator should take care of any binding
-    // parentEl - where you want the created els to be appended
     // viewCreator - a callback that will create backbone view instances for a model passed to the callback
-    Backbone.CollectionViewBinder.ViewManagerFactory = function(parentEl, viewCreator){
+    Backbone.CollectionViewBinder.ViewManagerFactory = function(viewCreator){
         _.bindAll(this);
-
-        this._parentEl = parentEl;
         this._viewCreator = viewCreator;
 
-        if(this._parentEl === undefined) throw 'parentEl must be a valid DOM element';
         if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
     };
 
-    _.extend(Backbone.CollectionViewBinder.ViewManagerFactory.prototype, Backbone.Events, {
+    _.extend(Backbone.CollectionViewBinder.ViewManagerFactory.prototype, {
+        setParentEl: function(parentEl){
+            this._parentEl = parentEl;
+        },
+
         makeElManager: function(model){
             var elManager = {
 
@@ -227,7 +221,7 @@
                         this._view.close();
                     }
                     else {
-                        this._view.el.remove();
+                        this._view.$el.remove();
                         console.log('warning, you should implement a close() function for your view, you might end up with zombies');
                     }
 
@@ -248,6 +242,7 @@
             };
 
             _.extend(elManager, this);
+
             return elManager;
         }
     });

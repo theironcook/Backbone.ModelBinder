@@ -393,7 +393,7 @@
             attributeName = $(foundEl).attr(attributeType);
 
             if(!bindings[attributeName]){
-                var attributeBinding =  {selector: '[' + attributeType + '=' + attributeName + ']'};
+                var attributeBinding =  {selector: '[' + attributeType + '="' + attributeName + '"]'};
                 bindings[attributeName] = attributeBinding;
 
                 if(converter){

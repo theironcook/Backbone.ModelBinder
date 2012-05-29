@@ -1,7 +1,15 @@
 Special thanks to [Derick Bailey](http://lostechies.com/derickbailey) for creating predecessor to this plugin.
 I've been able to reuse unit tests he created for his [Backbone.ModelBinding](https://github.com/derickbailey/backbone.modelbinding) plugin.
 
-<br>
+### Availability
+You can download the zip/tarball as normal and include it with your other JS assets, but you can now alternatively link to it on [CDNJS](http://www.cdnjs.com/), the free to use, community maintained CDN.
+
+To do this, just drop a reference to the minified version of the plugin into your document's `<head>` as follows, replacing the version number with whatever the latest one is:
+````
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.modelbinder/0.1.3/Backbone.ModelBinder-min.js"></script>
+````
+
+### Rationale
 Backbone is a great platform for writing client side applications but I've found that as views grow in complexity, synchronizing my models and views can be a pain.
 I've spent the past few months trying to use existing view-model binding libraries that others were kind enough to create and share with the world.
 Unfortunately in the majority of my backbone application I wasn't able to leverage the existing view-model binding libraries due to various limitations.
@@ -22,6 +30,7 @@ You can use this ModelBinder class to bind backbone model attributes to:
 * Read-only html elements such as `<span>`, `<div>` etc.
 * Html element attributes such as enabled, displayed, style etc.
 * Editable form elements such as `<input>`, `<textarea>` etc. This type of binding is bidirectional between the html elements and the Model's attributes.
+* Html elements marked as `contenteditable`; this is also a bidirectional binding.
 
 <br>
 ###The ModelBinder is more efficient###

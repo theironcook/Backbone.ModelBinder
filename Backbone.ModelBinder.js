@@ -268,15 +268,13 @@
                     el.css(elementBinding.cssAttribute, convertedValue);
                     break;
                 case 'class':
-                    if(!convertedValue){
-                        var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);
+                    var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);
+                    if(previousValue){
                         previousValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, previousValue);
-
-                        if(previousValue){
-                            el.removeClass(previousValue);
-                        }
+                        el.removeClass(previousValue);
                     }
-                    else{
+
+                    if(convertedValue){
                         el.addClass(convertedValue);
                     }
                     break;

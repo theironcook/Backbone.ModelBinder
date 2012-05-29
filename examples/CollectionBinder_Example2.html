@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Test the CollectionBinder With the ViewManagerFactory</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+    <script type="text/javascript" src="../Backbone.CollectionBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+
+            collection = new Backbone.Collection([
+                {id: 0, firstName: 'Adam', lastName: 'Zebra'},
+                {id: 1, firstName: 'Bob', phone: '1234567'}
+            ]);
+
+            // Just create a simple view and attach the view's element to an existing DOM element
+            ViewClass = Backbone.View.extend({
+
+                tagName: 'tr',
+                html: '<td data-name="firstName"></td><td data-name="lastName"></td><td data-name="phone"></td>',
+                _modelBinder: undefined,
+
+                initialize: function(){
+                    _.bindAll(this);
+                    this._modelBinder = new Backbone.ModelBinder();
+                },
+
+                close: function(){
+                    // An example of what your view should probably be doing when it's closed, otherwise you'll end up w/ zombies
+                    this._modelBinder.unbind();
+                    this.off();
+                    this.undelegateEvents();
+                    this.remove();
+                },
+
+                render: function(){
+                    this.$el.html(this.html);
+                    this._modelBinder.bind(this.model, this.el, Backbone.ModelBinder.createDefaultBindings(this.el, 'data-name'));
+                    return this;
+                }
+            });
+
+            a = new ViewClass();
+
+
+            var viewCreator = function(model){ return new ViewClass({model: model}); }
+
+            // The managerFactory helps to generate element managers - an el manager creates/removes elements when models are added to a collection
+            var elManagerFactory = new Backbone.CollectionBinder.ViewManagerFactory(viewCreator);
+
+            collectionBinder = new Backbone.CollectionBinder(elManagerFactory);
+
+            // This is very similar to the ModelBinder.bind() function but the collectionBinder will also create nested element views
+            collectionBinder.bind(collection, $('tbody'));
+
+
+
+
+            // Demonstrating that the CollectionBinder has create/remove events you can listen to
+            collectionBinder.on('elCreated', function(model, view){
+                console.log('The collectionBinder created a view ', model, view);
+
+                // You can pass in a DOM element and get back which elManager is responsible for the element
+                // The elManager has more information like the model that is associated with the elManager
+                var elManager = collectionBinder.getManagerForEl(view.el);
+                console.log('\tThe elManager and model for the clicked element is ', elManager, elManager.getModel());
+            });
+
+            collectionBinder.on('elRemoved', function(model, view){
+                console.log('The collectionBinder removed a view ', model, view);
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            // The handlers below just help demonstrate that the rows in the table are bound to the collection
+            modelCreateCount = 2;
+            $('#createModel').on('click', function(){
+                collection.add({id: modelCreateCount, firstName: 'Jon ' + modelCreateCount, lastName: 'Doe ' + modelCreateCount, phone: 'xxx '});
+                modelCreateCount++;
+            });
+
+            $('#removeModel').on('click', function(){
+                if(collection.length > 0){
+                    collection.remove(collection.at(collection.length - 1));
+                }
+            });
+
+            modelUpdateCount = 0;
+            $('#updateModel').on('click', function(){
+                if(collection.length > 0){
+                    collection.at(collection.length - 1).set({phone: 'xxx ' + modelUpdateCount});
+                    modelUpdateCount++;
+                }
+            });
+
+            $('#resetCollection').on('click', function(){
+                collection.reset();
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+<br>
+Testing actions:
+<br>
+<input type="button" id="createModel" value="Create Model"/>
+<input type="button" id="removeModel" value="Remove Last Model"/>
+<input type="button" id="updateModel" value="Update Last Model's Phone"/>
+&nbsp;&nbsp;&nbsp;
+<input type="button" id="resetCollection" value="Reset Collection"/>
+<br>
+<br>
+
+View content:<hr>
+<div id="viewContent">
+
+    <table>
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

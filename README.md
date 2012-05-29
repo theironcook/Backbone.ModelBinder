@@ -654,10 +654,13 @@ The ModelBinder doesn't directly support '.' to reference nested Models when bin
 If you have a Backbone.Model implementation that is able to support the '.' syntax for nested models you'll be able to use the ModelBinder.
 
 I've done a bit of testing with the [backbone-deep-model](https://github.com/powmedia/backbone-deep-model) and it seems to work well with the ModelBinder.
-
 [Here](https://github.com/theironcook/Backbone.ModelBinder/blob/master/sandbox/Example_NestedAttributes.html) is a simple example showing how to use backbone-deep-model with the ModelBinder.
 
 The nested models are just plain javascript objects with the deep-model plugin.  If your nested objects are Backbone.Models you'll need something similar to the deep-model plugin.
+
+<br>
+The [backbone-nested](https://github.com/afeld/backbone-nested) project also seems to work with the ModelBinder.
+
 
 ***
 
@@ -665,6 +668,18 @@ The nested models are just plain javascript objects with the deep-model plugin. 
 ## AMD / Require.js support
 
 AMD / Require.js support was added in version 0.1.4
+
+
+***
+
+<br>
+### Binding to Collections
+I've also created a collection binder that automatically creates/removes views when models are added/removed to a collection.
+It can be used with the ModelBinder.
+
+You can read about it [here](https://github.com/theironcook/Backbone.ModelBinder/wiki/A-new-Class-to-Bind-Backbone-Collections-to-Views:-Javascript-Weekly-May-18th)
+
+<br>
 
 
 

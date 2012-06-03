@@ -293,7 +293,7 @@ The jQuery string is a hash parameter named `selector`.
 You can define arrays of `selector` arguments in your bindings as shown in the example below.
 
 ````
- firstName: [{selector: '#firstName'}, {selector: '#title'}}
+ firstName: [{selector: '#firstName'}, {selector: '#title'}]
 ````
 
 In the example above, model.firstName is bound to an element with the id of "firstName" and an element with the id of "title".

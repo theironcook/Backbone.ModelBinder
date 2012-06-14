@@ -211,10 +211,14 @@
             return undefined;
         },
 
-        _onModelChange:function () {
+        _onModelChange:function (model, options) {
+            if (options && options.changeSource === 'ModelBinder'){
+              return
+            }
+
             var changedAttribute, attributeBinding;
 
-            for (changedAttribute in this._model.changedAttributes()) {
+            for (changedAttribute in model.changedAttributes()) {
                 attributeBinding = this._attributeBindings[changedAttribute];
                 if (attributeBinding) {
                     this._copyModelToView(attributeBinding);

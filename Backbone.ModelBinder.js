@@ -269,7 +269,7 @@
                     break;
                 case 'class':
                     var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);
-                    if(previousValue){
+                    if(!_.isUndefined(previousValue)){
                         previousValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, previousValue);
                         el.removeClass(previousValue);
                     }

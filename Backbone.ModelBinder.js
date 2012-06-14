@@ -211,14 +211,10 @@
             return undefined;
         },
 
-        _onModelChange:function (model, options) {
-            if (options && options.changeSource === 'ModelBinder'){
-              return
-            }
-
+        _onModelChange:function () {
             var changedAttribute, attributeBinding;
 
-            for (changedAttribute in model.changedAttributes()) {
+            for (changedAttribute in this._model.changedAttributes()) {
                 attributeBinding = this._attributeBindings[changedAttribute];
                 if (attributeBinding) {
                     this._copyModelToView(attributeBinding);
@@ -233,11 +229,13 @@
             for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
                 elementBinding = attributeBinding.elementBindings[elementBindingCount];
 
-                var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                if(!elementBinding.isSetting){
+                    var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
 
-                for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
-                    boundEl = elementBinding.boundEls[boundElCount];
-                    this._setEl($(boundEl), elementBinding, convertedValue);
+                    for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                        boundEl = elementBinding.boundEls[boundElCount];
+                        this._setEl($(boundEl), elementBinding, convertedValue);
+                    }
                 }
             }
         },

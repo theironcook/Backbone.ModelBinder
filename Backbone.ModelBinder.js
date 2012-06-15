@@ -142,7 +142,7 @@
                         foundEls = $(elementBinding.selector, this._rootEl);
                     }
 
-                    if (foundEls.length === 0 && console) {
+                    if (foundEls.length === 0) {
                         warn( 'Bad binding found. No elements returned for binding selector ' + elementBinding.selector );
                     }
                     else {

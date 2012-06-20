@@ -16,6 +16,11 @@
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
     }
 
+    // Use for non-critical errors
+    function warn (msg) {
+        if(console) { (console.warn||console.log).call(console,msg); }
+    };
+
     Backbone.ModelBinder = function(){
         _.bindAll(this);
     };
@@ -34,18 +39,18 @@
             this._model = model;
             this._rootEl = rootEl;
 
-            if (!this._model) throw 'model must be specified';
-            if (!this._rootEl) throw 'rootEl must be specified';
+            if (!this._model) { warn('model must be specified'); return; }
+            if (!this._rootEl) { warn('rootEl must be specified'); return; }
 
             if(attributeBindings){
                 // Create a deep clone of the attribute bindings
                 this._attributeBindings = $.extend(true, {}, attributeBindings);
 
-                this._initializeAttributeBindings();
-                this._initializeElBindings();
+                if (!this._initializeAttributeBindings()) { this.unbind(); return; }
+                if (!this._initializeElBindings()) { this.unbind(); return; }
             }
             else {
-                this._initializeDefaultBindings();
+                if (!this._initializeDefaultBindings()) { this.unbind(); return; }
             }
 
             this._bindModelToView();
@@ -79,7 +84,8 @@
                     attributeBinding = {elementBindings: [inputBinding]};
                 }
                 else {
-                    throw 'Unsupported type passed to Model Binder ' + attributeBinding;
+                    warn('Unsupported type passed to Model Binder ' + attributeBinding);
+                    continue;
                 }
 
                 // Add a linkage from the element binding back to the attribute binding
@@ -90,7 +96,11 @@
 
                 attributeBinding.attributeName = attributeBindingKey;
                 this._attributeBindings[attributeBindingKey] = attributeBinding;
+
             }
+
+            // Return true if at least one attribute was bound
+            return _.size(this._attributeBindings) > 0;
         },
 
         // If the bindings are not specified, the default binding is performed on the name attribute
@@ -113,10 +123,13 @@
                     this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
                 }
             }
+
+            // Return true if at least one attribute was bound
+            return _.size(this._attributeBindings) > 0;
         },
 
         _initializeElBindings:function () {
-            var bindingKey, attributeBinding, bindingCount, elementBinding, foundEls, elCount, el;
+            var bindingKey, attributeBinding, bindingCount, elementBinding, foundEls, elCount, el, success = false;
             for (bindingKey in this._attributeBindings) {
                 attributeBinding = this._attributeBindings[bindingKey];
 
@@ -130,9 +143,10 @@
                     }
 
                     if (foundEls.length === 0) {
-                        throw 'Bad binding found. No elements returned for binding selector ' + elementBinding.selector;
+                        warn( 'Bad binding found. No elements returned for binding selector ' + elementBinding.selector );
                     }
                     else {
+                        success = true;
                         elementBinding.boundEls = [];
                         for (elCount = 0; elCount < foundEls.length; elCount++) {
                             el = foundEls[elCount];
@@ -141,6 +155,9 @@
                     }
                 }
             }
+
+            // Return true if at least one attribute was bound
+            return success;
         },
 
         _bindModelToView: function () {
@@ -248,7 +265,7 @@
                 if(!elementBinding.isSetting){
                     var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
 
-                    for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                    for (boundElCount = 0; elementBinding.boundEls && boundElCount < elementBinding.boundEls.length; boundElCount++) {
                         boundEl = elementBinding.boundEls[boundElCount];
                         this._setEl($(boundEl), elementBinding, convertedValue);
                     }
@@ -377,7 +394,8 @@
         this._collection = collection;
 
         if(!this._collection){
-            throw 'Collection must be defined';
+            warn('Collection must be defined');
+            return;
         }
         _.bindAll(this, 'convert');
     };

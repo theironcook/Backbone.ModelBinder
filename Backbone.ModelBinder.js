@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v0.1.4
+// Backbone.ModelBinder v0.1.5
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -21,7 +21,7 @@
     };
 
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '0.1.4';
+    Backbone.ModelBinder.VERSION = '0.1.5';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -123,7 +123,7 @@
                 for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
                     elementBinding = attributeBinding.elementBindings[bindingCount];
                     if (elementBinding.selector === '') {
-						foundEls = $(this._rootEl);
+                        foundEls = $(this._rootEl);
                     }
                     else {
                         foundEls = $(elementBinding.selector, this._rootEl);
@@ -146,15 +146,17 @@
         _bindModelToView: function () {
             this._model.on('change', this._onModelChange, this);
 
-            this._copyModelAttributesToView();
+            this.copyModelAttributesToView();
         },
 
-        // should only be called when initially binding the model to the view
-        _copyModelAttributesToView: function(){
+        // attributesToCopy is an optional parameter - if empty, all attributes
+        // that are bound will be copied.  Otherwise, only attributeBindings specified
+        // in the attributesToCopy are copied.
+        copyModelAttributesToView: function(attributesToCopy){
             var attributeName, attributeBinding;
 
             for (attributeName in this._attributeBindings) {
-                if(this._model.has(attributeName)){
+                if(attributesToCopy === undefined || _.indexOf(attributesToCopy, attributeName) !== -1){
                     attributeBinding = this._attributeBindings[attributeName];
                     this._copyModelToView(attributeBinding);
                 }
@@ -182,15 +184,28 @@
         },
 
         _onElChanged:function (event) {
-            var el = $(event.target)[0];
-            var elementBinding = this._getElBinding(el);
-            if (elementBinding) {
-                this._copyViewToModel(elementBinding, el);
+            var el, elBindings, elBindingCount, elBinding;
+
+            el = $(event.target)[0];
+            elBindings = this._getElBindings(el);
+
+            for(elBindingCount = 0; elBindingCount < elBindings.length; elBindingCount++){
+                elBinding = elBindings[elBindingCount];
+                if (this._isBindingUserEditable(elBinding)) {
+                    this._copyViewToModel(elBinding, el);
+                }
             }
         },
 
-        _getElBinding:function (findEl) {
+        _isBindingUserEditable: function(elBinding){
+            return elBinding.elAttribute === undefined ||
+                elBinding.elAttribute === 'text' ||
+                elBinding.elAttribute === 'html';
+        },
+
+        _getElBindings:function (findEl) {
             var attributeName, attributeBinding, elementBindingCount, elementBinding, boundElCount, boundEl;
+            var elBindings = [];
 
             for (attributeName in this._attributeBindings) {
                 attributeBinding = this._attributeBindings[attributeName];
@@ -202,13 +217,13 @@
                         boundEl = elementBinding.boundEls[boundElCount];
 
                         if (boundEl === findEl) {
-                            return elementBinding;
+                            elBindings.push(elementBinding);
                         }
                     }
                 }
             }
 
-            return undefined;
+            return elBindings;
         },
 
         _onModelChange:function () {
@@ -216,6 +231,7 @@
 
             for (changedAttribute in this._model.changedAttributes()) {
                 attributeBinding = this._attributeBindings[changedAttribute];
+
                 if (attributeBinding) {
                     this._copyModelToView(attributeBinding);
                 }

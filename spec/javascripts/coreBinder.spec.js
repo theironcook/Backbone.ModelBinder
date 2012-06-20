@@ -19,5 +19,21 @@ describe("core binder", function(){
         });
     });
 
+    describe("copyModelAttributesToView", function(){
+        it("copyModelAttributesToView functionality", function(){
+            this.model.set({firstName: 'Kijana'});
+            this.modelBinder.bind(this.model, this.view.el);
+
+            this.model.set({firstName: 'Kerry'}, {silent: true});
+
+            expect(this.view.$("[name=firstName]").val()).toBe('Kijana');
+
+            this.modelBinder.copyModelAttributesToView([]);
+            expect(this.view.$("[name=firstName]").val()).toBe('Kijana');
+
+            this.modelBinder.copyModelAttributesToView(['firstName']);
+            expect(this.view.$("[name=firstName]").val()).toBe('Kerry');
+        });
+    });
 
 });

@@ -688,6 +688,11 @@ You can read about it [here](https://github.com/theironcook/Backbone.ModelBinder
 
 ## Release Notes / Versions
 
+### v 0.1.5 June 20, 2012
+
+* Upgraded model binder to allow single DOM element to be bound to multiple model attributes
+* Exposed the model binder copyModelAttributesToView to be public and take an optional array of attribute names to copy
+
 ### v 0.1.4 May 11, 2012
 
 * AMD / Require.js support added

@@ -97,6 +97,8 @@
             this._collection.each(function(model){
                 this._onCollectionAdd(model);
             }, this);
+
+            this.trigger('elsReset', this._collection);
         },
 
         _removeAllElManagers: function(){

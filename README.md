@@ -25,7 +25,6 @@ You can use this ModelBinder class to bind backbone model attributes to:
 * Read-only html elements such as `<span>`, `<div>` etc.
 * Html element attributes such as enabled, displayed, style etc.
 * Editable form elements such as `<input>`, `<textarea>` etc. This type of binding is bidirectional between the html elements and the Model's attributes.
-* Html elements marked as `contenteditable`; this is also a bidirectional binding.
 
 <br>
 ###The ModelBinder is more efficient###
@@ -44,22 +43,19 @@ SomeView = Backbone.View.extend({
 });
 ````
 
-While the style above technically works just fine it can be more efficient by using the ModelBinder - especially for larger client applications that are not frequently refreshed.
+While the style above technically works just fine it could be more efficient by using the ModelBinder - especially for larger client applications.
 
 If render is called multiple times, the previously created html elements are just thrown away.
 Converting the model to json is also an unnecessary conversion.
-The ModelBinder eliminates both of these inefficiencies.
+The ModelBinder eliminates these inefficiencies.
 
 <br>
 ## Prerequisites
 
-* Backbone.js v0.9.0
-* Underscore.js v1.3.1
-* jQuery v1.7.1
+* Backbone.js v0.9.0 or higher
+* Underscore.js v1.3.1 or higher
+* jQuery v1.7.1 or higher
 
-<br>
-I've posted some [examples](https://github.com/theironcook/Backbone.ModelBinder/wiki/Examples) of how to use the ModelBinder but I'd recommend reading the docs first.
-The examples don't show best practices but just show how you can make things work with the ModelBinder.
 
 <br>
 ### Availability
@@ -680,7 +676,11 @@ It can be used with the ModelBinder.
 You can read about it [here](https://github.com/theironcook/Backbone.ModelBinder/wiki/A-new-Class-to-Bind-Backbone-Collections-to-Views:-Javascript-Weekly-May-18th)
 
 <br>
+<br>
 
+## Examples
+Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbone.ModelBinder/wiki/Interactive-JSFiddle-Examples).
+<br>The same examples are also under the (examples)[https://github.com/theironcook/Backbone.ModelBinder/tree/master/examples] directory.
 
 
 <br>

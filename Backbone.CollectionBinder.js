@@ -122,13 +122,15 @@
     // The ElManagerFactory is used for els that are just html templates
     // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
     // bindings (optional) - either a string which is the binding attribute (name, id, data-name, etc.) or a normal bindings hash
-    Backbone.CollectionBinder.ElManagerFactory = function(elHtml, bindings){
+    Backbone.CollectionBinder.ElManagerFactory = function(elHtml, bindings, options){
         _.bindAll(this);
 
         this._elHtml = elHtml;
         this._bindings = bindings;
+        this._options = options;
 
         if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
+        if(this._options == undefined) this._options = {};
     };
 
     _.extend(Backbone.CollectionBinder.ElManagerFactory.prototype, {
@@ -144,7 +146,11 @@
                 createEl: function(){
 
                     this._el =  $(this._elHtml);
-                    $(this._parentEl).append(this._el);
+                    if('placement' in this._options && this._options['placement'] == "before"){
+                      $(this._parentEl).prepend(this._el);
+                    } else {
+                      $(this._parentEl).append(this._el);
+                    }
 
                     if(this._bindings){
                         if(_.isString(this._bindings)){

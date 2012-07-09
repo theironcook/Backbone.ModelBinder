@@ -16,9 +16,9 @@
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
     }
 
-    Backbone.ModelBinder = function(options){
+    Backbone.ModelBinder = function(modelSetOptions){
         _.bindAll(this);
-	this._options = options || {};
+	this._modelSetOptions = modelSetOptions || {};
     };
 
     // Current version of the library.
@@ -29,12 +29,12 @@
 
     _.extend(Backbone.ModelBinder.prototype, {
 
-        bind:function (model, rootEl, attributeBindings, options) {
+        bind:function (model, rootEl, attributeBindings, modelSetOptions) {
             this.unbind();
 
             this._model = model;
             this._rootEl = rootEl;
-	    this._options = _.extend({}, this._options, options);
+	        this._modelSetOptions = _.extend({}, this._modelSetOptions, modelSetOptions);
 
             if (!this._model) throw 'model must be specified';
             if (!this._rootEl) throw 'rootEl must be specified';
@@ -363,7 +363,7 @@
             var elVal = this._getElValue(elementBinding, el);
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
             data[elementBinding.attributeBinding.attributeName] = elVal;
-	    var opts = _.extend({}, this._options, {changeSource: 'ModelBinder'});
+	        var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
             this._model.set(data, opts);
         },
 

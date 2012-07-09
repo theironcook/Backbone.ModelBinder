@@ -122,13 +122,15 @@
     // The ElManagerFactory is used for els that are just html templates
     // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
     // bindings (optional) - either a string which is the binding attribute (name, id, data-name, etc.) or a normal bindings hash
-    Backbone.CollectionBinder.ElManagerFactory = function(elHtml, bindings){
+    Backbone.CollectionBinder.ElManagerFactory = function(elHtml, bindings, options){
         _.bindAll(this);
 
         this._elHtml = elHtml;
         this._bindings = bindings;
+        this._options = options;
 
         if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
+        if(this._options == undefined) this._options = {};
     };
 
     _.extend(Backbone.CollectionBinder.ElManagerFactory.prototype, {
@@ -144,7 +146,11 @@
                 createEl: function(){
 
                     this._el =  $(this._elHtml);
-                    $(this._parentEl).append(this._el);
+                    if('placement' in this._options && this._options['placement'] == "before"){
+                      $(this._parentEl).prepend(this._el);
+                    } else {
+                      $(this._parentEl).append(this._el);
+                    }
 
                     if(this._bindings){
                         if(_.isString(this._bindings)){
@@ -194,11 +200,13 @@
     // The ViewManagerFactory is used for els that are created and owned by backbone views.
     // There is no bindings option because the view made by the viewCreator should take care of any binding
     // viewCreator - a callback that will create backbone view instances for a model passed to the callback
-    Backbone.CollectionBinder.ViewManagerFactory = function(viewCreator){
+    Backbone.CollectionBinder.ViewManagerFactory = function(viewCreator, options){
         _.bindAll(this);
         this._viewCreator = viewCreator;
+        this._options = options;
 
         if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
+        if(this._options == undefined) this._options = {};
     };
 
     _.extend(Backbone.CollectionBinder.ViewManagerFactory.prototype, {
@@ -213,7 +221,11 @@
 
                 createEl: function(){
                     this._view = this._viewCreator(model);
-                    $(this._parentEl).append(this._view.render(this._model).el);
+                    if('placement' in this._options && this._options['placement'] == "before"){
+                      $(this._parentEl).prepend(this._view.render(this._model).el);
+                    } else {
+                      $(this._parentEl).append(this._view.render(this._model).el);
+                    }
 
                     this.trigger('elCreated', this._model, this._view);
                 },

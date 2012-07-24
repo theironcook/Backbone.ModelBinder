@@ -173,14 +173,14 @@
         },
 
         _bindViewToModel:function () {
-            $(this._rootEl).delegate('', 'change', this._onElChanged);
+            $(this._rootEl).delegate('', 'change input', this._onElChanged);
             // The change event doesn't work properly for contenteditable elements - but blur does
             $(this._rootEl).delegate('[contenteditable]', 'blur', this._onElChanged);
         },
 
         _unbindViewToModel: function(){
             if(this._rootEl){
-                $(this._rootEl).undelegate('', 'change', this._onElChanged);
+                $(this._rootEl).undelegate('', 'change input', this._onElChanged);
                 $(this._rootEl).undelegate('[contenteditable]', 'blur', this._onElChanged);
             }
         },

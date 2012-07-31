@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Test the CollectionBinder Sorting Capabilities</title>
+
+    <!-- include source files here... -->
+    <script type="text/javascript" src="../public/javascripts/underscore.js"></script>
+    <script type="text/javascript" src="../public/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="../public/javascripts/backbone.js"></script>
+    <script type="text/javascript" src="../Backbone.ModelBinder.js"></script>
+    <script type="text/javascript" src="../Backbone.CollectionBinder.js"></script>
+
+    <script>
+        $().ready(function () {
+            collection = new Backbone.Collection();
+
+            collection.comparator = function(model){
+                return model.get('order');
+            }
+
+            collection.reset([
+                {id: 0, firstName: 'Adam', lastName: 'Zebra', order: 10},
+                {id: 1, firstName: 'Bob', phone: '1234567', order: 9}
+            ]);
+
+            collection.on('change:order', function(){
+                collection.sort();
+            });
+
+            // Display the collection content
+            displayCollectionContent = function(){
+                var collectionVals = collection.reduce(function(memo, model){
+                    return memo + ' (firstName=' + model.get('firstName') + ' order=' + model.get('order') + '), ';
+                }, '');
+                $('#collectionContent').html(collectionVals);
+            };
+
+            displayCollectionContent();
+
+            $('#refreshCollectionContent').click(displayCollectionContent);
+
+            // Just create a simple view and attach the view's element to an existing DOM element
+            view = new Backbone.View();
+            view.setElement($('#viewContent'));
+
+            // Normally this will be in a separate html template file
+            var rowHtml = '<tr><td data-name="firstName"></td><td data-name="lastName"></td><td data-name="phone"></td><td data-name="order"></td></tr>';
+
+            // The managerFactory helps to generate element managers - an el manager creates/removes elements when models are added to a collection
+            // The 1st arg is the html template that is used to generate view elements for each model in the collection
+            // The 2nd arg is the DOM element attribute that is used to bind between the Model attributes and DOM elements - it's optional
+            var elManagerFactory = new Backbone.CollectionBinder.ElManagerFactory(rowHtml, "data-name");
+
+            collectionBinder = new Backbone.CollectionBinder(elManagerFactory, {autoSort: true});
+
+            // This is very similar to the ModelBinder.bind() function but the collectionBinder will also create nested element views
+            collectionBinder.bind(collection, view.$('tbody'));
+
+
+
+            // Demonstrating that the CollectionBinder has create/remove events you can listen to
+            collectionBinder.on('elCreated', function(model, el){
+                console.log('The collectionBinder created an element ', model, el);
+            });
+
+            collectionBinder.on('elRemoved', function(model, el){
+                console.log('The collectionBinder removed an element ', model, el);
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            // The handlers below just help demonstrate that the rows in the table are bound to the collection
+            modelCreateCount = 2;
+            $('#createModel').on('click', function(){
+                collection.add({id: modelCreateCount, firstName: 'Jon ' + modelCreateCount, lastName: 'Doe ' + modelCreateCount, phone: 'xxx ', order: 10-collection.length});
+                modelCreateCount++;
+            });
+
+            $('#removeModel').on('click', function(){
+                if(collection.length > 0){
+                    collection.remove(collection.at(collection.length - 1));
+                }
+            });
+
+            modelUpdateCount = 0;
+            $('#updateModel').on('click', function(){
+                if(collection.length > 0){
+                    collection.at(collection.length - 1).set({phone: 'xxx ' + modelUpdateCount});
+                    modelUpdateCount++;
+                }
+            });
+
+            $('#resetCollection').on('click', function(){
+                collection.reset();
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+<input type="button" id="refreshCollectionContent" value="Refresh"/>
+Collection content: <div id="collectionContent"></div>
+<br>
+Testing actions:
+<br>
+<input type="button" id="createModel" value="Create Model"/>
+<input type="button" id="removeModel" value="Remove Last Model"/>
+<input type="button" id="updateModel" value="Update Last Model's Phone"/>
+&nbsp;&nbsp;&nbsp;
+<input type="button" id="resetCollection" value="Reset Collection"/>
+<br>
+<br>
+
+View content: (sorted by the Order attribute)<hr>
+<div id="viewContent">
+
+    <table>
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone</th>
+            <th>Order</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

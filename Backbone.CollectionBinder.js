@@ -12,7 +12,7 @@
         throw 'Please include Backbone.ModelBinder.js before Backbone.CollectionBinder.js';
     }
 
-    Backbone.CollectionBinder = function(elManagerFactory){
+    Backbone.CollectionBinder = function(elManagerFactory, options){
         _.bindAll(this);
 
         this._elManagerFactory = elManagerFactory;
@@ -20,6 +20,8 @@
 
         // Let the factory just use the trigger function on the view binder
         this._elManagerFactory.trigger = this.trigger;
+
+        this._options = options || {};
     };
 
     Backbone.CollectionBinder.VERSION = '0.1.1';
@@ -34,9 +36,7 @@
             this._collection = collection;
             this._elManagerFactory.setParentEl(parentEl);
 
-            this._collection.each(function(model){
-                this._onCollectionAdd(model);
-            }, this);
+            this._onCollectionReset();
 
             this._collection.on('add', this._onCollectionAdd, this);
             this._collection.on('remove', this._onCollectionRemove, this);
@@ -85,6 +85,10 @@
         _onCollectionAdd: function(model){
             this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
             this._elManagers[model.cid].createEl();
+
+            if(this._options['autoSort']){
+                this.sortRootEls();
+            }
         },
 
         _onCollectionRemove: function(model){
@@ -116,6 +120,21 @@
                 this._elManagers[model.cid].removeEl();
                 delete this._elManagers[model.cid];
             }
+        },
+
+        sortRootEls: function(){
+            this._collection.each(function(model, modelIndex){
+                var modelElManager = this.getManagerForModel(model);
+                if(modelElManager){
+                    var modelEl = modelElManager.getEl();
+                    var currentRootEls = this._elManagerFactory.getParentEl().children();
+
+                    if(currentRootEls[modelIndex] !== modelEl[0]){
+                        modelEl.detach();
+                        modelEl.insertBefore(currentRootEls[modelIndex]);
+                    }
+                }
+            }, this);
         }
     });
 
@@ -134,6 +153,10 @@
     _.extend(Backbone.CollectionBinder.ElManagerFactory.prototype, {
         setParentEl: function(parentEl){
             this._parentEl = parentEl;
+        },
+
+        getParentEl: function(){
+            return this._parentEl;
         },
 
         makeElManager: function(model){
@@ -206,6 +229,10 @@
             this._parentEl = parentEl;
         },
 
+        getParentEl: function(){
+            return this._parentEl;
+        },
+
         makeElManager: function(model){
             var elManager = {
 
@@ -236,6 +263,10 @@
 
                 getModel: function(){
                     return this._model;
+                },
+
+                getView: function(){
+                    return this._view;
                 },
 
                 getEl: function(){

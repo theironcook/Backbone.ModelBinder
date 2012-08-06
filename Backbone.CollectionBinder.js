@@ -270,7 +270,7 @@
                 },
 
                 getEl: function(){
-                    return this._view.el;
+                    return this._view.$el;
                 }
             };
 

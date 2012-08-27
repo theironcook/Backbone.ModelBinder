@@ -8,7 +8,7 @@ describe("core binder", function(){
     });
 
     describe("View events", function(){
-        it("correct number fired", function(){
+        it("correct model binder changed events fired - 1 binding", function(){
             this.modelBinder.bind(this.model, this.view.el);
             var changeEventCount = 0;
             this.model.on('change', function(){changeEventCount++;});
@@ -16,6 +16,38 @@ describe("core binder", function(){
             this.view.$("[name=firstName]").val("Kijana");
             this.view.$("[name=firstName]").trigger("change");
             expect(changeEventCount).toBe(1);
+        });
+
+        it("correct model binder changed events fired - 1 binding", function(){
+            this.modelBinder.bind(this.model, this.view.el, {
+                date: '.dateClass'
+            });
+
+            var changeEventCount = 0;
+            this.model.on('change', function(){changeEventCount++;});
+
+            this.view.$("input.dateClass").val("Kijana");
+            this.view.$("input.dateClass").trigger("change");
+            expect(changeEventCount).toBe(1);
+        });
+
+        it("correct view setEl invoked - 2 bindings", function(){
+            var setElCount = 0;
+
+            this.modelBinder.bind(this.model, this.view.el, {
+                date: '.dateClass'
+            });
+
+            var oldSetEl = this.modelBinder._setEl;
+            var newSetEl = function(el, elementBinding, convertedValue){
+                setElCount++;
+                oldSetEl.call(this.modelBinder, el, elementBinding, convertedValue);
+            };
+            this.modelBinder._setEl = newSetEl;
+
+            this.view.$("input.dateClass").val("Kijana");
+            this.view.$("input.dateClass").trigger("change");
+            expect(setElCount).toBe(1);
         });
     });
 

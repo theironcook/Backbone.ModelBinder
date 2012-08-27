@@ -330,6 +330,8 @@ SimpleView = Backbone.View.extend({
           <div type='text' id='address'></div>\
           <input type='text' name='firstName'>\
           <input type='text' name='lastName'>\
+          <input type='text' class='dateClass'>\
+          <div class='dateClass'></div>\
           <select name='education'> \
             <option value='none'>none</option> \
             <option value='grade_school'>i dun learned at grade skool</option> \

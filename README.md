@@ -688,6 +688,11 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 
 ## Release Notes / Versions
 
+### v 0.1.6 August 27, 2012
+
+* Bugfix for issue 51
+
+
 ### v 0.1.5 June 20, 2012
 
 * Upgraded model binder to allow single DOM element to be bound to multiple model attributes

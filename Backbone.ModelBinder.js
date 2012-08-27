@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v0.1.5
+// Backbone.ModelBinder v0.1.6
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -97,7 +97,7 @@
 
         // If the bindings are not specified, the default binding is performed on the name attribute
         _initializeDefaultBindings: function(){
-            var elCount, namedEls, namedEl, name;
+            var elCount, namedEls, namedEl, name, attributeBinding;
             this._attributeBindings = {};
             namedEls = $('[name]', this._rootEl);
 
@@ -107,7 +107,7 @@
 
                 // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
                 if(!this._attributeBindings[name]){
-                    var attributeBinding =  {attributeName: name};
+                    attributeBinding =  {attributeName: name};
                     attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
                     this._attributeBindings[name] = attributeBinding;
                 }
@@ -241,17 +241,21 @@
         },
 
         _copyModelToView:function (attributeBinding) {
-            var elementBindingCount, elementBinding, boundElCount, boundEl;
-            var value = this._model.get(attributeBinding.attributeName);
+            var elementBindingCount, elementBinding, boundElCount, boundEl, value, convertedValue;
+
+            value = this._model.get(attributeBinding.attributeName);
 
             for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
                 elementBinding = attributeBinding.elementBindings[elementBindingCount];
 
-                if(!elementBinding.isSetting){
-                    var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                    boundEl = elementBinding.boundEls[boundElCount];
 
-                    for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
-                        boundEl = elementBinding.boundEls[boundElCount];
+                    if(!boundEl._isSetting){
+                        if(!convertedValue){
+                            convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                        }
+
                         this._setEl($(boundEl), elementBinding, convertedValue);
                     }
                 }
@@ -332,15 +336,19 @@
         },
 
         _copyViewToModel: function (elementBinding, el) {
-            if (!elementBinding.isSetting) {
-                elementBinding.isSetting = true;
+            var value, convertedValue;
+
+            if (!el._isSetting) {
+
+                el._isSetting = true;
                 this._setModel(elementBinding, $(el));
+                el._isSetting = false;
 
                 if(elementBinding.converter){
-                    this._copyModelToView(elementBinding.attributeBinding);
+                    value = this._model.get(elementBinding.attributeBinding.attributeName);
+                    convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                    this._setEl($(el), elementBinding, convertedValue);
                 }
-
-                elementBinding.isSetting = false;
             }
         },
 

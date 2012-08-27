@@ -326,6 +326,9 @@
             else if(el.is('input') || el.is('select') || el.is('textarea')){
                 el.val(convertedValue);
             }
+            else if(el.prop('contenteditable')){
+                el.html(convertedValue);
+            }
             else {
                 el.text(convertedValue);
             }

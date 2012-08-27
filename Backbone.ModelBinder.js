@@ -26,6 +26,7 @@
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
+    Backbone.ModelBinder.Constants.default_attribute = "name";
 
     _.extend(Backbone.ModelBinder.prototype, {
 
@@ -448,8 +449,6 @@
             }
         });
     };
-
-    Backbone.ModelBinder.default_attribute = "name";
 
     return Backbone.ModelBinder;
 

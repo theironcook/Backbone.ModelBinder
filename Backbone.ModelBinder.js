@@ -97,13 +97,12 @@
 
         // If the bindings are not specified, the default binding is performed on the name attribute
         _initializeDefaultBindings: function(){
-            var elCount, namedEls, namedEl, name;
             this._attributeBindings = {};
-            namedEls = $('[name]', this._rootEl);
+            var namedEls = $('['+Backbone.ModelBinder.default_attribute+']', this._rootEl);
 
-            for(elCount = 0; elCount < namedEls.length; elCount++){
-                namedEl = namedEls[elCount];
-                name = $(namedEl).attr('name');
+            for(var elCount = 0; elCount < namedEls.length; elCount++){
+                var namedEl = namedEls[elCount];
+                var name = $(namedEl).attr(Backbone.ModelBinder.default_attribute);
 
                 // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
                 if(!this._attributeBindings[name]){
@@ -403,14 +402,13 @@
     // converter(optional) - the default converter you want applied to all your bindings
     // elAttribute(optional) - the default elAttribute you want applied to all your bindings
     Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
-        var foundEls, elCount, foundEl, attributeName;
         var bindings = {};
 
-        foundEls = $('[' + attributeType + ']', rootEl);
+        var foundEls = $('[' + attributeType + ']', rootEl);
 
-        for(elCount = 0; elCount < foundEls.length; elCount++){
-            foundEl = foundEls[elCount];
-            attributeName = $(foundEl).attr(attributeType);
+        for(var elCount = 0; elCount < foundEls.length; elCount++){
+            var foundEl = foundEls[elCount];
+            var attributeName = $(foundEl).attr(attributeType);
 
             if(!bindings[attributeName]){
                 var attributeBinding =  {selector: '[' + attributeType + '="' + attributeName + '"]'};
@@ -451,6 +449,7 @@
         });
     };
 
+    Backbone.ModelBinder.default_attribute = "name";
 
     return Backbone.ModelBinder;
 

@@ -347,17 +347,15 @@
             }
         },
 
-        _getElValue: function(elementBinding, el){
-            switch (el.attr('type')) {
-                case 'checkbox':
-                    return el.prop('checked') ? true : false;
-                default:
-                    if(el.attr('contenteditable') !== undefined){
-                        return el.html();
-                    }
-                    else {
-                        return el.val();
-                    }
+        _getElValue: function(elementBinding, el) {
+            if (el.attr('type') === 'checkbox') {
+                return el.prop('checked') ? true : false;
+            }
+            else if (el.prop('contenteditable')) {
+                return el.html();
+            }
+            else {
+                return el.val();
             }
         },
 

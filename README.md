@@ -42,12 +42,10 @@ SomeView = Backbone.View.extend({
     }
 });
 ````
+If the model changes frequently the above type of code will be wasteful because so many DOM elements are just thrown away. Converting the model to json is also an unnecessary conversion.
 
-While the style above technically works just fine it could be more efficient by using the ModelBinder - especially for larger client applications.
+The ModelBinder eliminates these ineffeciencies by listening for model changes like the above code. But it doesn't recreate the entire set of DOM elements. Instead, it will change the content of existing DOM elements.
 
-If render is called multiple times, the previously created html elements are just thrown away.
-Converting the model to json is also an unnecessary conversion.
-The ModelBinder eliminates these inefficiencies.
 
 <br>
 ## Prerequisites

@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v0.1.5
+// Backbone.ModelBinder v0.1.6
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
@@ -335,15 +335,19 @@
         },
 
         _copyViewToModel: function (elementBinding, el) {
-            if (!elementBinding.isSetting) {
-                elementBinding.isSetting = true;
+            var value, convertedValue;
+
+            if (!el._isSetting) {
+
+                el._isSetting = true;
                 this._setModel(elementBinding, $(el));
+                el._isSetting = false;
 
                 if(elementBinding.converter){
-                    this._copyModelToView(elementBinding.attributeBinding);
+                    value = this._model.get(elementBinding.attributeBinding.attributeName);
+                    convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                    this._setEl($(el), elementBinding, convertedValue);
                 }
-
-                elementBinding.isSetting = false;
             }
         },
 

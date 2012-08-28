@@ -248,16 +248,16 @@
                         for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
                             elementBinding = attributeBinding.elementBindings[elementBindingCount];
 
-                            if(!elementBinding.isSetting){
-                                var convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                    boundEl = elementBinding.boundEls[boundElCount];
 
-                                for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
-                                    boundEl = elementBinding.boundEls[boundElCount];
-                                    this._setEl($(boundEl), elementBinding, convertedValue);
-                                }
-                            }
-                        }
-                    },
+                    if(!boundEl._isSetting){
+                        convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
+                        this._setEl($(boundEl), elementBinding, convertedValue);
+                    }
+                }
+            }
+        },
 
                     _setEl: function (el, elementBinding, convertedValue) {
                         if (elementBinding.elAttribute) {

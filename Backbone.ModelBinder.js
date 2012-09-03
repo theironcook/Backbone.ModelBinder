@@ -456,6 +456,8 @@
                 destination[key] = [destination[key], elementBinding];
             }
         });
+
+        return destination;
     };
 
 

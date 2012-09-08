@@ -71,9 +71,11 @@
                 inputBinding = this._attributeBindings[attributeBindingKey];
 
                 if (_.isString(inputBinding)) {
-                    attributeBinding = {elementBindings: [
-                        {selector: inputBinding}
-                    ]};
+                    attributeBinding = {
+                        elementBindings: [{
+                            selector: inputBinding
+                        }]
+                    };
                 } else if (_.isArray(inputBinding)) {
                     attributeBinding = {elementBindings: inputBinding};
                 } else if (_.isObject(inputBinding)) {
@@ -106,9 +108,10 @@
                 // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
                 if (!this._attributeBindings[name]) {
                     attributeBinding = {attributeName: name};
-                    attributeBinding.elementBindings = [
-                        {attributeBinding: attributeBinding, boundEls: [namedEl]}
-                    ];
+                    attributeBinding.elementBindings = [{
+                        attributeBinding: attributeBinding,
+                        boundEls: [namedEl]
+                    }];
                     this._attributeBindings[name] = attributeBinding;
                 } else {
                     this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});

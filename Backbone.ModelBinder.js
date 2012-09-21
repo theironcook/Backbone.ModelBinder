@@ -54,6 +54,11 @@
             this._bindViewToModel();
         },
 
+	    bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
+           this._triggers = triggers;
+           this.bind(model, rootEl, attributeBindings, modelSetOptions)
+    	},
+
         unbind:function () {
             this._unbindModelToView();
             this._unbindViewToModel();
@@ -172,16 +177,30 @@
             }
         },
 
-        _bindViewToModel:function () {
-            $(this._rootEl).delegate('', 'change', this._onElChanged);
-            // The change event doesn't work properly for contenteditable elements - but blur does
-            $(this._rootEl).delegate('[contenteditable]', 'blur', this._onElChanged);
+        _bindViewToModel: function () {
+            if (this._triggers) {
+                _.each(this._triggers, function (event, selector) {
+                    $(this._rootEl).delegate(selector, event, this._onElChanged);
+                }, this);
+            }
+            else {
+                $(this._rootEl).delegate('', 'change', this._onElChanged);
+                // The change event doesn't work properly for contenteditable elements - but blur does
+                $(this._rootEl).delegate('[contenteditable]', 'blur', this._onElChanged);
+            }
         },
 
-        _unbindViewToModel: function(){
-            if(this._rootEl){
-                $(this._rootEl).undelegate('', 'change', this._onElChanged);
-                $(this._rootEl).undelegate('[contenteditable]', 'blur', this._onElChanged);
+        _unbindViewToModel: function () {
+            if (this._rootEl) {
+                if (this._triggers) {
+                    _.each(this._triggers, function (event, selector) {
+                        $(this._rootEl).undelegate(selector, event, this._onElChanged);
+                    }, this);
+                }
+                else {
+                    $(this._rootEl).undelegate('', 'change', this._onElChanged);
+                    $(this._rootEl).undelegate('[contenteditable]', 'blur', this._onElChanged);
+                }
             }
         },
 

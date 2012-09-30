@@ -486,21 +486,14 @@
     // Helps you to combine 2 sets of bindings
     Backbone.ModelBinder.combineBindings = function(destination, source){
         _.each(source, function(value, key){
-            var elementBinding = {selector: value.selector};
-
-            if(value.converter){
-                elementBinding.converter = value.converter;
-            }
-
-            if(value.elAttribute){
-                elementBinding.elAttribute = value.elAttribute;
-            }
+            var elementBinding = value;
 
             if(!destination[key]){
                 destination[key] = elementBinding;
             }
             else {
-                destination[key] = [destination[key], elementBinding];
+                var bindings = [destination[key], elementBinding];
+                destination[key] = _.flatten(bindings);
             }
         });
 

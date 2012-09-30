@@ -18,7 +18,9 @@
 
     Backbone.ModelBinder = function(modelSetOptions){
         _.bindAll(this);
-	this._modelSetOptions = modelSetOptions || {};
+        this._modelSetOptions = modelSetOptions || {
+            select: ['name', 'id', 'data-bind']  // Attributes to which we're binding
+        };
     };
 
     // Current version of the library.
@@ -48,7 +50,15 @@
             }
             else {
                 // Default bindings generated from static method
-                self._attributeBindings = Backbone.ModelBinder.createDefaultBindings(rootEl, 'name');
+                var self = this;
+                _.each(this._modelSetOptions.select, function (attr, index) {
+                    if (self._attributeBindings) {
+                        Backbone.ModelBinder.combineBindings(self._attributeBindings, Backbone.ModelBinder.createDefaultBindings(rootEl, attr));
+                    } else {
+
+                    }
+
+                });
 
                 this._initializeAttributeBindings();
                 this._initializeElBindings();

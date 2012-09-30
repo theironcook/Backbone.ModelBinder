@@ -47,7 +47,11 @@
                 this._initializeElBindings();
             }
             else {
-                this._initializeDefaultBindings();
+                // Default bindings generated from static method
+                self._attributeBindings = Backbone.ModelBinder.createDefaultBindings(rootEl, 'name');
+
+                this._initializeAttributeBindings();
+                this._initializeElBindings();
             }
 
             this._bindModelToView();
@@ -97,28 +101,6 @@
 
                 attributeBinding.attributeName = attributeBindingKey;
                 this._attributeBindings[attributeBindingKey] = attributeBinding;
-            }
-        },
-
-        // If the bindings are not specified, the default binding is performed on the name attribute
-        _initializeDefaultBindings: function(){
-            var elCount, namedEls, namedEl, name, attributeBinding;
-            this._attributeBindings = {};
-            namedEls = $('[name]', this._rootEl);
-
-            for(elCount = 0; elCount < namedEls.length; elCount++){
-                namedEl = namedEls[elCount];
-                name = $(namedEl).attr('name');
-
-                // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
-                if(!this._attributeBindings[name]){
-                    attributeBinding =  {attributeName: name};
-                    attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
-                    this._attributeBindings[name] = attributeBinding;
-                }
-                else{
-                    this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
-                }
             }
         },
 

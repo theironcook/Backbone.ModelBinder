@@ -426,25 +426,56 @@
     // converter(optional) - the default converter you want applied to all your bindings
     // elAttribute(optional) - the default elAttribute you want applied to all your bindings
     Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
-        var foundEls, elCount, foundEl, attributeName;
-        var bindings = {};
+        var foundEls, elCount, foundEl, attributeName, attribute, attributeBinding, overridenElAttribute,
+            bindings = {};
 
         foundEls = $('[' + attributeType + ']', rootEl);
 
         for(elCount = 0; elCount < foundEls.length; elCount++){
             foundEl = foundEls[elCount];
-            attributeName = $(foundEl).attr(attributeType);
 
-            if(!bindings[attributeName]){
-                var attributeBinding =  {selector: '[' + attributeType + '="' + attributeName + '"]'};
-                bindings[attributeName] = attributeBinding;
+            attribute = $(foundEl).attr(attributeType);
+            if (attribute.indexOf(' ') < 0) {
+                // Attribute is single value
+                attributeName = attribute;
+                overridenElAttribute = null;
+            } else {
+                // Attribute goes in format ``elementAttr modelAttr``.
+                // Allow to override ``elAttribute`` parameter is overrien in html
+                overridenElAttribute = attribute.split(' ')[0];
+                attributeName = attribute.split(' ')[1];
+            }
 
+            // This is common rule for creating bindings
+            attributeBinding = { selector: '[' + attributeType + '="' + attribute + '"]' };
+
+            if (!bindings[attributeName]) {
                 if(converter){
-                    bindings[attributeName].converter = converter;
+                    attributeBinding.converter = converter;
                 }
 
-                if(elAttribute){
-                    bindings[attributeName].elAttribute = elAttribute;
+                if (elAttribute || overridenElAttribute) {
+                    attributeBinding.elAttribute = overridenElAttribute ? overridenElAttribute : elAttribute;
+                }
+                bindings[attributeName] = attributeBinding;
+            } else {
+                // Create separate binding for DOM elements with different selectors
+                if (bindings[attributeName].selector != attributeBinding.selector) {
+
+                    if (converter) {
+                        attributeBinding.converter = converter;
+                    }
+
+                    if (elAttribute || overridenElAttribute) {
+                        attributeBinding.elAttribute = overridenElAttribute ? overridenElAttribute : elAttribute;
+                    }
+
+                    // append to bindings or replace binding with array
+                    if (_.isArray(bindings[attributeName])) {
+                        bindings[attributeName].push(attributeBinding);
+                    } else {
+                        bindings[attributeName] = [bindings[attributeName], attributeBinding];
+                    }
                 }
             }
         }

@@ -14,6 +14,7 @@
 
     Backbone.CollectionBinder = function(elManagerFactory, options){
         _.bindAll(this);
+        this._elManagers = {};
 
         this._elManagerFactory = elManagerFactory;
         if(!this._elManagerFactory) throw 'elManagerFactory must be defined.';

@@ -1,0 +1,40 @@
+{
+    "name": "backbone.modelbinder",
+    "title": "Backbone.ModelBinder",
+    "version": "0.1.6",
+    "description": "Simple, flexible and powerful Model-View binding for Backbone.",
+    "keywords": ["backbone", "binding"],
+
+    "homepage": "https://github.com/theironcook/Backbone.ModelBinder",
+    "bugs": "https://github.com/theironcook/Backbone.ModelBinder/issues",
+
+    "author": {
+        "name": "Bart Wood",
+        "url": "https://github.com/theironcook"
+    },
+
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/theironcook/Backbone.ModelBinder.git"
+    },
+
+    "licenses": [{
+        "type": "MIT",
+        "url": "https://github.com/theironcook/Backbone.ModelBinder/blob/master/LICENSE"
+    }],
+
+    "scripts": {
+        "test": "grunt lint qunit"
+    },
+
+    "devDependencies": {
+        "grunt": "~0.3.16"
+    },
+
+    "engines": {
+        "node": "~0.8.11",
+        "npm": "~1.1.62"
+    },
+
+    "private": true
+}

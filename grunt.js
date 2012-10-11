@@ -16,16 +16,26 @@ module.exports = function (grunt) {
         },
 
         concat: {
-            dist: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/<%= pkg.name %>.js>'],
-                dest: 'dist/<%= pkg.name %>.js'
+            modelbinder: {
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/backbone.modelbinder.js>'],
+                dest: 'dist/backbone.modelbinder.js'
+            },
+
+            collectionbinder: {
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/backbone.collectionbinder.js>'],
+                dest: 'dist/backbone.collectionbinder.js'
             }
         },
 
         min: {
-            dist: {
-                src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-                dest: 'dist/<%= pkg.name %>.min.js'
+            modelbinder: {
+                src: ['<banner:meta.banner>', '<config:concat.modelbinder.dest>'],
+                dest: 'dist/backbone.modelbinder.min.js'
+            },
+
+            collectionbinder: {
+                src: ['<banner:meta.banner>', '<config:concat.collectionbinder.dest>'],
+                dest: 'dist/backbone.collectionbinder.min.js'
             }
         },
 

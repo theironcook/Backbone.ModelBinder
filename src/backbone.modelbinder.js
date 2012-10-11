@@ -18,7 +18,7 @@
 
     Backbone.ModelBinder = function(modelSetOptions){
         _.bindAll(this);
-	this._modelSetOptions = modelSetOptions || {};
+    this._modelSetOptions = modelSetOptions || {};
     };
 
     // Current version of the library.
@@ -34,10 +34,15 @@
 
             this._model = model;
             this._rootEl = rootEl;
-	        this._modelSetOptions = _.extend({}, this._modelSetOptions, modelSetOptions);
+            this._modelSetOptions = _.extend({}, this._modelSetOptions, modelSetOptions);
 
-            if (!this._model) throw 'model must be specified';
-            if (!this._rootEl) throw 'rootEl must be specified';
+            if (!this._model) {
+                throw 'model must be specified';
+            }
+
+            if (!this._rootEl) {
+                throw 'rootEl must be specified';
+            }
 
             if(attributeBindings){
                 // Create a deep clone of the attribute bindings
@@ -54,10 +59,10 @@
             this._bindViewToModel();
         },
 
-	    bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
+        bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
            this._triggers = triggers;
-           this.bind(model, rootEl, attributeBindings, modelSetOptions)
-    	},
+           this.bind(model, rootEl, attributeBindings, modelSetOptions);
+        },
 
         unbind:function () {
             this._unbindModelToView();
@@ -369,16 +374,15 @@
         },
 
         _getElValue: function(elementBinding, el){
-            switch (el.attr('type')) {
-                case 'checkbox':
-                    return el.prop('checked') ? true : false;
-                default:
-                    if(el.attr('contenteditable') !== undefined){
-                        return el.html();
-                    }
-                    else {
-                        return el.val();
-                    }
+            if (el.attr('type') === 'checkbox') {
+                return el.prop('checked') ? true : false;
+            } else {
+                if(el.attr('contenteditable') !== undefined){
+                    return el.html();
+                }
+                else {
+                    return el.val();
+                }
             }
         },
 
@@ -387,7 +391,7 @@
             var elVal = this._getElValue(elementBinding, el);
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
             data[elementBinding.attributeBinding.attributeName] = elVal;
-	        var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
+            var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
             this._model.set(data, opts);
         },
 

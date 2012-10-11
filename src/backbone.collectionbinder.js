@@ -17,7 +17,9 @@
         this._elManagers = {};
 
         this._elManagerFactory = elManagerFactory;
-        if(!this._elManagerFactory) throw 'elManagerFactory must be defined.';
+        if(!this._elManagerFactory) {
+            throw 'elManagerFactory must be defined.';
+        }
 
         // Let the factory just use the trigger function on the view binder
         this._elManagerFactory.trigger = this.trigger;
@@ -31,8 +33,13 @@
         bind: function(collection, parentEl){
             this.unbind();
 
-            if(!collection) throw 'collection must be defined';
-            if(!parentEl) throw 'parentEl must be defined';
+            if(!collection) {
+                throw 'collection must be defined';
+            }
+
+            if(!parentEl) {
+                throw 'parentEl must be defined';
+            }
 
             this._collection = collection;
             this._elManagerFactory.setParentEl(parentEl);
@@ -148,7 +155,9 @@
         this._elHtml = elHtml;
         this._bindings = bindings;
 
-        if(! _.isString(this._elHtml)) throw 'elHtml must be a valid html string';
+        if(! _.isString(this._elHtml)) {
+            throw 'elHtml must be a valid html string';
+        }
     };
 
     _.extend(Backbone.CollectionBinder.ElManagerFactory.prototype, {
@@ -222,7 +231,9 @@
         _.bindAll(this);
         this._viewCreator = viewCreator;
 
-        if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
+        if(!_.isFunction(this._viewCreator)) {
+            throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
+        }
     };
 
     _.extend(Backbone.CollectionBinder.ViewManagerFactory.prototype, {
@@ -252,7 +263,7 @@
                     }
                     else {
                         this._view.$el.remove();
-                        console.log('warning, you should implement a close() function for your view, you might end up with zombies');
+                        // console.log('warning, you should implement a close() function for your view, you might end up with zombies');
                     }
 
                     this.trigger('elRemoved', this._model, this._view);
@@ -281,4 +292,4 @@
         }
     });
 
-}).call(this);
+}());

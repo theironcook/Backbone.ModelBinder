@@ -6,10 +6,6 @@
  * Released under the MIT license.
  */
 
-// Backbone.ModelBinder v0.1.6
-// (c) 2012 Bart Wood
-// Distributed Under MIT License
-
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.

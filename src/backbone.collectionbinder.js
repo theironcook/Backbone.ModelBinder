@@ -1,7 +1,3 @@
-// Backbone.CollectionBinder v0.1.1
-// (c) 2012 Bart Wood
-// Distributed Under MIT License
-
 (function(){
 
     if(!Backbone){

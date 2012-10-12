@@ -24,11 +24,12 @@
     }],
 
     "scripts": {
-        "test": "grunt lint qunit"
+        "test": "grunt lint jasmine"
     },
 
     "devDependencies": {
-        "grunt": "~0.3.16"
+        "grunt": "~0.3.16",
+        "grunt-jasmine-task": "~0.2.3"
     },
 
     "engines": {

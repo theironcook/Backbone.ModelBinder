@@ -5,14 +5,7 @@ module.exports = function (grunt) {
         pkg: '<json:package.json>',
 
         meta: {
-            banner:
-                '/**\n' +
-                ' * <%= pkg.title || pkg.name %> v<%= pkg.version %>\n' +
-                ' * <%= pkg.homepage || pkg.repository.url %>\n' +
-                ' *\n' +
-                ' * Copyright © <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
-                ' * Released under the <%= _.pluck(pkg.licenses, "type").join(", ") %> <%= pkg.licenses.length > 1 ? "licenses" : "license" %>.\n' +
-                ' */'
+            banner: grunt.file.read('build/banner.js')
         },
 
         concat: {
@@ -39,8 +32,8 @@ module.exports = function (grunt) {
             }
         },
 
-        qunit: {
-            files: ['test/**/*.html']
+        jasmine: {
+            all: ['spec/SpecRunner.html']
         },
 
         lint: {
@@ -49,24 +42,38 @@ module.exports = function (grunt) {
 
         watch: {
             files: '<config:lint.files>',
-            tasks: 'lint qunit'
+            tasks: 'lint jasmine'
         },
 
         jshint: {
             options: {
+                bitwise: true,
+                camelcase: true,
                 curly: true,
                 eqeqeq: true,
+                forin: false,
                 immed: true,
+                indent: 4,
                 latedef: true,
                 newcap: true,
                 noarg: true,
-                sub: true,
+                noempty: true,
+                nonew: true,
+                plusplus: false,
+                quotmark: 'single',
+                regexp: true,
                 undef: true,
-                boss: true,
-                eqnull: true,
-                node: true,
+                unused: true,
+                strict: false,
+                trailing: true,
+                maxparams: 3,
+                maxdepth: 2,
+                maxstatements: 4,
+                maxcomplexity: true,
+
                 browser: true,
-                jquery: true
+                jquery: true,
+                node: true
             },
 
             globals: {
@@ -80,5 +87,7 @@ module.exports = function (grunt) {
         uglify: {}
     });
 
-    grunt.registerTask('default', 'lint qunit concat min');
+    grunt.loadNpmTasks('grunt-jasmine-task');
+
+    grunt.registerTask('default', 'lint jasmine concat min');
 };

@@ -90,7 +90,7 @@
             this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
             this._elManagers[model.cid].createEl();
 
-            if(this._options['autoSort']){
+            if(this._options.autoSort){
                 this.sortRootEls();
             }
         },

@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/theironcook/Backbone.ModelBinder.png)](http://travis-ci.org/theironcook/Backbone.ModelBinder)
+
 Special thanks to [Derick Bailey](http://lostechies.com/derickbailey) for creating predecessor to this plugin.
 I've been able to reuse unit tests he created for his [Backbone.ModelBinding](https://github.com/derickbailey/backbone.modelbinding) plugin.
 

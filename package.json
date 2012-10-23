@@ -28,13 +28,13 @@
     },
 
     "devDependencies": {
-        "grunt": "~0.3.16",
+        "grunt": "~0.3.17",
         "grunt-jasmine-task": "~0.2.3"
     },
 
     "engines": {
-        "node": "~0.8.11",
-        "npm": "~1.1.62"
+        "node": "~0.8.12",
+        "npm": "~1.1.63"
     },
 
     "private": true

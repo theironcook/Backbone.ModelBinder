@@ -33,7 +33,7 @@ module.exports = function (grunt) {
         },
 
         jasmine: {
-            all: ['spec/SpecRunner.html']
+            all: ['specs/SpecRunner.html']
         },
 
         lint: {
@@ -64,12 +64,12 @@ module.exports = function (grunt) {
                 regexp: true,
                 undef: true,
                 unused: true,
-                strict: false,
+                strict: true,
                 trailing: true,
-                maxparams: 3,
-                maxdepth: 2,
-                maxstatements: 4,
-                maxcomplexity: true,
+                maxparams: 4,
+                maxdepth: 3,
+                maxstatements: 10,
+                maxcomplexity: 5,
 
                 browser: true,
                 jquery: true,
@@ -78,7 +78,8 @@ module.exports = function (grunt) {
 
             globals: {
                 // Libraries
-                Backbone: true, _: true,
+                _: true,
+                Backbone: true,
                 // AMD directives
                 define: true
             }

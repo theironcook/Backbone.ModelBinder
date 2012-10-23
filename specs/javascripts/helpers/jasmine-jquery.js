@@ -29,7 +29,7 @@ jasmine.getFixtures = function() {
 jasmine.Fixtures = function() {
   this.containerId = 'jasmine-fixtures';
   this.fixturesCache_ = {};
-  this.fixturesPath = 'spec/javascripts/fixtures';
+  this.fixturesPath = 'specs/javascripts/fixtures';
 };
 
 jasmine.Fixtures.prototype.set = function(html) {
@@ -81,7 +81,7 @@ jasmine.Fixtures.prototype.createContainer_ = function(html) {
   jQuery('body').append(container);
 };
 
-jasmine.Fixtures.prototype.getFixtureHtml_ = function(url) {  
+jasmine.Fixtures.prototype.getFixtureHtml_ = function(url) {
   if (typeof this.fixturesCache_[url] == 'undefined') {
     this.loadFixtureIntoCache_(url);
   }
@@ -223,7 +223,7 @@ jasmine.JQuery.matchersClass = {};
       var events = this.actual.data("events");
       return events && events[eventName].length > 0;
     },
-    
+
     // tests the existence of a specific event binding + handler
     toHandleWith: function(eventName, eventHandler) {
       var stack = this.actual.data("events")[eventName];

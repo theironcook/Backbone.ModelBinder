@@ -24,7 +24,7 @@
     }],
 
     "scripts": {
-        "test": "grunt lint jasmine"
+        "test": "grunt lint jasmine --force"
     },
 
     "devDependencies": {

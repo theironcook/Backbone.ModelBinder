@@ -251,11 +251,31 @@
             var changedAttribute, attributeBinding;
 
             for (changedAttribute in this._model.changedAttributes()) {
-                attributeBinding = this._attributeBindings[changedAttribute];
+
+				var nestedChangedAttr = []
+				for( attr in this._attributeBindings ) {
+					
+					if( attr.indexOf(changedAttribute + ".") > -1)
+						nestedChangedAttr.push(attr);
+				}
+
+
+				attributeBinding = this._attributeBindings[changedAttribute];
 
                 if (attributeBinding) {
                     this._copyModelToView(attributeBinding);
                 }
+
+				//loop nested
+				for( var i=0; i < nestedChangedAttr.length; i++ ) {
+
+					attributeBinding = this._attributeBindings[nestedChangedAttr[i]];
+
+					if (attributeBinding) {
+						this._copyModelToView(attributeBinding);
+					}
+				}
+
             }
         },
 

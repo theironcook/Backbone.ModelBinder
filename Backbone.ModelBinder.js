@@ -265,7 +265,7 @@
 			var valArr = attributeBinding.attributeName.split(".");
 			var value;
 			
-			if (valArr.length > 0 ) {
+			if (valArr.length > 1 ) {
 				
 				for(var i=0; i < valArr.length; i++ ) {
 					
@@ -404,7 +404,7 @@
 
             var objArr = elementBinding.attributeBinding.attributeName.split(".");
 			var obj;
-			if (objArr.length > 0 ) {
+			if (objArr.length > 1 ) {
 				
 				for(var i=0; i < objArr.length; i++ ) {
 					

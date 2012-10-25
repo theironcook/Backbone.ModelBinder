@@ -262,7 +262,22 @@
         _copyModelToView:function (attributeBinding) {
             var elementBindingCount, elementBinding, boundElCount, boundEl, value, convertedValue;
 
-            value = this._model.get(attributeBinding.attributeName);
+			var valArr = attributeBinding.attributeName.split(".");
+			var value;
+			
+			if (valArr.length > 0 ) {
+				
+				for(var i=0; i < valArr.length; i++ ) {
+					
+					if( i == 0)
+						value = this._model.get(valArr[i]);
+					else
+						value = value.get(valArr[i]);
+
+
+				}
+			} else
+				value = this._model.get(attributeBinding.attributeName);
 
             for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
                 elementBinding = attributeBinding.elementBindings[elementBindingCount];
@@ -383,12 +398,29 @@
         },
 
         _setModel: function (elementBinding, el) {
-            var data = {};
+
             var elVal = this._getElValue(elementBinding, el);
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
-            data[elementBinding.attributeBinding.attributeName] = elVal;
-	        var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
-            this._model.set(data, opts);
+
+            var objArr = elementBinding.attributeBinding.attributeName.split(".");
+			var obj;
+			if (objArr.length > 0 ) {
+				
+				for(var i=0; i < objArr.length; i++ ) {
+					
+					if( i == 0)
+						obj = this._model.get(objArr[i]);
+					else if ( i > 0 && i < objArr.length-1 )
+						obj = obj.get(objArr[i]);
+				}
+				obj.set(objArr[objArr.length-1], elVal);
+			}else {
+			
+				var data = {};
+				data[elementBinding.attributeBinding.attributeName] = elVal;
+				var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
+				this._model.set(data, opts);
+			}
         },
 
         _getConvertedValue: function (direction, elementBinding, value) {

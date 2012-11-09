@@ -1,8 +1,15 @@
 // Backbone.CollectionBinder v0.1.1
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
-
-(function(){
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['underscore', 'jquery', 'backbone', './Backbone.ModelBinder'], factory);
+    } else {
+        // Browser globals
+        factory(_, $, Backbone, Backbone.ModelBinder);
+    }
+}(function(_, $, Backbone, ModelBinder){
 
     if(!Backbone){
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
@@ -182,6 +189,8 @@
                         else {
                             throw 'Unsupported bindings type, please use a boolean or a bindings hash';
                         }
+
+                        this._modelBinder.on('viewUpdated', _.bind(function(mdl, atts){this.trigger('viewUpdated', this._model, atts, this._el);}, this));
                     }
 
                     this.trigger('elCreated', this._model, this._el);
@@ -280,5 +289,5 @@
             return elManager;
         }
     });
-
-}).call(this);
+    return Backbone.CollectionBinder;
+}));

@@ -81,7 +81,7 @@ Both scoping mechanisms will be discussed throughout the rest of this document.
 
 The `ModelBinder` class contains all of the logic to facilitate bi-directional view-model binding.
 
-The ModelBinder class exposes 3 public functions shown below:
+The ModelBinder class exposes 3 public functions and 1 event shown below:
 
 ```javascript
 // no arguments passed to the constructor
@@ -94,6 +94,10 @@ bind(model, rootEl, bindings);
 
 // unbinds the Model with the elements found under rootEl - defined when calling bind()
 unbind();
+
+//triggered after the view is updated because of a model change
+Event:
+viewUpdated //function(model, changedAttributes/* array of changed attributes*/)
 ```
 
 <br>
@@ -115,6 +119,12 @@ SomeView = Backbone.View.extend({
         this.modelBinder.bind(this.model, this.el);
     }
 });
+````
+
+The `viewUpdated` event is useful if you are using a 3rd party library that enhances the DOM after you have already created it.
+
+````
+    this.modelBinder.on('viewUpdated', function(model, atts){/* myPlugin.update()*/ });
 ````
 
 <br>

@@ -352,15 +352,15 @@
         },
 
         _copyViewToModel: function (elementBinding, el) {
-            var value, convertedValue;
+            var result, value, convertedValue;
 
             if (!el._isSetting) {
 
                 el._isSetting = true;
-                this._setModel(elementBinding, $(el));
+                result = this._setModel(elementBinding, $(el));
                 el._isSetting = false;
 
-                if(elementBinding.converter){
+                if(result && elementBinding.converter){
                     value = this._model.get(elementBinding.attributeBinding.attributeName);
                     convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
                     this._setEl($(el), elementBinding, convertedValue);
@@ -388,7 +388,7 @@
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
             data[elementBinding.attributeBinding.attributeName] = elVal;
 	        var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
-            this._model.set(data, opts);
+            return this._model.set(data, opts);
         },
 
         _getConvertedValue: function (direction, elementBinding, value) {

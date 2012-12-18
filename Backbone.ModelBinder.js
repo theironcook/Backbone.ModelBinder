@@ -393,7 +393,7 @@
 
         _getConvertedValue: function (direction, elementBinding, value) {
             if (elementBinding.converter) {
-                value = elementBinding.converter(direction, value, elementBinding.attributeBinding.attributeName, this._model);
+                value = elementBinding.converter.call(this._model, direction, value, elementBinding.attributeBinding.attributeName, this._model);
             }
 
             return value;

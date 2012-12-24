@@ -13,7 +13,7 @@
             require('jquery'),
             require('backbone')
         );
-    } else
+    } else {
         // Browser globals
         factory(_, $, Backbone);
     }

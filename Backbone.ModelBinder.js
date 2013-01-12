@@ -324,30 +324,32 @@
         },
 
         _setElValue:function (el, convertedValue) {
-            if(el.attr('type')){
-                switch (el.attr('type')) {
-                    case 'radio':
-                        if (el.val() === convertedValue) {
-                            el.attr('checked', 'checked');
-                        }
-                        break;
-                    case 'checkbox':
-                        if (convertedValue) {
-                            el.attr('checked', 'checked');
-                        }
-                        else {
-                            el.removeAttr('checked');
-                        }
-                        break;
-                    default:
-                        el.val(convertedValue);
+            if(!_.isNull(convertedValue) && !_.isUndefined(convertedValue)){
+                if(el.attr('type')){
+                    switch (el.attr('type')) {
+                        case 'radio':
+                            if (el.val() === convertedValue) {
+                                el.attr('checked', 'checked');
+                            }
+                            break;
+                        case 'checkbox':
+                            if (convertedValue) {
+                                el.attr('checked', 'checked');
+                            }
+                            else {
+                                el.removeAttr('checked');
+                            }
+                            break;
+                        default:
+                            el.val(convertedValue);
+                    }
                 }
-            }
-            else if(el.is('input') || el.is('select') || el.is('textarea')){
-                el.val(convertedValue);
-            }
-            else {
-                el.text(convertedValue);
+                else if(el.is('input') || el.is('select') || el.is('textarea')){
+                    el.val(convertedValue);
+                }
+                else {
+                    el.text(convertedValue);
+                }
             }
         },
 

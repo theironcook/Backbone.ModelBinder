@@ -376,7 +376,7 @@
                     return el.prop('checked') ? true : false;
                 default:
                     if(el.attr('contenteditable') !== undefined){
-                        return el.html();
+                        return el.text();
                     }
                     else {
                         return el.val();

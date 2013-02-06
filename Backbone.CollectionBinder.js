@@ -2,7 +2,15 @@
 // (c) 2012 Bart Wood
 // Distributed Under MIT License
 
-(function(){
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['underscore', 'jquery', 'backbone', 'Backbone.ModelBinder'], factory);
+    } else {
+        // Browser globals
+        factory(_, $, Backbone);
+    }
+}(function(_, $, Backbone){
 
     if(!Backbone){
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
@@ -280,5 +288,4 @@
             return elManager;
         }
     });
-
-}).call(this);
+}));

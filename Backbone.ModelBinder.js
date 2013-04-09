@@ -18,7 +18,9 @@
 
     Backbone.ModelBinder = function(modelSetOptions){
         _.bindAll(this);
-	this._modelSetOptions = modelSetOptions || {};
+        this._modelSetOptions = modelSetOptions || {
+            select: ['name', 'id', 'data-bind']  // Attributes to which we're binding
+        };
     };
 
     // Current version of the library.
@@ -47,7 +49,19 @@
                 this._initializeElBindings();
             }
             else {
-                this._initializeDefaultBindings();
+                // Default bindings generated from static method
+                var self = this;
+                _.each(this._modelSetOptions.select, function (attr, index) {
+                    if (self._attributeBindings) {
+                        Backbone.ModelBinder.combineBindings(self._attributeBindings, Backbone.ModelBinder.createDefaultBindings(rootEl, attr));
+                    } else {
+
+                    }
+
+                });
+
+                this._initializeAttributeBindings();
+                this._initializeElBindings();
             }
 
             this._bindModelToView();
@@ -97,28 +111,6 @@
 
                 attributeBinding.attributeName = attributeBindingKey;
                 this._attributeBindings[attributeBindingKey] = attributeBinding;
-            }
-        },
-
-        // If the bindings are not specified, the default binding is performed on the name attribute
-        _initializeDefaultBindings: function(){
-            var elCount, namedEls, namedEl, name, attributeBinding;
-            this._attributeBindings = {};
-            namedEls = $('[name]', this._rootEl);
-
-            for(elCount = 0; elCount < namedEls.length; elCount++){
-                namedEl = namedEls[elCount];
-                name = $(namedEl).attr('name');
-
-                // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
-                if(!this._attributeBindings[name]){
-                    attributeBinding =  {attributeName: name};
-                    attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
-                    this._attributeBindings[name] = attributeBinding;
-                }
-                else{
-                    this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
-                }
             }
         },
 
@@ -429,25 +421,56 @@
     // converter(optional) - the default converter you want applied to all your bindings
     // elAttribute(optional) - the default elAttribute you want applied to all your bindings
     Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
-        var foundEls, elCount, foundEl, attributeName;
-        var bindings = {};
+        var foundEls, elCount, foundEl, attributeName, attribute, attributeBinding, overridenElAttribute,
+            bindings = {};
 
         foundEls = $('[' + attributeType + ']', rootEl);
 
         for(elCount = 0; elCount < foundEls.length; elCount++){
             foundEl = foundEls[elCount];
-            attributeName = $(foundEl).attr(attributeType);
 
-            if(!bindings[attributeName]){
-                var attributeBinding =  {selector: '[' + attributeType + '="' + attributeName + '"]'};
-                bindings[attributeName] = attributeBinding;
+            attribute = $(foundEl).attr(attributeType);
+            if (attribute.indexOf(' ') < 0) {
+                // Attribute is single value
+                attributeName = attribute;
+                overridenElAttribute = null;
+            } else {
+                // Attribute goes in format ``elementAttr modelAttr``.
+                // Allow to override ``elAttribute`` parameter is overrien in html
+                overridenElAttribute = attribute.split(' ')[0];
+                attributeName = attribute.split(' ')[1];
+            }
 
+            // This is common rule for creating bindings
+            attributeBinding = { selector: '[' + attributeType + '="' + attribute + '"]' };
+
+            if (!bindings[attributeName]) {
                 if(converter){
-                    bindings[attributeName].converter = converter;
+                    attributeBinding.converter = converter;
                 }
 
-                if(elAttribute){
-                    bindings[attributeName].elAttribute = elAttribute;
+                if (elAttribute || overridenElAttribute) {
+                    attributeBinding.elAttribute = overridenElAttribute ? overridenElAttribute : elAttribute;
+                }
+                bindings[attributeName] = attributeBinding;
+            } else {
+                // Create separate binding for DOM elements with different selectors
+                if (bindings[attributeName].selector != attributeBinding.selector) {
+
+                    if (converter) {
+                        attributeBinding.converter = converter;
+                    }
+
+                    if (elAttribute || overridenElAttribute) {
+                        attributeBinding.elAttribute = overridenElAttribute ? overridenElAttribute : elAttribute;
+                    }
+
+                    // append to bindings or replace binding with array
+                    if (_.isArray(bindings[attributeName])) {
+                        bindings[attributeName].push(attributeBinding);
+                    } else {
+                        bindings[attributeName] = [bindings[attributeName], attributeBinding];
+                    }
                 }
             }
         }
@@ -458,21 +481,14 @@
     // Helps you to combine 2 sets of bindings
     Backbone.ModelBinder.combineBindings = function(destination, source){
         _.each(source, function(value, key){
-            var elementBinding = {selector: value.selector};
-
-            if(value.converter){
-                elementBinding.converter = value.converter;
-            }
-
-            if(value.elAttribute){
-                elementBinding.elAttribute = value.elAttribute;
-            }
+            var elementBinding = value;
 
             if(!destination[key]){
                 destination[key] = elementBinding;
             }
             else {
-                destination[key] = [destination[key], elementBinding];
+                var bindings = [destination[key], elementBinding];
+                destination[key] = _.flatten(bindings);
             }
         });
 

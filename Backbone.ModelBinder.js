@@ -330,6 +330,9 @@
                         if (el.val() === convertedValue) {
                             el.attr('checked', 'checked');
                         }
+                        else {
+                            el.removeAttr('checked');
+                        }
                         break;
                     case 'checkbox':
                         if (convertedValue) {

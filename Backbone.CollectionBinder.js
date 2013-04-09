@@ -128,7 +128,7 @@
                 var modelElManager = this.getManagerForModel(model);
                 if(modelElManager){
                     var modelEl = modelElManager.getEl();
-                    var currentRootEls = this._elManagerFactory.getParentEl().children();
+                    var currentRootEls = $(this._elManagerFactory.getParentEl()).children();
 
                     if(currentRootEls[modelIndex] !== modelEl[0]){
                         modelEl.detach();

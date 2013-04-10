@@ -347,10 +347,10 @@
                 }
             }
             else if(el.is('input') || el.is('select') || el.is('textarea')){
-                el.val(convertedValue);
+                el.val(convertedValue || '');
             }
             else {
-                el.text(convertedValue);
+                el.text(convertedValue || '');
             }
         },
 

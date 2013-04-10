@@ -13,7 +13,7 @@
     <script>
         $().ready(function () {
 
-            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', eyeColor: 'green'});
+            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', eyeColor: 'green', editableContent: 'Edit Me'});
 
             model.bind('change', function () {
                 $('#modelData').html(JSON.stringify(model.toJSON()));
@@ -31,24 +31,7 @@
                 },
 
                 render:function () {
-                    var html = '\
-                        Edit your information: <span name="firstName"></span> <span name="lastName"></span><br><br>\
-                            Eye Color:  Green: <input type="radio" id="graduated_yes" name="eyeColor" value="green">\
-                            Blue: <input type="radio" id="graduated_no" name="eyeColor" value="blue">\
-                              Brown: <input type="radio" id="graduated_maybe" name="eyeColor" value="brown"><br><br>\
-                            <span class="label"> First Name: </span> <input type="text" name="firstName"/><br>\
-                            <span class="label"> Last Name: </span> <input type="text" name="lastName"/><br>\
-                            <span class="label"> Height: </span> <input type="text" name="height"/><br><br>\
-                              \
-                              Graduated:  Yes: <input type="radio" id="graduated_yes" name="graduated" value="yes">\
-                                      No: <input type="radio" id="graduated_no" name="graduated" value="no">\
-                                      Maybe: <input type="radio" id="graduated_maybe" name="graduated" value="maybe"><br><br>\
-                              \
-                              Drivers licence: <input type="checkbox" name="driversLicense"/><br>\
-                              Motorcycle license: <input type="checkbox" name="motorcycleLicense" /><br><br>\
-                              ';
-
-                    this.$el.html(html);
+                    this.setElement($('#viewContent'));
 
                     var bindings = {
                         firstName: '[name=firstName]',
@@ -56,6 +39,7 @@
                         height: '[name=height]',
                         driversLicense:'[name=driversLicense]',
                         motorcycleLicense:'[name=motorcycleLicense]',
+                        editableContent:'[name=editableContent]',
                         graduated:[{selector: '[name=graduated]'}, {selector: '[name=driversLicense],[name=motorcycleLicense]', elAttribute: 'enabled', converter: function(direction, value){return value === 'yes';}}],
                         eyeColor: [{selector: '[name=eyeColor]'}, {selector: 'span.label', elAttribute: 'style', converter: function(direction, value){return 'color:' + value}}]
                     };
@@ -67,7 +51,7 @@
             });
 
             view = new ViewClass({model:model});
-            $('#viewContent').append(view.render().el);
+            view.render();
         });
 
     </script>
@@ -85,7 +69,24 @@ Model data:
 <hr>
 <br>
 
-<div id="viewContent"></div>
+<div id="viewContent">
+    Edit your information: <span name="firstName"></span> <span name="lastName"></span><br><br>
+    Eye Color:  Green: <input type="radio" name="eyeColor" value="green">
+    Blue: <input type="radio" name="eyeColor" value="blue">
+    Brown: <input type="radio" name="eyeColor" value="brown"><br><br>
+    <span class="label"> First Name: </span> <input type="text" name="firstName"/><br>
+    <span class="label"> Last Name: </span> <input type="text" name="lastName"/><br>
+    <span class="label"> Height: </span> <input type="text" name="height" value="Willy"><br><br>
+
+    Graduated:  Yes: <input type="radio" id="graduated_yes" name="graduated" value="yes">
+    No: <input type="radio" id="graduated_no" name="graduated" value="no">
+    Maybe: <input type="radio" id="graduated_maybe" name="graduated" value="maybe"><br><br>
+
+    Drivers licence: <input type="checkbox" name="driversLicense"/><br>
+    Motorcycle license: <input type="checkbox" name="motorcycleLicense" /><br><br>
+
+    Content editable <div contentEditable name="editableContent"/>
+</div>
 
 </body>
 </html>

@@ -27,7 +27,7 @@
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
 
-    _.extend(Backbone.ModelBinder.prototype, {
+    _.extend(Backbone.ModelBinder.prototype, Backbone.Events, {
 
         bind:function (model, rootEl, attributeBindings, modelSetOptions) {
             this.unbind();
@@ -250,12 +250,17 @@
         _onModelChange:function () {
             var changedAttribute, attributeBinding;
 
+            var copiedAttributes = [];
             for (changedAttribute in this._model.changedAttributes()) {
                 attributeBinding = this._attributeBindings[changedAttribute];
 
                 if (attributeBinding) {
+                    copiedAttributes.push(attributeBinding);
                     this._copyModelToView(attributeBinding);
                 }
+            }
+            if (copiedAttributes.length > 0) {
+                this.trigger('viewUpdated', this._model, copiedAttributes);
             }
         },
 

@@ -90,7 +90,8 @@ constructor();
 // model is required, it is the backbone Model you're binding to
 // rootEl is required, is the root html element containing the elements you want to bind to
 // bindings is optional, it's discussed a bit later
-bind(model, rootEl, bindings);
+// options, discussed at the bottom of the document
+bind(model, rootEl, bindings, options);
 
 // unbinds the Model with the elements found under rootEl - defined when calling bind()
 unbind();
@@ -320,13 +321,21 @@ modelBinder.bind(this.model, this.el, bindings );
 <br>
 A converter function is passed 4 parameters.
 
-* Direction - either ModelToView or ViewToModel
-* Value - the model's attribute value or the view element's value
-* Attribute Name
-* Model - this is more useful when you're dealing with calculated attributes
+* direction - either ModelToView or ViewToModel
+* value - the model's attribute value or the view element's value
+* attribute Name
+* model - this is more useful when you're dealing with calculated attributes
+* els - an array of the els that were bound to the converter
 
 If your binding to a read-only element like a `<div>` you'll just ignore the direction parameter - it's always ModelToView.
 In most cases, you'll be able to ignore the attribute name and model parameters but they can be helpful in some situations discussed later.
+
+The Model parameter can be quite helpful in complicated situations.
+The els array allows a developer to manually modify the els directly when a converter is invoked.
+Be very careful when accessing the els directly because any state you set into the els might be overwritten by the ModelBinder after the converter is finished.
+For example, if a converter is called with the direction 'ModelToView' and inside the converter the code updates the el values directly those values will be overwritten with the value returned from the converter function.
+The els array is more valuable if you need to set other properties etc. on the els.  In most situations you should not need the els parameter.
+
 
 <br>
 Converters can be used for simple formatting operations like phone numbers but they can also be used for more advanced situations like when you want to convert between a model and some description of the model.
@@ -630,7 +639,17 @@ You can reuse the same ModelBinder instance with multiple models or even rootEls
 ## Model values are copied to views when bind() is called ##
 
 The model's attributes are bound are copied from the model to bound elements when the bind() function is called.
-View element default values are not copied to the model when bind() is called. That type of behavior belongs in the Backbone.Model defaults block.
+View element default values are not copied to the model when bind() is called. That type of behavior usually belongs in the Backbone.Model defaults block.
+
+If you do need to have values copied from the view to the model when bind() is called I would first question why.
+In most situations, especially for single page web apps, it's almost always better to let your models drive the behavior of the app instead of the views.
+If you need this behavior, you can use the 4th optional parameter to the bind() function. {initialCopyDirection: Backbone.ModelBinder.Constants.ViewToModel}
+You can also specify this behavior as the default for all ModelBinder's by calling Backbone.ModelBinder.SetOptions({initialCopyDirection: Backbone.ModelBinder.Constants.ViewToModel});
+
+You can also directly invoke the function modelBinder.copyViewValuesToModel() at any time to copy values from the view into the model.  In most cases, this is not necessary.
+
+When you copy explicitly from the view to the model on bind() or via copyViewValuesToModel() text values and checkboxes will be inserted into the model as blank strings or false if the values have not been set.
+
 
 <br>
 ## Cleaning up with unbind() ##
@@ -669,22 +688,69 @@ AMD / Require.js support was added in version 0.1.4
 <br>
 ### Binding to Collections
 I've also created a collection binder that automatically creates/removes views when models are added/removed to a collection.
-It can be used with the ModelBinder.
+It can be used with the ModelBinder.  The collection binder has saved me just as much time as the model binder.  It's a very handy utility.
 
 You can read about it [here](https://github.com/theironcook/Backbone.ModelBinder/wiki/A-new-Class-to-Bind-Backbone-Collections-to-Views:-Javascript-Weekly-May-18th)
 
-<br>
-<br>
+<br><br>
 
 ## Examples
 Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbone.ModelBinder/wiki/Interactive-JSFiddle-Examples).
 <br>The same examples are also under the (examples)[https://github.com/theironcook/Backbone.ModelBinder/tree/master/examples] directory.
 
 
+<br><br>
+
+## Configuration Options
+* initialCopyDirection
+* changeTriggers
+* modelSetOptions
+
+Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
+Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
+
+* initialCopyDirection - can either be Backbone.ModelBinder.Constants.ModelToView or Backbone.ModelBinder.Constants.ViewToModel.  This property is dicussed in a previous section
+
+* changeTriggers - an object where the keys are jQuery selectors and the values are jQuery events.  These are the events that trigger when values are copied from the view into the model.
+The default for change triggers is added below.  You can define your own if needed.
+
+````
+{'': 'change', '[contenteditable]': 'blur'}
+````
+
+* modelSetOptions - this is an option that you might want sent by default to the Model.set function.
+Whenever a bound element changes, it will call the Model.set function as pass the modelSetOptions as the options to the set() function.
+If you wanted to turn on backbone model validation for your entire project you might do something like this.
+
+````
+Backbone.ModelBinder.SetOptions({modelSetOptions: {validate: true}});
+````
+
+The ModelBinder injects this value into the set options for every set() function.
+changeSource = 'ModelBinder'
+This allows custom logic to determine if the source of the model attribute change is from the ModelBinder.
+
+
+
 <br>
 <br>
 
 ## Release Notes / Versions
+
+### v 1.0.0 April 11, 2013
+* Updated to use backbone v1.0.0, underscore v1.4.4 and jQuery v1.8.3
+* Pull requests 96, 67, 85, 80, 78, 67, 66
+* Options are now configurable at the ModelBinder class level via Backbone.ModelBinder.SetOptions() or at the instance level via the bind() 4th parameter
+* ModelSetOptions have now been incorporated to the generic options argument at the class or instance level.
+  For example: to set model options globally for all binders Backbone.ModelBinder.SetOptions({modelSetOptions: {validate: true}});
+  or for a single instance modelBinder.bind(this.model, this.el, {modelSetOptions: {validate: true}});
+* bindCustomTriggers() has now been incorporated to the generic options argument at the class or instance level.
+  For example: to set custom triggers options globally for all binders Backbone.ModelBinder.SetOptions({changeTriggers: {'': 'change': '', 'keyup'}});
+  or for a single instance modelBinder.bind(this.model, this.el, {changeTriggers: {'': 'change': '', 'keyup'}});
+* Added the els parameter to the converter functions
+* Added the changeTriggers to customize which view events trigger the model binder copies values from the view to the model
+* Added the modelSetOptions to allow the ModelBinder to send messages to the Model.set function and corresponding callbacks
+
 
 ### v 0.1.6 August 27, 2012
 

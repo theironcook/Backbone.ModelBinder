@@ -1,5 +1,5 @@
-// Backbone.ModelBinder v0.1.6
-// (c) 2012 Bart Wood
+// Backbone.ModelBinder v1.0.0
+// (c) 2013 Bart Wood
 // Distributed Under MIT License
 
 (function (factory) {
@@ -16,25 +16,29 @@
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
     }
 
-    Backbone.ModelBinder = function(modelSetOptions){
+    Backbone.ModelBinder = function(){
         _.bindAll(this);
-	this._modelSetOptions = modelSetOptions || {};
+    };
+
+    // Static setter for class level options
+    Backbone.ModelBinder.SetOptions = function(options){
+        Backbone.ModelBinder.options = options;
     };
 
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '0.1.6';
+    Backbone.ModelBinder.VERSION = '1.0.0';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
 
     _.extend(Backbone.ModelBinder.prototype, {
 
-        bind:function (model, rootEl, attributeBindings, modelSetOptions) {
+        bind:function (model, rootEl, attributeBindings, options) {
             this.unbind();
 
             this._model = model;
             this._rootEl = rootEl;
-	        this._modelSetOptions = _.extend({}, this._modelSetOptions, modelSetOptions);
+	        this._setOptions(options);
 
             if (!this._model) throw 'model must be specified';
             if (!this._rootEl) throw 'rootEl must be specified';
@@ -66,6 +70,24 @@
             if(this._attributeBindings){
                 delete this._attributeBindings;
                 this._attributeBindings = undefined;
+            }
+        },
+
+        _setOptions: function(options){
+            this._options = _.extend({}, Backbone.ModelBinder.options, options);
+
+            // initialize default options
+            if(!this._options['modelSetOptions']){
+                this._options['modelSetOptions'] = {};
+            }
+            this._options['modelSetOptions'].changeSource = 'ModelBinder';
+
+            if(!this._options['changeTriggers']){
+                this._options['changeTriggers'] = {'': 'change', '[contenteditable]': 'blur'};
+            }
+
+            if(!this._options['initialCopyDirection']){
+                this._options['initialCopyDirection'] = Backbone.ModelBinder.Constants.ModelToView;
             }
         },
 
@@ -153,7 +175,9 @@
         _bindModelToView: function () {
             this._model.on('change', this._onModelChange, this);
 
-            this.copyModelAttributesToView();
+            if(this._options['initialCopyDirection'] === Backbone.ModelBinder.Constants.ModelToView){
+                this.copyModelAttributesToView();
+            }
         },
 
         // attributesToCopy is an optional parameter - if empty, all attributes
@@ -170,6 +194,34 @@
             }
         },
 
+        copyViewValuesToModel: function(){
+            var bindingKey, attributeBinding, bindingCount, elementBinding, elCount, el;
+            for (bindingKey in this._attributeBindings) {
+                attributeBinding = this._attributeBindings[bindingKey];
+
+                for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
+                    elementBinding = attributeBinding.elementBindings[bindingCount];
+
+                    if(this._isBindingUserEditable(elementBinding)){
+                        if(this._isBindingRadioGroup(elementBinding)){
+                            el = this._getRadioButtonGroupCheckedEl(elementBinding);
+                            if(el){
+                                this._copyViewToModel(elementBinding, el);
+                            }
+                        }
+                        else {
+                            for(elCount = 0; elCount < elementBinding.boundEls.length; elCount++){
+                                el = $(elementBinding.boundEls[elCount]);
+                                if(this._isElUserEditable(el)){
+                                    this._copyViewToModel(elementBinding, el);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
         _unbindModelToView: function(){
             if(this._model){
                 this._model.off('change', this._onModelChange);
@@ -178,15 +230,12 @@
         },
 
         _bindViewToModel: function () {
-            if (this._triggers) {
-                _.each(this._triggers, function (event, selector) {
-                    $(this._rootEl).delegate(selector, event, this._onElChanged);
-                }, this);
-            }
-            else {
-                $(this._rootEl).delegate('', 'change', this._onElChanged);
-                // The change event doesn't work properly for contenteditable elements - but blur does
-                $(this._rootEl).delegate('[contenteditable]', 'blur', this._onElChanged);
+            _.each(this._options['changeTriggers'], function (event, selector) {
+                $(this._rootEl).delegate(selector, event, this._onElChanged);
+            }, this);
+
+            if(this._options['initialCopyDirection'] === Backbone.ModelBinder.Constants.ViewToModel){
+                this.copyViewValuesToModel();
             }
         },
 
@@ -222,6 +271,37 @@
             return elBinding.elAttribute === undefined ||
                 elBinding.elAttribute === 'text' ||
                 elBinding.elAttribute === 'html';
+        },
+
+        _isElUserEditable: function(el){
+            var isContentEditable = el.attr('contenteditable');
+            return isContentEditable || el.is('input') || el.is('select') || el.is('textarea');
+        },
+
+        _isBindingRadioGroup: function(elBinding){
+            var elCount, el;
+            var isAllRadioButtons = elBinding.boundEls.length > 0;
+            for(elCount = 0; elCount < elBinding.boundEls.length; elCount++){
+                el = $(elBinding.boundEls[elCount]);
+                if(el.attr('type') !== 'radio'){
+                    isAllRadioButtons = false;
+                    break;
+                }
+            }
+
+            return isAllRadioButtons;
+        },
+
+        _getRadioButtonGroupCheckedEl: function(elBinding){
+            var elCount, el;
+            for(elCount = 0; elCount < elBinding.boundEls.length; elCount++){
+                el = $(elBinding.boundEls[elCount]);
+                if(el.attr('type') === 'radio' && el.attr('checked')){
+                    return el;
+                }
+            }
+
+            return undefined;
         },
 
         _getElBindings:function (findEl) {
@@ -390,13 +470,12 @@
             var elVal = this._getElValue(elementBinding, el);
             elVal = this._getConvertedValue(Backbone.ModelBinder.Constants.ViewToModel, elementBinding, elVal);
             data[elementBinding.attributeBinding.attributeName] = elVal;
-	        var opts = _.extend({}, this._modelSetOptions, {changeSource: 'ModelBinder'});
-            return this._model.set(data, opts);
+            return this._model.set(data,  this._options['modelSetOptions']);
         },
 
         _getConvertedValue: function (direction, elementBinding, value) {
             if (elementBinding.converter) {
-                value = elementBinding.converter(direction, value, elementBinding.attributeBinding.attributeName, this._model);
+                value = elementBinding.converter(direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
             }
 
             return value;

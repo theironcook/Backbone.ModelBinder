@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v1.0.0
+// Backbone.ModelBinder v1.0.1
 // (c) 2013 Bart Wood
 // Distributed Under MIT License
 
@@ -26,7 +26,7 @@
     };
 
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '1.0.0';
+    Backbone.ModelBinder.VERSION = '1.0.1';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -40,8 +40,8 @@
             this._rootEl = rootEl;
 	        this._setOptions(options);
 
-            if (!this._model) throw 'model must be specified';
-            if (!this._rootEl) throw 'rootEl must be specified';
+            if (!this._model) this._throwException('model must be specified');
+            if (!this._rootEl) this._throwException('rootEl must be specified');
 
             if(attributeBindings){
                 // Create a deep clone of the attribute bindings
@@ -108,7 +108,7 @@
                     attributeBinding = {elementBindings: [inputBinding]};
                 }
                 else {
-                    throw 'Unsupported type passed to Model Binder ' + attributeBinding;
+                    this._throwException('Unsupported type passed to Model Binder ' + attributeBinding);
                 }
 
                 // Add a linkage from the element binding back to the attribute binding
@@ -159,7 +159,7 @@
                     }
 
                     if (foundEls.length === 0) {
-                        throw 'Bad binding found. No elements returned for binding selector ' + elementBinding.selector;
+                        this._throwException('Bad binding found. No elements returned for binding selector ' + elementBinding.selector);
                     }
                     else {
                         elementBinding.boundEls = [];
@@ -479,6 +479,17 @@
             }
 
             return value;
+        },
+
+        _throwException: function(message){
+            if(this._options.suppressThrows){
+                if(console && console.error){
+                    console.error(message);
+                }
+            }
+            else {
+                throw message;
+            }
         }
     });
 

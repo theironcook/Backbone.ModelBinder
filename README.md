@@ -705,6 +705,7 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 * initialCopyDirection
 * changeTriggers
 * modelSetOptions
+* suppressThrows
 
 Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
 Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
@@ -730,12 +731,16 @@ The ModelBinder injects this value into the set options for every set() function
 changeSource = 'ModelBinder'
 This allows custom logic to determine if the source of the model attribute change is from the ModelBinder.
 
+* suppressThrows - set to true if you don't want the ModelBinder to throw exceptions but instead it will show errors via the console.error
 
 
 <br>
 <br>
 
 ## Release Notes / Versions
+
+### v 1.0.1 April 15, 2013
+* Added suppressThrows configuration option
 
 ### v 1.0.0 April 11, 2013
 * Updated to use backbone v1.0.0, underscore v1.4.4 and jQuery v1.8.3

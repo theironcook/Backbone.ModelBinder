@@ -422,6 +422,8 @@
                             el.removeAttr('checked');
                         }
                         break;
+                    case 'file':                         
+                        break;
                     default:
                         el.val(convertedValue);
                 }

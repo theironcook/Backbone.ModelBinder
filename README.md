@@ -739,6 +739,10 @@ This allows custom logic to determine if the source of the model attribute chang
 
 ## Release Notes / Versions
 
+### v 1.0.2 April 18, 2013
+* Fixed the _unbindViewToModel to use the changeTrigger options
+* Fixed the default jQuery selector for all elements to be '*' instead of ''.  The undelegate events no longer works in jQuery 1.8.3 with the ''
+
 ### v 1.0.1 April 15, 2013
 * Added suppressThrows configuration option
 

@@ -580,7 +580,7 @@ Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, con
 
 You can use this function to gather all of the elements under the rootEl with a "name" or "id" attribute and quickly create all of the bindings and then modify those bindings.
 You might want to delete one or more of the bindings, add converters or elAttributes to bindings etc.
-Be careful when you use this with radio buttons - you might not get the proper selectors if your not careful.
+Be careful when you use this with radio buttons - you might not get the proper selectors if you're not careful.
 
 An example of how you might use createDefaultBindings( ) is shown below.
 

@@ -59,6 +59,21 @@ describe('default bindings', function(){
             expect(this.view.$('[name=education]').val()).toBe('college');
         });
 
+        it('custom attribute with default bindings', function(){
+            debugger;
+            this.modelBinder.bind(this.model, this.view.el, null, { attr: 'data-custom' });
+
+            this.model.set({happy: 'yes'});
+            expect(this.view.$('input[name=happy1]').val()).toBe('yes');
+            expect(this.view.$('input[name=happy2]').val()).toBe('yes');
+
+            this.view.$('[name=happy2]').val('no').trigger('change');
+            expect(this.model.get('happy')).toBe('no');
+
+            this.view.$('[name=happy1]').val('yes').trigger('change');
+            expect(this.model.get('happy')).toBe('yes');
+        });
+
         it('converter bindings', function(){
             var defaultConverter = function(direction, value){
                 if(direction === Backbone.ModelBinder.Constants.ModelToView){
@@ -80,6 +95,7 @@ describe('default bindings', function(){
             this.view.$('[name=firstName]').trigger('change');
             expect(this.model.get('firstName')).toBe('Kyle');
         });
+
     });
 
 });

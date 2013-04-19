@@ -38,7 +38,7 @@
 
             this._model = model;
             this._rootEl = rootEl;
-	        this._setOptions(options);
+            this._setOptions(options);
 
             if (!this._model) this._throwException('model must be specified');
             if (!this._rootEl) this._throwException('rootEl must be specified');
@@ -58,10 +58,10 @@
             this._bindViewToModel();
         },
 
-	    bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
+        bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
            this._triggers = triggers;
            this.bind(model, rootEl, attributeBindings, modelSetOptions)
-    	},
+        },
 
         unbind:function () {
             this._unbindModelToView();
@@ -74,7 +74,9 @@
         },
 
         _setOptions: function(options){
-            this._options = _.extend({}, Backbone.ModelBinder.options, options);
+            this._options = _.extend({
+                attr: 'name'
+            }, Backbone.ModelBinder.options, options);
 
             // initialize default options
             if(!this._options['modelSetOptions']){
@@ -122,24 +124,25 @@
             }
         },
 
-        // If the bindings are not specified, the default binding is performed on the name attribute
+        // If the bindings are not specified, the default binding is performed on the specified attribute, name by default
         _initializeDefaultBindings: function(){
-            var elCount, namedEls, namedEl, name, attributeBinding;
-            this._attributeBindings = {};
-            namedEls = $('[name]', this._rootEl);
+            var elCount, elsWithAttribute, matchedEl, name, attributeBinding;
 
-            for(elCount = 0; elCount < namedEls.length; elCount++){
-                namedEl = namedEls[elCount];
-                name = $(namedEl).attr('name');
+            this._attributeBindings = {};
+            elsWithAttribute = $('[' + this._options['attr'] + ']', this._rootEl);
+
+            for(elCount = 0; elCount < elsWithAttribute.length; elCount++){
+                matchedEl = elsWithAttribute[elCount];
+                name = $(matchedEl).attr(this._options['attr']);
 
                 // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
                 if(!this._attributeBindings[name]){
                     attributeBinding =  {attributeName: name};
-                    attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [namedEl]}];
+                    attributeBinding.elementBindings = [{attributeBinding: attributeBinding, boundEls: [matchedEl]}];
                     this._attributeBindings[name] = attributeBinding;
                 }
                 else{
-                    this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [namedEl]});
+                    this._attributeBindings[name].elementBindings.push({attributeBinding: this._attributeBindings[name], boundEls: [matchedEl]});
                 }
             }
         },
@@ -242,9 +245,9 @@
         _unbindViewToModel: function () {
             if(this._options && this._options['changeTriggers']){
                 _.each(this._options['changeTriggers'], function (event, selector) {
-                    $(this._rootEl).undelegate(selector, event, this._onElChanged);
-                }, this);
-            }
+                        $(this._rootEl).undelegate(selector, event, this._onElChanged);
+                    }, this);
+                }
         },
 
         _onElChanged:function (event) {

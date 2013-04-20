@@ -50,9 +50,9 @@ The ModelBinder eliminates these ineffeciencies by listening for model changes l
 <br>
 ## Prerequisites
 
-* Backbone.js v0.9.0 or higher
-* Underscore.js v1.3.1 or higher
-* jQuery v1.7.1 or higher
+* Backbone.js v1.0.0 or higher
+* Underscore.js v1.4.4 or higher
+* jQuery v1.8.3 or higher
 
 
 <br>

@@ -594,6 +594,24 @@ delete bindings['complicatedAttribute'];
 this._modelBinder.bind(this.model, this.el, bindings);
 ````
 
+###Change attribute used for binding###
+
+By default, the `name` attribute of your elements is used to create bindings.  Changing this can be accomplished easily in one of two ways.  First, by using `createDefaultBindings`:
+
+````
+var bindings = Backbone.ModelBinder.createDefaultBindings(this.el, 'data-custom');
+this._modelBinder.bind(this.model, this.el, bindings);
+````
+
+Alternatively, setting `boundAttribute` on the options hash given to bind can point it at any attribute.
+
+````
+// Set the default bindings based on the data-custom attribute rather than name.
+this._modelBinder.bind(this.model, this.el, null, { boundAttribute: 'data-custom' });
+````
+
+This can be particularly useful when binding to elements that do not have a `name` attribute or sets of radios that cannot all share the same `name`.
+
 <br>
 
 ***
@@ -706,6 +724,7 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 * changeTriggers
 * modelSetOptions
 * suppressThrows
+* boundAttribute
 
 Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
 Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
@@ -732,6 +751,8 @@ changeSource = 'ModelBinder'
 This allows custom logic to determine if the source of the model attribute change is from the ModelBinder.
 
 * suppressThrows - set to true if you don't want the ModelBinder to throw exceptions but instead it will show errors via the console.error
+
+* boundAttribute - change the default attribute used to create bindings.  Default value is "name," but can be set to any valid attribute selector that fits the form `$('[' + boundAttribute + ']')`.
 
 
 <br>

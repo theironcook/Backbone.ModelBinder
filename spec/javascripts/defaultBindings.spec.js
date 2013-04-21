@@ -60,7 +60,7 @@ describe('default bindings', function(){
         });
 
         it('custom attribute with default bindings', function(){
-            this.modelBinder.bind(this.model, this.view.el, null, { attr: 'data-custom' });
+            this.modelBinder.bind(this.model, this.view.el, null, { boundAttribute: 'data-custom' });
 
             this.model.set({happy: 'yes'});
             expect(this.view.$('input[name=happy1]').val()).toBe('yes');

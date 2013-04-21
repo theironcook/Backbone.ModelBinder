@@ -75,7 +75,7 @@
 
         _setOptions: function(options){
             this._options = _.extend({
-                attr: 'name'
+                boundAttribute: 'name'
             }, Backbone.ModelBinder.options, options);
 
             // initialize default options
@@ -129,11 +129,11 @@
             var elCount, elsWithAttribute, matchedEl, name, attributeBinding;
 
             this._attributeBindings = {};
-            elsWithAttribute = $('[' + this._options['attr'] + ']', this._rootEl);
+            elsWithAttribute = $('[' + this._options['boundAttribute'] + ']', this._rootEl);
 
             for(elCount = 0; elCount < elsWithAttribute.length; elCount++){
                 matchedEl = elsWithAttribute[elCount];
-                name = $(matchedEl).attr(this._options['attr']);
+                name = $(matchedEl).attr(this._options['boundAttribute']);
 
                 // For elements like radio buttons we only want a single attribute binding with possibly multiple element bindings
                 if(!this._attributeBindings[name]){

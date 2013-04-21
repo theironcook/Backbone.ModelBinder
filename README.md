@@ -610,8 +610,6 @@ Alternatively, setting `boundAttribute` on the options hash given to bind can po
 this._modelBinder.bind(this.model, this.el, null, { boundAttribute: 'data-custom' });
 ````
 
-This can be particularly useful when binding to elements that do not have a `name` attribute or sets of radios that cannot all share the same `name`.
-
 <br>
 
 ***

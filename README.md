@@ -580,7 +580,7 @@ Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, con
 
 You can use this function to gather all of the elements under the rootEl with a "name" or "id" attribute and quickly create all of the bindings and then modify those bindings.
 You might want to delete one or more of the bindings, add converters or elAttributes to bindings etc.
-Be careful when you use this with radio buttons - you might not get the proper selectors if your not careful.
+Be careful when you use this with radio buttons - you might not get the proper selectors if you're not careful.
 
 An example of how you might use createDefaultBindings( ) is shown below.
 
@@ -592,6 +592,22 @@ bindings['phone'].converter = this._phoneConverterFunction;
 delete bindings['complicatedAttribute'];
 
 this._modelBinder.bind(this.model, this.el, bindings);
+````
+
+###Change attribute used for binding###
+
+By default, the `name` attribute of your elements is used to create bindings.  Changing this can be accomplished easily in one of two ways.  First, by using `createDefaultBindings`:
+
+````
+var bindings = Backbone.ModelBinder.createDefaultBindings(this.el, 'data-custom');
+this._modelBinder.bind(this.model, this.el, bindings);
+````
+
+Alternatively, setting `boundAttribute` on the options hash given to bind can point it at any attribute.
+
+````
+// Set the default bindings based on the data-custom attribute rather than name.
+this._modelBinder.bind(this.model, this.el, null, { boundAttribute: 'data-custom' });
 ````
 
 <br>
@@ -706,6 +722,7 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 * changeTriggers
 * modelSetOptions
 * suppressThrows
+* boundAttribute
 
 Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
 Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
@@ -732,6 +749,8 @@ changeSource = 'ModelBinder'
 This allows custom logic to determine if the source of the model attribute change is from the ModelBinder.
 
 * suppressThrows - set to true if you don't want the ModelBinder to throw exceptions but instead it will show errors via the console.error
+
+* boundAttribute - change the default attribute used to create bindings.  Default value is "name," but can be set to any valid attribute selector that fits the form `$('[' + boundAttribute + ']')`.
 
 
 <br>

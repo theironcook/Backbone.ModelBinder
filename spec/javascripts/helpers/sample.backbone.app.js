@@ -343,6 +343,10 @@ SimpleView = Backbone.View.extend({
           <input type='radio' id='graduated_no' name='graduated' value='no'>\
           <input type='radio' id='graduated_maybe' name='graduated' value='maybe'>\
           <input type='checkbox' name='isActive' value='yes'>\
+          <input type='radio' data-custom='happy' name='happy1' value='yes'>\
+          <input type='radio' data-custom='happy' name='happy1' value='no'>\
+          <input type='radio' data-custom='happy' name='happy2' value='yes'>\
+          <input type='radio' data-custom='happy' name='happy2' value='no'>\
         ");
         this.$el.append(html);
 

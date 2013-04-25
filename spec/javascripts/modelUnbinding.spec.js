@@ -46,18 +46,18 @@ describe("model unbinding", function(){
       this.model.set({graduated: "yes"});
 
       var elYes = this.view.$("#graduated_yes");
-      var selected = elYes.attr("checked");
+      var selected = elYes.prop("checked");
       expect(selected).toBeFalsy();
 
       var elNo = this.view.$("#graduated_no");
-      var selected = elNo.attr("checked");
+      var selected = elNo.prop("checked");
       expect(selected).toBeTruthy();
     });
 
     it("should unbind the checkbox", function(){
       this.model.set({drivers_license: false});
       var el = this.view.$("#drivers_license");
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
       expect(selected).toBeTruthy();
     });
 

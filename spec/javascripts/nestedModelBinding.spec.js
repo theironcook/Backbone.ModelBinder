@@ -38,30 +38,30 @@ describe("data-bind nested views", function(){
     });
 
     it("the inner radio should be updated", function(){
-      $("#graduated_maybe", this.innerView.$el).attr("checked", "checked");
+      $("#graduated_maybe", this.innerView.$el).prop("checked", true);
       $("#graduated_maybe", this.innerView.$el).trigger("change");
       expect(this.innerModel.get("innerRadio")).toBe("maybe");
     });
 
     it("the outer radio should not be updated", function(){
-      $("#graduated_yes", this.innerView.$el).attr("checked", "checked");
+      $("#graduated_yes", this.innerView.$el).prop("checked", true);
       $("#graduated_yes", this.innerView.$el).trigger("change");
       expect(this.outerModel.get("innerRadio")).toBe(undefined);
     });
 
     it("the inner checkbox should be updated", function(){
-      $("[name=innerCheckbox]", this.innerView.$el).removeAttr("checked");
+      $("[name=innerCheckbox]", this.innerView.$el).prop("checked", false);
       $("[name=innerCheckbox]", this.innerView.$el).trigger("change");
       expect(this.innerModel.get("innerCheckbox")).toBe(false);
-      $("[name=innerCheckbox]", this.innerView.$el).attr("checked", "checked");
+      $("[name=innerCheckbox]", this.innerView.$el).prop("checked", true);
       $("[name=innerCheckbox]", this.innerView.$el).trigger("change");
       expect(this.innerModel.get("innerCheckbox")).toBe(true);
     });
 
     it("the outer checkbox should not be updated", function(){
-      $("[name=innerCheckbox]", this.innerView.$el).removeAttr("checked");
+      $("[name=innerCheckbox]", this.innerView.$el).prop("checked", false);
       $("[name=innerCheckbox]", this.innerView.$el).trigger("change");
-      $("[name=innerCheckbox]", this.innerView.$el).attr("checked", "checked");
+      $("[name=innerCheckbox]", this.innerView.$el).prop("checked", true);
       $("[name=innerCheckbox]", this.innerView.$el).trigger("change");
       expect(this.outerModel.get("innerCheckbox")).toBe(undefined);
     });
@@ -93,30 +93,30 @@ describe("data-bind nested views", function(){
     });
 
     it("the outer radio should be updated", function(){
-      $("#graduated_maybe", this.outerView.$el).attr("checked", "checked");
+      $("#graduated_maybe", this.outerView.$el).prop("checked", true);
       $("#graduated_maybe", this.outerView.$el).trigger("change");
       expect(this.outerModel.get("outerRadio")).toBe("maybe");
     });
 
     it("the inner radio should not be updated", function(){
-      $("#graduated_yes", this.outerView.$el).attr("checked", "checked");
+      $("#graduated_yes", this.outerView.$el).prop("checked", true);
       $("#graduated_yes", this.outerView.$el).trigger("change");
       expect(this.innerModel.get("outerRadio")).toBe(undefined);
     });
 
     it("the outer checkbox should be updated", function(){
-      $("[name=outerCheckbox]", this.outerView.$el).removeAttr("checked");
+      $("[name=outerCheckbox]", this.outerView.$el).prop("checked", false);
       $("[name=outerCheckbox]", this.outerView.$el).trigger("change");
       expect(this.outerModel.get("outerCheckbox")).toBe(false);
-      $("[name=outerCheckbox]", this.outerView.$el).attr("checked", "checked");
+      $("[name=outerCheckbox]", this.outerView.$el).prop("checked", true);
       $("[name=outerCheckbox]", this.outerView.$el).trigger("change");
       expect(this.outerModel.get("outerCheckbox")).toBe(true);
     });
 
     it("the inner checkbox should not be updated", function(){
-      $("[name=outerCheckbox]", this.outerView.$el).removeAttr("checked");
+      $("[name=outerCheckbox]", this.outerView.$el).prop("checked", false);
       $("[name=outerCheckbox]", this.outerView.$el).trigger("change");
-      $("[name=outerCheckbox]", this.outerView.$el).attr("checked", "checked");
+      $("[name=outerCheckbox]", this.outerView.$el).prop("checked", true);
       $("[name=outerCheckbox]", this.outerView.$el).trigger("change");
       expect(this.innerModel.get("outerCheckbox")).toBe(undefined);
     });
@@ -148,24 +148,24 @@ describe("data-bind nested views", function(){
     });
 
     it("the outer radio should not be updated", function () {
-      $("[name=graduated_yes][name=sharedRadio]", this.innerView.$el).attr("checked", "checked");
+      $("[name=graduated_yes][name=sharedRadio]", this.innerView.$el).prop("checked", true);
       $("[name=graduated_yes][name=sharedRadio]", this.innerView.$el).trigger("change");
       expect(this.outerModel.get("sharedRadio")).toBe(undefined);
     });
 
     it("the inner checkbox should be updated", function () {
-      $("[name=sharedCheckbox]", this.innerView.$el).removeAttr("checked");
+      $("[name=sharedCheckbox]", this.innerView.$el).prop("checked", false);
       $("[name=sharedCheckbox]", this.innerView.$el).trigger("change");
       expect(this.innerModel.get("sharedCheckbox")).toBe(false);
-      $("[name=sharedCheckbox]", this.innerView.$el).attr("checked", "checked");
+      $("[name=sharedCheckbox]", this.innerView.$el).prop("checked", true);
       $("[name=sharedCheckbox]", this.innerView.$el).trigger("change");
       expect(this.innerModel.get("sharedCheckbox")).toBe(true);
     });
 
     it("the outer checkbox should not be updated", function () {
-      $("[name=sharedCheckbox]", this.innerView.$el).removeAttr("checked");
+      $("[name=sharedCheckbox]", this.innerView.$el).prop("checked", false);
       $("[name=sharedCheckbox]", this.innerView.$el).trigger("change");
-      $("[name=sharedCheckbox]", this.innerView.$el).attr("checked", "checked");
+      $("[name=sharedCheckbox]", this.innerView.$el).prop("checked", true);
       $("[name=sharedCheckbox]", this.innerView.$el).trigger("change");
       expect(this.outerModel.get("sharedCheckbox")).toBe(undefined);
     });
@@ -197,16 +197,16 @@ describe("data-bind nested views", function(){
     });
 
     it("the outer checkbox should be updated", function () {
-      $("[name=sharedCheckbox]:first", this.outerView.$el).removeAttr("checked");
+      $("[name=sharedCheckbox]:first", this.outerView.$el).prop("checked", false);
       $("[name=sharedCheckbox]:first", this.outerView.$el).trigger("change");
       expect(this.outerModel.get("sharedCheckbox")).toBe(false);
-      $("[name=sharedCheckbox]:first", this.outerView.$el).attr("checked", "checked");
+      $("[name=sharedCheckbox]:first", this.outerView.$el).prop("checked", true);
       $("[name=sharedCheckbox]:first", this.outerView.$el).trigger("change");
       expect(this.outerModel.get("sharedCheckbox")).toBe(true);
     });
 
     it("the inner checkbox should not be updated", function () {
-      $("[name=sharedCheckbox]:first", this.outerView.$el).attr("checked", "checked");
+      $("[name=sharedCheckbox]:first", this.outerView.$el).prop("checked", true);
       $("[name=sharedCheckbox]:first", this.outerView.$el).trigger("change");
       expect(this.innerModel.get("sharedCheckbox")).toBe(undefined);
     });

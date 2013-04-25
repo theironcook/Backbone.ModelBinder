@@ -35,15 +35,16 @@ describe("configurableBindingAttributes", function(){
   describe("radio element binding using configurable attribute", function(){
     it("bind view changes to the model's field, by configurable convention", function(){
       var el = this.view.$("#graduated_no");
-      el.attr("checked", "checked");
+      el.prop("checked", true);
       el.trigger('change');
+       console.log('this.model.get("graduated")', this.model.get('graduated')); //debug
       expect(this.model.get('graduated')).toEqual("no");
     });
 
     it("bind model field changes to the form input, by configurable convention", function(){
       this.model.set({graduated: "yes"});
       var el = this.view.$("#graduated_yes");
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
 
       expect(selected).toBeTruthy();
     });
@@ -88,7 +89,7 @@ describe("configurableBindingAttributes", function(){
   describe("checkbox element binding using configurable attribute", function(){
     it("bind view changes to the model's field", function(){
       var el = this.view.$(".drivers_license");
-      el.removeAttr("checked");
+      el.prop("checked", false);
       el.trigger('change');
       expect(this.model.get('drivers_license')).toBeFalsy();
     });
@@ -98,18 +99,18 @@ describe("configurableBindingAttributes", function(){
 
       // uncheck it
       this.model.set({drivers_license: false});
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
       expect(selected).toBeFalsy();
 
       // then check it
       this.model.set({drivers_license: true});
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
       expect(selected).toBeTruthy();
     });
 
     it("binds the model's value to the form field on render", function(){
       var el = this.view.$(".drivers_license");
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
 
       expect(selected).toBeTruthy();
     });

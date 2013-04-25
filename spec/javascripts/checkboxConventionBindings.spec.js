@@ -12,7 +12,7 @@ describe("checkbox convention bindings", function(){
 
     it("bind view changes to the model's field", function(){
       var el = this.view.$("#drivers_license");
-      el.removeAttr("checked");
+      el.prop("checked", false);
       el.trigger('change');
       expect(this.model.get('drivers_license')).toBeFalsy();
     });
@@ -22,25 +22,25 @@ describe("checkbox convention bindings", function(){
 
       // uncheck it
       this.model.set({drivers_license: false});
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
       expect(selected).toBeFalsy();
 
       // then check it
       this.model.set({drivers_license: true});
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
       expect(selected).toBeTruthy();
     });
 
     it("checks the box for a truthy value, on render", function(){
       var el = this.view.$("#drivers_license");
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
 
       expect(selected).toBeTruthy();
     });
 
     it("unchecks the box for a falsy value, on render", function(){
       var el = this.view.$("#motorcycle_license");
-      var selected = el.attr("checked");
+      var selected = el.prop("checked");
 
       expect(selected).toBeFalsy();
     });
@@ -57,13 +57,13 @@ describe("checkbox convention bindings", function(){
     });
 
     it("checks the box for a 1 (one) value, on render", function(){
-      var selected = this.el.attr("checked");
+      var selected = this.el.prop("checked");
       expect(selected).toBeTruthy();
     });
 
     it("unchecks the box when the value is changed to a 0 (zero)", function(){
       this.model.set({binary_checkbox: 0});
-      var selected = this.el.attr("checked");
+      var selected = this.el.prop("checked");
       expect(selected).toBeFalsy();
     });
 
@@ -80,13 +80,13 @@ describe("checkbox convention bindings", function(){
     });
 
     it("unchecks the box for a 0 (zero) value, on render", function(){
-      var selected = this.el.attr("checked");
+      var selected = this.el.prop("checked");
       expect(selected).toBeFalsy();
     });
 
     it("checks the box when the value is changed to a 1 (one)", function(){
       this.model.set({binary_checkbox: 1});
-      var selected = this.el.attr("checked");
+      var selected = this.el.prop("checked");
       expect(selected).toBeTruthy();
     });
   });

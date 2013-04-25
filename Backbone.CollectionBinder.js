@@ -1,4 +1,4 @@
-// Backbone.CollectionBinder v1.0.0
+// Backbone.CollectionBinder v1.0.1
 // (c) 2013 Bart Wood
 // Distributed Under MIT License
 
@@ -25,7 +25,7 @@
         this._options = options || {};
     };
 
-    Backbone.CollectionBinder.VERSION = '1.0.0';
+    Backbone.CollectionBinder.VERSION = '1.0.1';
 
     _.extend(Backbone.CollectionBinder.prototype, Backbone.Events, {
         bind: function(collection, parentEl){
@@ -42,7 +42,7 @@
             this._collection.on('add', this._onCollectionAdd, this);
             this._collection.on('remove', this._onCollectionRemove, this);
             this._collection.on('reset', this._onCollectionReset, this);
-
+            this._collection.on('sort', this._onCollectionSort, this);
         },
 
         unbind: function(){
@@ -50,6 +50,7 @@
                 this._collection.off('add', this._onCollectionAdd);
                 this._collection.off('remove', this._onCollectionRemove);
                 this._collection.off('reset', this._onCollectionReset);
+                this._collection.off('sort', this._onCollectionSort);
             }
 
             this._removeAllElManagers();
@@ -104,6 +105,12 @@
             }, this);
 
             this.trigger('elsReset', this._collection);
+        },
+
+        _onCollectionSort: function() {
+            if(this._options['autoSort']){
+                this.sortRootEls();
+            }
         },
 
         _removeAllElManagers: function(){

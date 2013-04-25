@@ -22,7 +22,7 @@ describe("one element to multiple model attributes", function () {
             this.modelBinder.bind(this.model, this.view.el, this.bindings);
 
             expect(this.view.$('[name=lastName]').val()).toEqual('Deschain');
-            expect(this.view.$('[name=lastName]').attr('disabled')).toEqual('disabled');
+            expect(this.view.$('[name=lastName]').prop('disabled')).toEqual(true);
         });
 
         it("values update properly from model", function () {
@@ -30,7 +30,7 @@ describe("one element to multiple model attributes", function () {
             this.model.set({namesEnabled: true, lastName: 'Hendrix'});
 
             expect(this.view.$('[name=lastName]').val()).toEqual('Hendrix');
-            expect(this.view.$('[name=lastName]').attr('disabled')).toEqual(undefined);
+            expect(this.view.$('[name=lastName]').prop('disabled')).toEqual(false);
         });
 
         it("values update properly from view", function () {

@@ -71,17 +71,7 @@
         },
 
         getManagerForModel: function(model){
-            var i, elManager, elManagers = _.values(this._elManagers);
-
-            for(i = 0; i < elManagers.length; i++){
-                elManager = elManagers[i];
-
-                if(elManager.getModel() === model){
-                    return elManager;
-                }
-            }
-
-            return undefined;
+           return this._elManagers[_.isObject(model)? model.cid : model];
         },
 
         _onCollectionAdd: function(model){

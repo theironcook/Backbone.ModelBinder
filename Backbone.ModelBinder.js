@@ -59,8 +59,8 @@
         },
 
         bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
-           this._triggers = triggers;
-           this.bind(model, rootEl, attributeBindings, modelSetOptions)
+            this._triggers = triggers;
+            this.bind(model, rootEl, attributeBindings, modelSetOptions)
         },
 
         unbind:function () {
@@ -245,9 +245,9 @@
         _unbindViewToModel: function () {
             if(this._options && this._options['changeTriggers']){
                 _.each(this._options['changeTriggers'], function (event, selector) {
-                        $(this._rootEl).undelegate(selector, event, this._onElChanged);
-                    }, this);
-                }
+                    $(this._rootEl).undelegate(selector, event, this._onElChanged);
+                }, this);
+            }
         },
 
         _onElChanged:function (event) {
@@ -373,7 +373,7 @@
                     el.text(convertedValue);
                     break;
                 case 'enabled':
-                    el.attr('disabled', !convertedValue);
+                    el.prop('disabled', !convertedValue);
                     break;
                 case 'displayed':
                     el[convertedValue ? 'show' : 'hide']();
@@ -386,8 +386,8 @@
                     break;
                 case 'class':
                     var previousValue = this._model.previous(elementBinding.attributeBinding.attributeName);
-		    var currentValue = this._model.get(elementBinding.attributeBinding.attributeName);
-		    // is current value is now defined then remove the class the may have been set for the undefined value
+                    var currentValue = this._model.get(elementBinding.attributeBinding.attributeName);
+                    // is current value is now defined then remove the class the may have been set for the undefined value
                     if(!_.isUndefined(previousValue) || !_.isUndefined(currentValue)){
                         previousValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, previousValue);
                         el.removeClass(previousValue);
@@ -407,21 +407,21 @@
                 switch (el.attr('type')) {
                     case 'radio':
                         if (el.val() === convertedValue) {
-                            el.attr('checked', 'checked');
+                            el.prop('checked', true);
                         }
                         else {
-                            el.removeAttr('checked');
+                            el.prop('checked', false);
                         }
                         break;
                     case 'checkbox':
                         if (convertedValue) {
-                            el.attr('checked', 'checked');
+                            el.prop('checked', true);
                         }
                         else {
-                            el.removeAttr('checked');
+                            el.prop('checked', false);
                         }
                         break;
-                    case 'file':                         
+                    case 'file':
                         break;
                     default:
                         el.val(convertedValue);

@@ -10,7 +10,7 @@ describe("radio button convention binding", function(){
 
   it("bind view changes to the model's field, by convention of id", function(){
     var el = this.view.$("#graduated_no");
-    el.attr("checked", "checked");
+    el.prop("checked", true);
     el.trigger('change');
     expect(this.model.get('graduated')).toEqual("no");
   });
@@ -18,7 +18,7 @@ describe("radio button convention binding", function(){
   it("bind model field changes to the form input, by convention of id", function(){
     this.model.set({graduated: "yes"});
     var el = this.view.$("#graduated_yes");
-    var selected = el.attr("checked");
+    var selected = el.prop("checked");
 
     expect(selected).toBeTruthy();
   });

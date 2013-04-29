@@ -74,12 +74,12 @@ describe('default bindings', function(){
         });
 
         it('converter bindings', function(){
-            var defaultConverter = function(direction, value){
+            var defaultConverter = function(direction, value, key){
                 if(direction === Backbone.ModelBinder.Constants.ModelToView){
-                    return 'XXX' + value;
+                    return key === 'isActive'? value : 'XXX' + value;
                 }
                 else {
-                    return value.replace('XXX');
+                    return _.isString(value)? value.replace('XXX') : value;
                 }
             };
 

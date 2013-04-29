@@ -162,7 +162,8 @@
                     }
 
                     if (foundEls.length === 0) {
-                        this._throwException('Bad binding found. No elements returned for binding selector ' + elementBinding.selector);
+                        this._throwException('No elements returned for binding selector ' + elementBinding.selector);
+                        elementBinding.boundEls = [];
                     }
                     else {
                         elementBinding.boundEls = [];

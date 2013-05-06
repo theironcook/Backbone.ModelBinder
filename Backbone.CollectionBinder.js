@@ -1,4 +1,4 @@
-// Backbone.CollectionBinder v1.0.1
+// Backbone.CollectionBinder v1.0.2
 // (c) 2013 Bart Wood
 // Distributed Under MIT License
 
@@ -22,7 +22,8 @@
         // Let the factory just use the trigger function on the view binder
         this._elManagerFactory.trigger = this.trigger;
 
-        this._options = options || {};
+	var defaults = {autoSort: true};
+        _.extend(this._options, options, defaults);
     };
 
     Backbone.CollectionBinder.VERSION = '1.0.1';

@@ -129,7 +129,7 @@
             var elCount, elsWithAttribute, matchedEl, name, attributeBinding;
 
             this._attributeBindings = {};
-            elsWithAttribute = $('[' + this._options['boundAttribute'] + ']', this._rootEl);
+            elsWithAttribute = $('[' + this._options['boundAttribute'] + '!=""]', this._rootEl);
 
             for(elCount = 0; elCount < elsWithAttribute.length; elCount++){
                 matchedEl = elsWithAttribute[elCount];
@@ -523,7 +523,7 @@
         var foundEls, elCount, foundEl, attributeName;
         var bindings = {};
 
-        foundEls = $('[' + attributeType + ']', rootEl);
+        foundEls = $('[' + attributeType + '!=""]', rootEl);
 
         for(elCount = 0; elCount < foundEls.length; elCount++){
             foundEl = foundEls[elCount];

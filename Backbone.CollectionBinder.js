@@ -13,7 +13,7 @@
     }
 
     Backbone.CollectionBinder = function(elManagerFactory, options){
-        _.bindAll(this, _.functions(this));
+        _.bindAll.apply(_, [this].concat(_.functions(this)));
         this._elManagers = {};
 
         this._elManagerFactory = elManagerFactory;
@@ -140,7 +140,7 @@
     // elHtml - how the model's html will be rendered.  Must have a single root element (div,span).
     // bindings (optional) - either a string which is the binding attribute (name, id, data-name, etc.) or a normal bindings hash
     Backbone.CollectionBinder.ElManagerFactory = function(elHtml, bindings){
-        _.bindAll(this, _.functions(this));
+        _.bindAll.apply(_, [this].concat(_.functions(this)));
 
         this._elHtml = elHtml;
         this._bindings = bindings;
@@ -216,7 +216,7 @@
     // There is no bindings option because the view made by the viewCreator should take care of any binding
     // viewCreator - a callback that will create backbone view instances for a model passed to the callback
     Backbone.CollectionBinder.ViewManagerFactory = function(viewCreator){
-        _.bindAll(this, _.functions(this));
+        _.bindAll.apply(_, [this].concat(_.functions(this)));
         this._viewCreator = viewCreator;
 
         if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';

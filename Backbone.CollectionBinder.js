@@ -1,4 +1,4 @@
-// Backbone.CollectionBinder v1.0.1
+// Backbone.CollectionBinder v1.0.2
 // (c) 2013 Bart Wood
 // Distributed Under MIT License
 

@@ -17,7 +17,7 @@
     }
 
     Backbone.ModelBinder = function(){
-        _.bindAll(this);
+        _.bindAll.apply(_, [this].concat(_.functions(this)));
     };
 
     // Static setter for class level options

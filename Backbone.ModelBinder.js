@@ -85,7 +85,7 @@
             this._options['modelSetOptions'].changeSource = 'ModelBinder';
 
             if(!this._options['changeTriggers']){
-                this._options['changeTriggers'] = {'*': 'change', '[contenteditable]': 'blur'};
+                this._options['changeTriggers'] = {'': 'change', '[contenteditable]': 'blur'};
             }
 
             if(!this._options['initialCopyDirection']){

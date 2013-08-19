@@ -163,8 +163,8 @@
                 _model: model,
 
                 createEl: function(){
-
-                    this._el =  $(this._elHtml);
+                    this._template = _.template(this._elHtml, {model: model});
+                    this._el =  $(this._template);
                     $(this._parentEl).append(this._el);
 
                     if(this._bindings){

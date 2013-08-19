@@ -760,7 +760,7 @@ If you define a converter, you might want to pay attention to the converter's 5t
 <br>
 
 ## Release Notes / Versions
-### v 1.0.3 August 19, 2013
+### v 1.0.4 August 19, 2013
 * Fixed the _.bindAll function calls to specify the function names being bound to.
 * Added the ability to add a global converter via Backbone.ModelBinder.SetOptions({converter: xxx});
 

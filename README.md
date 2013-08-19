@@ -771,7 +771,8 @@ This allows custom logic to determine if the source of the model attribute chang
 * Options are now configurable at the ModelBinder class level via Backbone.ModelBinder.SetOptions() or at the instance level via the bind() 4th parameter
 * ModelSetOptions have now been incorporated to the generic options argument at the class or instance level.
   For example: to set model options globally for all binders Backbone.ModelBinder.SetOptions({modelSetOptions: {validate: true}});
-  or for a single instance modelBinder.bind(this.model, this.el, {modelSetOptions: {validate: true}});
+  or for a single instance modelBinder.bind(this.model, this.el, bindings, {modelSetOptions: {validate: true}});
+  For single instance options, the bindings can be a fully configured set of bindings or the value of null if you want the default bindings.
 * bindCustomTriggers() has now been incorporated to the generic options argument at the class or instance level.
   For example: to set custom triggers options globally for all binders Backbone.ModelBinder.SetOptions({changeTriggers: {'': 'change': '', 'keyup'}});
   or for a single instance modelBinder.bind(this.model, this.el, {changeTriggers: {'': 'change': '', 'keyup'}});

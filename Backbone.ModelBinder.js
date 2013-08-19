@@ -1,4 +1,4 @@
-// Backbone.ModelBinder v1.0.2
+// Backbone.ModelBinder v1.0.3
 // (c) 2013 Bart Wood
 // Distributed Under MIT License
 
@@ -26,7 +26,7 @@
     };
 
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '1.0.2';
+    Backbone.ModelBinder.VERSION = '1.0.3';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -475,8 +475,12 @@
         },
 
         _getConvertedValue: function (direction, elementBinding, value) {
+
             if (elementBinding.converter) {
                 value = elementBinding.converter(direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
+            }
+            else if(this._options['converter']){
+                value = this._options['converter'](direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
             }
 
             return value;

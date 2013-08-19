@@ -13,7 +13,7 @@
     <script>
         $().ready(function () {
 
-            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', eyeColor: 'green', editableContent: 'Edit Me'});
+            model = new Backbone.Model({firstName:'Bob', graduated:'maybe', eyeColor: 'green', editableContent: 'Edit Me', hair: null});
 
             model.bind('change', function () {
                 $('#modelData').html(JSON.stringify(model.toJSON()));
@@ -21,6 +21,39 @@
 
             model.trigger('change'); // just to show the #modelData values initially, not needed for the ModelBinder
 
+            var undefinedConverter = function(dir, val){
+                var allSelects = _.every(boundEls, function(boundEl){return $(boundEl).is('select')});
+
+                if(allSelects){
+                    if(dir === Backbone.ModelBinder.ModelToView){
+                        return val === undefined ? '' : val;
+                    }
+                    else {
+                        return val === '' ? undefined : val;
+                    }
+                }
+                else {
+                    return val;
+                }
+            };
+
+            var nullConverter = function(dir, val, attName, model, boundEls){
+                var allSelects = _.every(boundEls, function(boundEl){return $(boundEl).is('select')});
+
+                if(allSelects){
+                    if(dir === Backbone.ModelBinder.ModelToView){
+                        return val === null ? '' : val;
+                    }
+                    else {
+                        return val === '' ? null : val;
+                    }
+                }
+                else {
+                    return val;
+                }
+            };
+
+            Backbone.ModelBinder.SetOptions({converter: nullConverter});
 
             ViewClass = Backbone.View.extend({
 
@@ -42,7 +75,7 @@
                         editableContent:'[name=editableContent]',
                         graduated:[{selector: '[name=graduated]'}, {selector: '[name=driversLicense],[name=motorcycleLicense]', elAttribute: 'enabled', converter: function(direction, value){return value === 'yes';}}],
                         eyeColor: [{selector: '[name=eyeColor]'}, {selector: 'span.label', elAttribute: 'style', converter: function(direction, value){return 'color:' + value}}],
-                        hair: '[name=hair]'
+                        hair: {selector: '[name=hair]'}
                     };
 
                     this._modelBinder.bind(this.model, this.el, bindings);
@@ -87,7 +120,8 @@ Model data:
     Motorcycle license: <input type="checkbox" name="motorcycleLicense" /><br><br>
 
     Hair: <select name="hair">
-    <option value=""></option>
+    <option value="red">Red</option>
+    <option value="">Please select</option>
     <option value="blond">Blond</option>
     </select><br><br>
 

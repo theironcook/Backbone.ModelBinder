@@ -723,6 +723,7 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 * modelSetOptions
 * suppressThrows
 * boundAttribute
+* converter
 
 Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
 Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
@@ -752,11 +753,16 @@ This allows custom logic to determine if the source of the model attribute chang
 
 * boundAttribute - change the default attribute used to create bindings.  Default value is "name," but can be set to any valid attribute selector that fits the form `$('[' + boundAttribute + ']')`.
 
+* converter - a default converter for all binders or a single binder.  Probably only really useful for when you want view empty strings to map to nulls or undefined. The default is empty string.
+If you define a converter, you might want to pay attention to the converter's 5th parameter of bound els.  You might want to only convert values for specific element types.
 
 <br>
 <br>
 
 ## Release Notes / Versions
+### v 1.0.3 August 19, 2013
+* Fixed the _.bindAll function calls to specify the function names being bound to.
+* Added the ability to add a global converter via Backbone.ModelBinder.SetOptions({converter: xxx});
 
 ### v 1.0.2 April 18, 2013
 * Fixed the _unbindViewToModel to use the changeTrigger options

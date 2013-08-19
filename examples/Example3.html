@@ -41,7 +41,8 @@
                         motorcycleLicense:'[name=motorcycleLicense]',
                         editableContent:'[name=editableContent]',
                         graduated:[{selector: '[name=graduated]'}, {selector: '[name=driversLicense],[name=motorcycleLicense]', elAttribute: 'enabled', converter: function(direction, value){return value === 'yes';}}],
-                        eyeColor: [{selector: '[name=eyeColor]'}, {selector: 'span.label', elAttribute: 'style', converter: function(direction, value){return 'color:' + value}}]
+                        eyeColor: [{selector: '[name=eyeColor]'}, {selector: 'span.label', elAttribute: 'style', converter: function(direction, value){return 'color:' + value}}],
+                        hair: '[name=hair]'
                     };
 
                     this._modelBinder.bind(this.model, this.el, bindings);
@@ -84,6 +85,11 @@ Model data:
 
     Drivers licence: <input type="checkbox" name="driversLicense"/><br>
     Motorcycle license: <input type="checkbox" name="motorcycleLicense" /><br><br>
+
+    Hair: <select name="hair">
+    <option value=""></option>
+    <option value="blond">Blond</option>
+    </select><br><br>
 
     Content editable <div contentEditable name="editableContent"/>
 </div>

@@ -40,8 +40,13 @@
             this._rootEl = rootEl;
             this._setOptions(options);
 
-            if (!this._model) this._throwException('model must be specified');
-            if (!this._rootEl) this._throwException('rootEl must be specified');
+            if (!this._model) {
+                this._throwException('model must be specified');
+            }
+
+            if (!this._rootEl) {
+                this._throwException('rootEl must be specified');
+            }
 
             if(attributeBindings){
                 // Create a deep clone of the attribute bindings
@@ -60,7 +65,7 @@
 
         bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
             this._triggers = triggers;
-            this.bind(model, rootEl, attributeBindings, modelSetOptions)
+            this.bind(model, rootEl, attributeBindings, modelSetOptions);
         },
 
         unbind:function () {
@@ -98,29 +103,31 @@
             var attributeBindingKey, inputBinding, attributeBinding, elementBindingCount, elementBinding;
 
             for (attributeBindingKey in this._attributeBindings) {
-                inputBinding = this._attributeBindings[attributeBindingKey];
+                if (this._attributeBindings.hasOwnProperty(attributeBindingKey)) {
+                    inputBinding = this._attributeBindings[attributeBindingKey];
 
-                if (_.isString(inputBinding)) {
-                    attributeBinding = {elementBindings: [{selector: inputBinding}]};
-                }
-                else if (_.isArray(inputBinding)) {
-                    attributeBinding = {elementBindings: inputBinding};
-                }
-                else if(_.isObject(inputBinding)){
-                    attributeBinding = {elementBindings: [inputBinding]};
-                }
-                else {
-                    this._throwException('Unsupported type passed to Model Binder ' + attributeBinding);
-                }
+                    if (_.isString(inputBinding)) {
+                        attributeBinding = {elementBindings: [{selector: inputBinding}]};
+                    }
+                    else if (_.isArray(inputBinding)) {
+                        attributeBinding = {elementBindings: inputBinding};
+                    }
+                    else if(_.isObject(inputBinding)){
+                        attributeBinding = {elementBindings: [inputBinding]};
+                    }
+                    else {
+                        this._throwException('Unsupported type passed to Model Binder ' + attributeBinding);
+                    }
 
-                // Add a linkage from the element binding back to the attribute binding
-                for(elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++){
-                    elementBinding = attributeBinding.elementBindings[elementBindingCount];
-                    elementBinding.attributeBinding = attributeBinding;
-                }
+                    // Add a linkage from the element binding back to the attribute binding
+                    for(elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++){
+                        elementBinding = attributeBinding.elementBindings[elementBindingCount];
+                        elementBinding.attributeBinding = attributeBinding;
+                    }
 
-                attributeBinding.attributeName = attributeBindingKey;
-                this._attributeBindings[attributeBindingKey] = attributeBinding;
+                    attributeBinding.attributeName = attributeBindingKey;
+                    this._attributeBindings[attributeBindingKey] = attributeBinding;
+                }
             }
         },
 
@@ -150,25 +157,27 @@
         _initializeElBindings:function () {
             var bindingKey, attributeBinding, bindingCount, elementBinding, foundEls, elCount, el;
             for (bindingKey in this._attributeBindings) {
-                attributeBinding = this._attributeBindings[bindingKey];
+                if (this._attributeBindings.hasOwnProperty(bindingKey)) {
+                    attributeBinding = this._attributeBindings[bindingKey];
 
-                for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
-                    elementBinding = attributeBinding.elementBindings[bindingCount];
-                    if (elementBinding.selector === '') {
-                        foundEls = $(this._rootEl);
-                    }
-                    else {
-                        foundEls = $(elementBinding.selector, this._rootEl);
-                    }
+                    for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
+                        elementBinding = attributeBinding.elementBindings[bindingCount];
+                        if (elementBinding.selector === '') {
+                            foundEls = $(this._rootEl);
+                        }
+                        else {
+                            foundEls = $(elementBinding.selector, this._rootEl);
+                        }
 
-                    if (foundEls.length === 0) {
-                        this._throwException('Bad binding found. No elements returned for binding selector ' + elementBinding.selector);
-                    }
-                    else {
-                        elementBinding.boundEls = [];
-                        for (elCount = 0; elCount < foundEls.length; elCount++) {
-                            el = foundEls[elCount];
-                            elementBinding.boundEls.push(el);
+                        if (foundEls.length === 0) {
+                            this._throwException('Bad binding found. No elements returned for binding selector ' + elementBinding.selector);
+                        }
+                        else {
+                            elementBinding.boundEls = [];
+                            for (elCount = 0; elCount < foundEls.length; elCount++) {
+                                el = foundEls[elCount];
+                                elementBinding.boundEls.push(el);
+                            }
                         }
                     }
                 }
@@ -200,23 +209,25 @@
         copyViewValuesToModel: function(){
             var bindingKey, attributeBinding, bindingCount, elementBinding, elCount, el;
             for (bindingKey in this._attributeBindings) {
-                attributeBinding = this._attributeBindings[bindingKey];
+                if (this._attributeBindings.hasOwnProperty(bindingKey)) {
+                    attributeBinding = this._attributeBindings[bindingKey];
 
-                for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
-                    elementBinding = attributeBinding.elementBindings[bindingCount];
+                    for (bindingCount = 0; bindingCount < attributeBinding.elementBindings.length; bindingCount++) {
+                        elementBinding = attributeBinding.elementBindings[bindingCount];
 
-                    if(this._isBindingUserEditable(elementBinding)){
-                        if(this._isBindingRadioGroup(elementBinding)){
-                            el = this._getRadioButtonGroupCheckedEl(elementBinding);
-                            if(el){
-                                this._copyViewToModel(elementBinding, el);
-                            }
-                        }
-                        else {
-                            for(elCount = 0; elCount < elementBinding.boundEls.length; elCount++){
-                                el = $(elementBinding.boundEls[elCount]);
-                                if(this._isElUserEditable(el)){
+                        if(this._isBindingUserEditable(elementBinding)){
+                            if(this._isBindingRadioGroup(elementBinding)){
+                                el = this._getRadioButtonGroupCheckedEl(elementBinding);
+                                if(el){
                                     this._copyViewToModel(elementBinding, el);
+                                }
+                            }
+                            else {
+                                for(elCount = 0; elCount < elementBinding.boundEls.length; elCount++){
+                                    el = $(elementBinding.boundEls[elCount]);
+                                    if(this._isElUserEditable(el)){
+                                        this._copyViewToModel(elementBinding, el);
+                                    }
                                 }
                             }
                         }
@@ -306,16 +317,19 @@
             var elBindings = [];
 
             for (attributeName in this._attributeBindings) {
-                attributeBinding = this._attributeBindings[attributeName];
+                if (this._attributeBindings.hasOwnProperty(attributeName)) {
 
-                for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
-                    elementBinding = attributeBinding.elementBindings[elementBindingCount];
+                    attributeBinding = this._attributeBindings[attributeName];
 
-                    for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
-                        boundEl = elementBinding.boundEls[boundElCount];
+                    for (elementBindingCount = 0; elementBindingCount < attributeBinding.elementBindings.length; elementBindingCount++) {
+                        elementBinding = attributeBinding.elementBindings[elementBindingCount];
 
-                        if (boundEl === findEl) {
-                            elBindings.push(elementBinding);
+                        for (boundElCount = 0; boundElCount < elementBinding.boundEls.length; boundElCount++) {
+                            boundEl = elementBinding.boundEls[boundElCount];
+
+                            if (boundEl === findEl) {
+                                elBindings.push(elementBinding);
+                            }
                         }
                     }
                 }
@@ -328,10 +342,12 @@
             var changedAttribute, attributeBinding;
 
             for (changedAttribute in this._model.changedAttributes()) {
-                attributeBinding = this._attributeBindings[changedAttribute];
+                if (this._model.changedAttributes().hasOwnProperty(changedAttribute)) {
+                    attributeBinding = this._attributeBindings[changedAttribute];
 
-                if (attributeBinding) {
-                    this._copyModelToView(attributeBinding);
+                    if (attributeBinding) {
+                        this._copyModelToView(attributeBinding);
+                    }
                 }
             }
         },
@@ -403,12 +419,20 @@
         },
 
         _setElValue:function (el, convertedValue) {
+
+            // Workaround for Expected an assignment or function call and instead saw an expression
+            // http://stackoverflow.com/a/9534150
+            function expression (statement) {
+                'use strict';
+                return statement;
+            }
+
             if(el.attr('type')){
                 switch (el.attr('type')) {
                     case 'radio':
                         if (el.val() === convertedValue) {
                             // must defer the change trigger or the change will actually fire with the old value
-                            el.prop('checked') || _.defer(function() { el.trigger('change'); });
+                            expression(el.prop('checked') || _.defer(function() { el.trigger('change'); }));
                             el.prop('checked', true);
                         }
                         else {
@@ -418,8 +442,9 @@
                         break;
                     case 'checkbox':
                          // must defer the change trigger or the change will actually fire with the old value
-                         el.prop('checked') === !!convertedValue || _.defer(function() { el.trigger('change') });
-                         el.prop('checked', !!convertedValue);
+
+                        expression(el.prop('checked') === (convertedValue ? true : false) || _.defer(function() { el.trigger('change'); }));
+                        el.prop('checked', (convertedValue ? true : false));
                         break;
                     case 'file':
                         break;

@@ -2,7 +2,7 @@
 // (c) 2013 Bart Wood
 // Distributed Under MIT License
 
-(function(){
+(function(_, $, Backbone){
 
     if(!Backbone){
         throw 'Please include Backbone.js before Backbone.ModelBinder.js';
@@ -282,4 +282,4 @@
         }
     });
 
-}).call(this);
+}).call(this, _, jQuery, Backbone);

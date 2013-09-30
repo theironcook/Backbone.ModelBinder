@@ -8,7 +8,7 @@
         define(['underscore', 'jquery', 'backbone'], factory);
     } else {
         // Browser globals
-        factory(_, $, Backbone);
+        factory(_, jQuery, Backbone);
     }
 }(function(_, $, Backbone){
 

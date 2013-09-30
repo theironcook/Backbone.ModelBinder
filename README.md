@@ -787,8 +787,8 @@ If you would like to use this option, simply pass a compiled _.template instead 
   or for a single instance modelBinder.bind(this.model, this.el, bindings, {modelSetOptions: {validate: true}});
   For single instance options, the bindings can be a fully configured set of bindings or the value of null if you want the default bindings.
 * bindCustomTriggers() has now been incorporated to the generic options argument at the class or instance level.
-  For example: to set custom triggers options globally for all binders Backbone.ModelBinder.SetOptions({changeTriggers: {'': 'change': '', 'keyup'}});
-  or for a single instance modelBinder.bind(this.model, this.el, {changeTriggers: {'': 'change': '', 'keyup'}});
+  For example: to set custom triggers options globally for all binders Backbone.ModelBinder.SetOptions({changeTriggers: {'': 'change keyup'}});
+  or for a single instance modelBinder.bind(this.model, this.el, {changeTriggers: {'': 'change keyup'}});
 * Added the els parameter to the converter functions
 * Added the changeTriggers to customize which view events trigger the model binder copies values from the view to the model
 * Added the modelSetOptions to allow the ModelBinder to send messages to the Model.set function and corresponding callbacks

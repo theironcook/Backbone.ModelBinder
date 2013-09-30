@@ -766,6 +766,7 @@ If you define a converter, you might want to pay attention to the converter's 5t
 * Added the ability to set static and instance options for the CollectionBinder.  As of now, there is only one option: 'autoSort'.  You can set the option globally via Backbone.CollectionBinder.SetOptions.
 * Added the ability to use template functions with the CollectionBinder.ElManagerFactory.  Normally, I wouldn't use the ElManagerFactory except for very simple situations - especially because the content of the data isn't updated.
 If you would like to use this option, simply pass a compiled _.template instead of html to the ElManagerFactory constructor. Internally the ElManagerFactory will call the template and pass {model: this._model.toJSON()} to the template function.
+* Fix for issue 162.  Undid fix for 133.  Unnecessary Model.set calls for checkboxes and radio buttons.
 
 ### v 1.0.4 August 19, 2013
 * Fixed the _.bindAll function calls to specify the function names being bound to.

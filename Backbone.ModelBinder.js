@@ -406,19 +406,9 @@
             if(el.attr('type')){
                 switch (el.attr('type')) {
                     case 'radio':
-                        if (el.val() === convertedValue) {
-                            // must defer the change trigger or the change will actually fire with the old value
-                            el.prop('checked') || _.defer(function() { el.trigger('change'); });
-                            el.prop('checked', true);
-                        }
-                        else {
-                            // must defer the change trigger or the change will actually fire with the old value
-                            el.prop('checked', false);
-                        }
+                        el.prop('checked', el.val() === convertedValue);
                         break;
                     case 'checkbox':
-                         // must defer the change trigger or the change will actually fire with the old value
-                         el.prop('checked') === !!convertedValue || _.defer(function() { el.trigger('change') });
                          el.prop('checked', !!convertedValue);
                         break;
                     case 'file':

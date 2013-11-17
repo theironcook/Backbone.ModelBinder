@@ -61,7 +61,7 @@ You can download the zip/tarball as normal and include it with your other JS ass
 
 To do this, just drop a reference to the minified version of the plugin into your document's `<head>` as follows, replacing the version number with whatever the latest one is:
 ````
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.modelbinder/0.1.3/Backbone.ModelBinder-min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.modelbinder/1.0.4/Backbone.ModelBinder.min.js"></script>
 ````
 
 

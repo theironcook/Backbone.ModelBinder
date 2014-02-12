@@ -478,7 +478,7 @@
 
         _throwException: function(message){
             if(this._options.suppressThrows){
-                if(console && console.error){
+                if(typeof(console) !== 'undefined' && console.error){
                     console.error(message);
                 }
             }

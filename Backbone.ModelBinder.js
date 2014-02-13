@@ -60,7 +60,7 @@
 
         bindCustomTriggers: function (model, rootEl, triggers, attributeBindings, modelSetOptions) {
             this._triggers = triggers;
-            this.bind(model, rootEl, attributeBindings, modelSetOptions)
+            this.bind(model, rootEl, attributeBindings, modelSetOptions);
         },
 
         unbind:function () {

@@ -253,7 +253,7 @@
                     }
                     else {
                         this._view.$el.remove();
-                        console.log('warning, you should implement a close() function for your view, you might end up with zombies');
+                        console && console.log && console.log('warning, you should implement a close() function for your view, you might end up with zombies');
                     }
 
                     this.trigger('elRemoved', this._model, this._view);

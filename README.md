@@ -760,6 +760,8 @@ If you define a converter, you might want to pay attention to the converter's 5t
 <br>
 
 ## Release Notes / Versions
+### v 1.0.6 November 5, 2014
+* Made the CollectionBinder loadable via AMD
 
 ### v 1.0.5 September 30, 2013
 * Fixed issue 164 - Works with jQuery.noConflict

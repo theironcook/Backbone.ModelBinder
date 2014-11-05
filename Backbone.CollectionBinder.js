@@ -1,7 +1,25 @@
-// Backbone.CollectionBinder v1.0.5
-// (c) 2013 Bart Wood
+// Backbone.CollectionBinder v1.0.6
+// (c) 2014 Bart Wood
 // Distributed Under MIT License
 
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['underscore', 'jquery', 'backbone', 'Backbone.ModelBinder'], factory);
+    }
+    else if(typeof module !== 'undefined' && module.exports) {
+        // CommonJS
+        module.exports = factory(
+            require('underscore'),
+            require('jquery'),
+            require('backbone')
+        );
+    }
+    else {
+        // Browser globals
+        factory(_, $, Backbone);
+    }
+}
 (function(_, $, Backbone){
 
     if(!Backbone){
@@ -30,7 +48,7 @@
         Backbone.CollectionBinder.options = options;
     };
 
-    Backbone.CollectionBinder.VERSION = '1.0.5';
+    Backbone.CollectionBinder.VERSION = '1.0.6';
 
     _.extend(Backbone.CollectionBinder.prototype, Backbone.Events, {
         bind: function(collection, parentEl){
@@ -282,4 +300,4 @@
         }
     });
 
-}).call(this, _, jQuery, Backbone);
+}));

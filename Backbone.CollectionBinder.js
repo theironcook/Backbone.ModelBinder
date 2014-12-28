@@ -260,7 +260,8 @@
 
                 createEl: function(){
                     this._view = this._viewCreator(model);
-                    $(this._parentEl).append(this._view.render(this._model).el);
+                    this._view.render(this._model);
+                    $(this._parentEl).append(this._view.el);
 
                     this.trigger('elCreated', this._model, this._view);
                 },

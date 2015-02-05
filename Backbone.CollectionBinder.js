@@ -100,10 +100,6 @@
         _onCollectionAdd: function(model){
             this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
             this._elManagers[model.cid].createEl();
-
-            if(this._options['autoSort']){
-                this.sortRootEls();
-            }
         },
 
         _onCollectionRemove: function(model){
@@ -260,7 +256,8 @@
 
                 createEl: function(){
                     this._view = this._viewCreator(model);
-                    $(this._parentEl).append(this._view.render(this._model).el);
+                    this._view.render(this._model);
+                    $(this._parentEl).append(this._view.el);
 
                     this.trigger('elCreated', this._model, this._view);
                 },

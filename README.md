@@ -296,6 +296,18 @@ To define multiple selectors, just define them as an array.
 
 The jQuery bindings leverage the jQuery delegate mechanism - which means they should be fairly efficient.
 
+##Binding to the Root Element##
+
+Sometimes, in rare cases, your views are so simple that you just want to bind
+to the root element itself. For example, if your view is an `<li>` tag, it
+makes sense to have the inner HTML simply be the appropriate model value.
+
+In those cases, simply use an empty string as your selector:
+
+````
+ firstName: { selector: '' }
+````
+
 <br>
 ***
 

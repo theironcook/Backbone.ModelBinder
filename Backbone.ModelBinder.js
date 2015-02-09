@@ -433,18 +433,23 @@
         },
 
         _copyViewToModel: function (elementBinding, el) {
-            var result, value, convertedValue;
+            var result, value, convertedValue, attributeName;
 
             if (!el._isSetting) {
+                attributeName = elementBinding.attributeBinding.attributeName;
 
                 el._isSetting = true;
                 result = this._setModel(elementBinding, $(el));
                 el._isSetting = false;
 
                 if(result && elementBinding.converter){
-                    value = this._model.get(elementBinding.attributeBinding.attributeName);
+                    value = this._model.get(attributeName);
                     convertedValue = this._getConvertedValue(Backbone.ModelBinder.Constants.ModelToView, elementBinding, value);
                     this._setEl($(el), elementBinding, convertedValue);
+                } else if (result === false) {
+                    // Model set failed for some reason, so revert the element
+                    // by copying the model back over.
+                    this.copyModelAttributesToView([attributeName]);
                 }
             }
         },

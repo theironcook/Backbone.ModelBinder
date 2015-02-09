@@ -241,7 +241,7 @@
 
         _bindViewToModel: function () {
             _.each(this._options['changeTriggers'], function (event, selector) {
-                $(this._rootEl).delegate(selector, event, this._onElChanged);
+                $(this._rootEl).on(event, selector, this._onElChanged);
             }, this);
 
             if(this._options['initialCopyDirection'] === Backbone.ModelBinder.Constants.ViewToModel){
@@ -252,7 +252,7 @@
         _unbindViewToModel: function () {
             if(this._options && this._options['changeTriggers']){
                 _.each(this._options['changeTriggers'], function (event, selector) {
-                    $(this._rootEl).undelegate(selector, event, this._onElChanged);
+                    $(this._rootEl).off(event, selector, this._onElChanged);
                 }, this);
             }
         },

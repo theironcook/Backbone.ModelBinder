@@ -150,7 +150,7 @@
                     var modelEl = modelElManager.getEl();
                     var currentRootEls = $(this._elManagerFactory._getParentEl()).children();
 
-                    if(currentRootEls[modelIndex] !== modelEl[0]){
+                    if(modelIndex < currentRootEls.length && currentRootEls[modelIndex] !== modelEl[0]){
                         modelEl.detach();
                         modelEl.insertBefore(currentRootEls[modelIndex]);
                     }

@@ -59,7 +59,7 @@ describe("binding and validations", function () {
         });
 
         it("should not have succeeded", function () {
-            expect(this.result).toBeFalsy();
+            expect(this.result).toBe(false);
         });
 
         it("should not have affected the model", function () {

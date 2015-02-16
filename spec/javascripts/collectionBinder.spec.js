@@ -69,7 +69,8 @@ describe("CollectionBinder", function () {
             });
 
             it("should render no children into parent element", function () {
-                expect(this.$parentEl.children().length).toBe(0);
+                expect(this.$parentEl.children().length)
+                    .toBe(this.collection.length);
             });
 
             describe("Adding a model", function () {
@@ -78,7 +79,84 @@ describe("CollectionBinder", function () {
                 });
 
                 it("should render one child into parent element", function () {
-                    expect(this.$parentEl.children().length).toBe(1);
+                    expect(this.$parentEl.children().length)
+                        .toBe(this.collection.length);
+                });
+            });
+        });
+
+        describe("With a non-empty collection", function () {
+            beforeEach(function () {
+                var elManagerFactory = new Backbone.CollectionBinder.ElManagerFactory("<div><span name='name'></span>: <span name='value'></span></div>", {
+                    name: "[name=name]",
+                    value: "[name=value]"
+                });
+                this.target = new Backbone.CollectionBinder(elManagerFactory);
+
+                this.collection = new Backbone.Collection([
+                    { name: "First", value: 1 },
+                    { name: "Second", value: 2 },
+                    { name: "Third", value: 3 }
+                ]);
+
+                this.$parentEl = jQuery("<div></div>");
+
+                this.target.bind(this.collection, this.$parentEl);
+            });
+
+            it("should create a child for each model", function () {
+                expect(this.$parentEl.children().length)
+                    .toBe(this.collection.length);
+            });
+
+            describe("Adding a model", function () {
+                beforeEach(function () {
+                    this.collection.add({ name: "Fourth", value: 4 });
+                });
+
+                it("should render one child into parent element", function () {
+                    expect(this.$parentEl.children().length)
+                        .toBe(this.collection.length);
+                });
+
+                it("should append the new child to the end of the parent element", function () {
+                    expect(this.$parentEl.children().last().text())
+                        .toBe("Fourth: 4");
+                });
+            });
+
+            describe("Removing a model", function () {
+                beforeEach(function () {
+                    var modelToRemove = this.collection.findWhere({ value: 2 });
+                    this.collection.remove(modelToRemove);
+                });
+
+                it("should remove one child from parent element", function () {
+                    expect(this.$parentEl.children().length)
+                        .toBe(this.collection.length);
+                });
+
+                it("should remove the correct child from parent element", function () {
+                    expect(this.$parentEl.children().eq(1).text())
+                        .toBe("Third: 3");
+                });
+            });
+
+            describe("Resetting the collection", function () {
+                beforeEach(function () {
+                    this.collection.reset([
+                        { name: "Fourth", value: 4 },
+                        { name: "Fifth", value: 5 }
+                    ]);
+                });
+
+                it("should render the new models under the parent element", function () {
+                    expect(this.$parentEl.children().length)
+                        .toBe(this.collection.length);
+                    expect(this.$parentEl.children().eq(0).text())
+                        .toBe("Fourth: 4");
+                    expect(this.$parentEl.children().eq(1).text())
+                        .toBe("Fifth: 5");
                 });
             });
         });

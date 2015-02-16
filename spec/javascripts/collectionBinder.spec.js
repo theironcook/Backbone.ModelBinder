@@ -161,4 +161,61 @@ describe("CollectionBinder", function () {
             });
         });
     });
+
+    describe("unbind", function () {
+        beforeEach(function () {
+            var elManagerFactory = new Backbone.CollectionBinder.ElManagerFactory("<div><span name='name'></span>: <span name='value'></span></div>", {
+                name: "[name=name]",
+                value: "[name=value]"
+            });
+            this.target = new Backbone.CollectionBinder(elManagerFactory);
+
+            this.collection = new Backbone.Collection([
+                { name: "First", value: 1 },
+                { name: "Second", value: 2 },
+                { name: "Third", value: 3 }
+            ]);
+
+            this.$parentEl = jQuery("<div></div>");
+
+            this.target.bind(this.collection, this.$parentEl);
+        });
+
+        describe("Removing the bound elements", function () {
+            beforeEach(function () {
+                this.target.unbind();
+            });
+
+            it("should remove all elements created during bind()", function () {
+                expect(this.$parentEl.children().length).toBe(0);
+            });
+        });
+
+        describe("Removing the collection events", function () {
+            beforeEach(function () {
+                spyOn(this.collection, "off").andCallThrough();
+                this.target.unbind();
+            });
+
+            it("should stop listening to add events", function () {
+                expect(this.collection.off)
+                    .toHaveBeenCalledWith("add", jasmine.any(Function));
+            });
+
+            it("should stop listening to remove events", function () {
+                expect(this.collection.off)
+                    .toHaveBeenCalledWith("remove", jasmine.any(Function));
+            });
+
+            it("should stop listening to reset events", function () {
+                expect(this.collection.off)
+                    .toHaveBeenCalledWith("reset", jasmine.any(Function));
+            });
+
+            it("should stop listening to sort events", function () {
+                expect(this.collection.off)
+                    .toHaveBeenCalledWith("sort", jasmine.any(Function));
+            });
+        });
+    });
 });

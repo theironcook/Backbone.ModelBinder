@@ -260,4 +260,52 @@ describe("CollectionBinder", function () {
             });
         });
     });
+
+    describe("getManagerForModel", function () {
+        beforeEach(function () {
+            var fakeElManagerFactory = {
+                _setParentEl: function () {},
+                makeElManager: function () {
+                    return {
+                        createEl: function () {}
+                    };
+                }
+            };
+
+            this.target = new Backbone.CollectionBinder(fakeElManagerFactory);
+
+            this.collection = new Backbone.Collection([{}, {}, {}]);
+            this.$parentEl = jQuery("<div></div>");
+
+            this.target.bind(this.collection, this.$parentEl);
+        });
+
+        describe("One elManager represents a model", function () {
+            it("should work for model instance", function () {
+                var model = this.collection.at(1);
+                var result = this.target.getManagerForModel(model);
+
+                expect(result).toBeDefined();
+            });
+
+            it("should work for model cid", function () {
+                var cid = this.collection.at(1).cid;
+                var result = this.target.getManagerForModel(cid);
+
+                expect(result).toBeDefined();
+            });
+        });
+
+        describe("No elManagers match the given model", function () {
+            it("should return undefined for model not in collection", function () {
+                var result = this.target.getManagerForModel(new Backbone.Model());
+                expect(result).not.toBeDefined();
+            });
+
+            it("should return undefined for cid not in collection", function () {
+                var result = this.target.getManagerForModel(_.uniqueId());
+                expect(result).not.toBeDefined();
+            });
+        });
+    });
 });

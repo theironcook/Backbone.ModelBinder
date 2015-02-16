@@ -218,4 +218,46 @@ describe("CollectionBinder", function () {
             });
         });
     });
+
+    describe("getManagerForEl", function () {
+        beforeEach(function () {
+            var fakeElManagerFactory = {
+                _setParentEl: function () {},
+                makeElManager: function () {
+                    return {
+                        isElContained: function () { return false; },
+                        createEl: function () {}
+                    };
+                }
+            };
+
+            this.target = new Backbone.CollectionBinder(fakeElManagerFactory);
+
+            this.collection = new Backbone.Collection([{}, {}, {}]);
+            this.$parentEl = jQuery("<div></div>");
+
+            this.target.bind(this.collection, this.$parentEl);
+        });
+
+        describe("One elManager contains a given element", function () {
+            beforeEach(function () {
+                this.cid = this.collection.at(1).cid;
+                spyOn(this.target._elManagers[this.cid], "isElContained")
+                    .andReturn(true);
+            });
+
+            it("should return the correct elManager", function () {
+                var result = this.target.getManagerForEl(jQuery("<span></span>"));
+                expect(result)
+                    .toBe(this.target._elManagers[this.cid]);
+            });
+        });
+
+        describe("No elManager contains a given element", function () {
+            it("should return undefined", function () {
+                var result = this.target.getManagerForEl(jQuery("<span></span>"));
+                expect(result).not.toBeDefined();
+            });
+        });
+    });
 });

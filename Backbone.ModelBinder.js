@@ -300,7 +300,7 @@
             var elCount, el;
             for(elCount = 0; elCount < elBinding.boundEls.length; elCount++){
                 el = $(elBinding.boundEls[elCount]);
-                if(el.attr('type') === 'radio' && el.attr('checked')){
+                if(el.attr('type') === 'radio' && el.prop('checked')){
                     return el;
                 }
             }

@@ -160,15 +160,28 @@
         },
 
         sortRootEls: function(){
+            // sorting an empty collection or a collection with a single element won't change anything
+            if (this._collection.length < 2) return;
+
+            var children = $(this._elManagerFactory._getParentEl()).children();
+            var indexes = this._collection.models.map(function (model) {
+                var modelElManager = this.getManagerForModel(model);
+                var modelEl = modelElManager.getEl();
+                return modelEl.index();
+            }, this);
+
+            var minIndex = Math.min.apply(Math, indexes);
+
             this._collection.each(function(model, modelIndex){
                 var modelElManager = this.getManagerForModel(model);
                 if(modelElManager){
+                    var realIndex = modelIndex + minIndex;
                     var modelEl = modelElManager.getEl();
                     var currentRootEls = $(this._elManagerFactory._getParentEl()).children();
 
-                    if(currentRootEls[modelIndex] !== modelEl[0]){
+                    if(currentRootEls[realIndex] !== modelEl[0]){
                         modelEl.detach();
-                        modelEl.insertBefore(currentRootEls[modelIndex]);
+                        modelEl.insertBefore(currentRootEls[realIndex]);
                     }
                 }
             }, this);

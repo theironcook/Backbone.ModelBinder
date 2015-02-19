@@ -163,28 +163,91 @@
             // sorting an empty collection or a collection with a single element won't change anything
             if (this._collection.length < 2) return;
 
+            // Algorithm: one by one take elements and put to the correct position in DOM
+            // Computational complexity: O(n^2)
+            // DOM operations:
+            // - $.children() calls: 1
+            // - $.before/after calls: n
+
+
+            // -----
+            // prepare data for sorting
+
             var children = $(this._elManagerFactory._getParentEl()).children();
-            var indexes = this._collection.models.map(function (model) {
+
+            var order = 0;
+
+            var getElData = function (model) {
                 var modelElManager = this.getManagerForModel(model);
+                if (!modelElManager) return;
+
                 var modelEl = modelElManager.getEl();
-                return modelEl.index();
-            }, this);
+                if (!modelEl) return;
 
-            var minIndex = Math.min.apply(Math, indexes);
-
-            this._collection.each(function(model, modelIndex){
-                var modelElManager = this.getManagerForModel(model);
-                if(modelElManager){
-                    var realIndex = modelIndex + minIndex;
-                    var modelEl = modelElManager.getEl();
-                    var currentRootEls = $(this._elManagerFactory._getParentEl()).children();
-
-                    if(currentRootEls[realIndex] !== modelEl[0]){
-                        modelEl.detach();
-                        modelEl.insertBefore(currentRootEls[realIndex]);
-                    }
+                return {
+                    el: modelEl,
+                    elIndex: children.index(modelEl),
+                    order: order++
                 }
-            }, this);
+            };
+
+            var elements = _.chain(this._collection.models)
+                .map(getElData, this)
+                .compact()
+                .value();
+
+            var minElIndex = _.min(elements, function (e) { return e.elIndex; }).elIndex;
+            var maxElIndex = _.max(elements, function (e) { return e.elIndex; }).elIndex;
+
+            // -----
+            // define some helpers
+
+            var findElByOrder = function (order) {
+                return _.findWhere(elements, {order: order});
+            };
+
+            var findElByElIndex = function (elIndex) {
+                return _.findWhere(elements, {elIndex: elIndex});
+            };
+
+            var moveEl = function (el, oldIndex, newIndex) {
+                var moveForward = newIndex > oldIndex;
+
+                if (newIndex < maxElIndex) {
+                    var nextEl = findElByElIndex(newIndex + (moveForward ? 1 : 0));
+                    nextEl.el.before(el);
+                } else {
+                    var lastEl = findElByElIndex(newIndex);
+                    lastEl.el.after(el);
+                }
+            };
+
+            var updateIndexesAfterMove = function (oldIndex, newIndex) {
+                var moveForward = newIndex > oldIndex;
+
+                // update indexes of all elements that were shifted after the current element movement
+                _.each(elements, function (e) {
+                    var elIndex = e.elIndex;
+                    if (moveForward && elIndex > oldIndex && elIndex <= newIndex) e.elIndex--;
+                    if (!moveForward && elIndex >= newIndex && elIndex < oldIndex) e.elIndex++;
+                });
+            };
+
+            // -----
+            // Actual sorting happens here
+            _.times(elements.length, function (order) {
+                var elementData = findElByOrder(order);
+                var oldIndex = elementData.elIndex;
+
+                var newIndex = order + minElIndex;
+
+                if (oldIndex === newIndex) return;
+
+                moveEl(elementData.el, oldIndex, newIndex);
+                updateIndexesAfterMove(oldIndex, newIndex);
+
+                elementData.elIndex = newIndex;
+            });
         }
     });
 

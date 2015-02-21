@@ -97,12 +97,14 @@
            return this._elManagers[_.isObject(model)? model.cid : model];
         },
 
-        _onCollectionAdd: function(model){
-            this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
-            this._elManagers[model.cid].createEl();
+        _onCollectionAdd: function(model, collection, options){
+            var manager = this._elManagers[model.cid] = this._elManagerFactory.makeElManager(model);
+            manager.createEl();
 
-            if(this._options['autoSort']){
-                this.sortRootEls();
+            var position = options && options.at;
+
+            if (this._options['autoSort'] && position != null && position < this._collection.length - 1) {
+                this._moveElToPosition(manager.getEl(), position);
             }
         },
 
@@ -141,6 +143,20 @@
                 this._elManagers[model.cid].removeEl();
                 delete this._elManagers[model.cid];
             }
+        },
+
+        _moveElToPosition: function (modelEl, position) {
+            var nextModel = this._collection.at(position + 1);
+            if (!nextModel) return;
+
+            var nextManager = this.getManagerForModel(nextModel);
+            if (!nextManager) return;
+
+            var nextEl = nextManager.getEl();
+            if (!nextEl) return;
+
+            modelEl.detach();
+            modelEl.insertBefore(nextEl);
         },
 
         sortRootEls: function(){
@@ -260,7 +276,8 @@
 
                 createEl: function(){
                     this._view = this._viewCreator(model);
-                    $(this._parentEl).append(this._view.render(this._model).el);
+                    this._view.render(this._model);
+                    $(this._parentEl).append(this._view.el);
 
                     this.trigger('elCreated', this._model, this._view);
                 },

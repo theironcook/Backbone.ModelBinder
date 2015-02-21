@@ -138,4 +138,131 @@ describe("CollectionBinder with ElManagerFactory", function () {
             });
         });
     });
+
+    describe("With HTML template", function () {
+        describe("With no bindings", function () {
+            beforeEach(function () {
+                var htmlTemplate = _.template("<div><%- model.firstName %> <%- model.lastName %></div>");
+                this.elManagerFactory = new Backbone.CollectionBinder.ElManagerFactory(htmlTemplate);
+                this.collectionBinder = new Backbone.CollectionBinder(this.elManagerFactory);
+                this.$el = jQuery("<div></div>");
+                this.collection = new Backbone.Collection([
+                    { firstName: "John", lastName: "Doe" },
+                    { firstName: "Dorothy", lastName: "Gale" }
+                ]);
+                this.collectionBinder.bind(this.collection, this.$el);
+            });
+
+            it("should render template with model JSON passed in", function () {
+                expect(this.$el.children().eq(0).text())
+                    .toBe("John Doe");
+                expect(this.$el.children().eq(1).text())
+                    .toBe("Dorothy Gale");
+            });
+
+            describe("Changing a model with no bindings", function () {
+                beforeEach(function () {
+                    this.collection.at(0).set({
+                        firstName: "George",
+                        lastName: "Washington"
+                    });
+                });
+
+                it("should not change pre-rendered HTML", function () {
+                    expect(this.$el.children().eq(0).text())
+                        .toBe("John Doe");
+                    expect(this.$el.children().eq(1).text())
+                        .toBe("Dorothy Gale");
+                });
+            });
+        });
+
+        describe("With string bindings", function () {
+            beforeEach(function () {
+                var htmlTemplate = _.template("<div><%- model.firstName %> <span name='lastName'><%- model.lastName %></span></div>");
+                this.elManagerFactory = new Backbone.CollectionBinder.ElManagerFactory(htmlTemplate, "name");
+                this.collectionBinder = new Backbone.CollectionBinder(this.elManagerFactory);
+                this.$el = jQuery("<div></div>");
+                this.collection = new Backbone.Collection([
+                    { firstName: "John", lastName: "Doe" },
+                    { firstName: "Dorothy", lastName: "Gale" }
+                ]);
+                this.collectionBinder.bind(this.collection, this.$el);
+            });
+
+            it("should render template with model JSON passed in", function () {
+                expect(this.$el.children().eq(0).text())
+                    .toBe("John Doe");
+                expect(this.$el.children().eq(1).text())
+                    .toBe("Dorothy Gale");
+            });
+
+            describe("Changing a model", function () {
+                beforeEach(function () {
+                    this.collection.at(0).set({
+                        firstName: "George",
+                        lastName: "Washington"
+                    });
+                });
+
+                it("should change bound HTML only", function () {
+                    expect(this.$el.children().eq(0).text())
+                        .toBe("John Washington");
+                });
+
+                it("should not change other element", function () {
+                    expect(this.$el.children().eq(1).text())
+                        .toBe("Dorothy Gale");
+                });
+            });
+        });
+
+        describe("With object bindings", function () {
+            beforeEach(function () {
+                var bindings = {
+                    lastName: {
+                        selector: ".lastName",
+                        converter: function (dir, value) {
+                            return value.toUpperCase();
+                        }
+                    }
+                };
+                var htmlTemplate = _.template("<div><%- model.firstName %> <span class='lastName'><%- model.lastName %></span></div>");
+                this.elManagerFactory = new Backbone.CollectionBinder.ElManagerFactory(htmlTemplate, bindings);
+                this.collectionBinder = new Backbone.CollectionBinder(this.elManagerFactory);
+                this.$el = jQuery("<div></div>");
+                this.collection = new Backbone.Collection([
+                    { firstName: "John", lastName: "Doe" },
+                    { firstName: "Dorothy", lastName: "Gale" }
+                ]);
+                this.collectionBinder.bind(this.collection, this.$el);
+            });
+
+            it("should apply bindings on render", function () {
+                expect(this.$el.children().eq(0).text())
+                    .toBe("John DOE");
+                expect(this.$el.children().eq(1).text())
+                    .toBe("Dorothy GALE");
+            });
+
+            describe("Changing a model", function () {
+                beforeEach(function () {
+                    this.collection.at(0).set({
+                        firstName: "George",
+                        lastName: "Washington"
+                    });
+                });
+
+                it("should change bound HTML only", function () {
+                    expect(this.$el.children().eq(0).text())
+                        .toBe("John WASHINGTON");
+                });
+
+                it("should not change other element", function () {
+                    expect(this.$el.children().eq(1).text())
+                        .toBe("Dorothy GALE");
+                });
+            });
+        });
+    });
 });

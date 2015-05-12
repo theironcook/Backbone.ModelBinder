@@ -10,6 +10,6 @@
     "jquery"        : ">=1.7.1"
   },
 
-  "main": ["Backbone.ModelBinder.js"],
+  "main": "Backbone.ModelBinder.js",
   "version": "0.1.6"
 }

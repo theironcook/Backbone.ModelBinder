@@ -772,6 +772,14 @@ If you define a converter, you might want to pay attention to the converter's 5t
 <br>
 
 ## Release Notes / Versions
+### v 1.1.0 June 1, 2015
+* Fixed createEl code not to require that Backbone.View#render returns this
+* Don't sort elements on add event (only do so on sort)
+* Fixed package.json to make NPM publishing possible (fixes #195)
+* Use jQuery .on instead of .delegate for event binding (to move off of deprecated .delegate function)
+* Use .prop("checked") instead of .attr("checked") (fixes #199)
+* Fixed autoSort behavior to actually work when the collection changes
+
 ### v 1.0.6 November 5, 2014
 * Made the CollectionBinder loadable via AMD
 

@@ -1,15 +1,37 @@
 {
-  "name"          : "backbone.modelBinder",
-  "description"   : "Simple, flexible and powerful Model-View binding for Backbone.",
-  "url"           : "https://github.com/theironcook/Backbone.ModelBinder",
-  "keywords"      : ["model", "view", "backbone"],
-  "author"        : "Bart wood",
-  "dependencies"  : {
-    "backbone"      : ">=0.9.0",
-    "underscore"    : ">=1.3.1",
-    "jquery"        : ">=1.7.1"
+  "name": "backbone.modelbinder",
+  "description": "Simple, flexible and powerful Model-View binding for Backbone.",
+  "version": "0.1.6",
+  "author": "Bart Wood",
+  "bugs": {
+    "url": "https://github.com/theironcook/Backbone.ModelBinder/issues"
   },
-
+  "dependencies": {
+    "backbone": ">=0.9.0",
+    "jquery": ">=1.7.1",
+    "underscore": ">=1.3.1"
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "files": [
+    "Backbone.ModelBinder.js",
+    "Backbone.CollectionBinder.js"
+  ],
+  "homepage": "https://github.com/theironcook/Backbone.ModelBinder#readme",
+  "keywords": [
+    "backbone",
+    "model",
+    "view"
+  ],
+  "license": "MIT",
   "main": "Backbone.ModelBinder.js",
-  "version": "0.1.6"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theironcook/Backbone.ModelBinder.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "url": "https://github.com/theironcook/Backbone.ModelBinder"
 }

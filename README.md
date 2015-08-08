@@ -1,7 +1,6 @@
 Special thanks to [Derick Bailey](http://lostechies.com/derickbailey) for creating predecessor to this plugin.
 I've been able to reuse unit tests he created for his [Backbone.ModelBinding](https://github.com/derickbailey/backbone.modelbinding) plugin.
 
-
 ### Rationale
 Backbone is a great platform for writing client side applications but I've found that as views grow in complexity, synchronizing my models and views can be a pain.
 I've spent the past few months trying to use existing view-model binding libraries that others were kind enough to create and share with the world.
@@ -19,18 +18,16 @@ The `Backbone.ModelBinder` class:
 * Allows you to define type formatting and type conversion in your bindings
 * Provides a simple javascript only solution rather than mixing binding syntax in html templates and javascript files.  I personally find mixing binding logic in my html files to be messy and confusing.
 
-<br>
 You can use this ModelBinder class to bind backbone model attributes to:
 
 * Read-only html elements such as `<span>`, `<div>` etc.
 * Html element attributes such as enabled, displayed, style etc.
 * Editable form elements such as `<input>`, `<textarea>` etc. This type of binding is bidirectional between the html elements and the Model's attributes.
 
-<br>
 ###The ModelBinder is more efficient###
 It seems like many of the backbone view examples I've seen register for the model's change event and then re-render the entire view like the example shown below.
 
-````
+```javascript
 SomeView = Backbone.View.extend({
     initialize: function(){
         this.model.on('change', this.render, this);
@@ -41,31 +38,25 @@ SomeView = Backbone.View.extend({
         return this;
     }
 });
-````
+```
 If the model changes frequently the above type of code will be wasteful because so many DOM elements are just thrown away. Converting the model to json is also an unnecessary conversion.
 
 The ModelBinder eliminates these ineffeciencies by listening for model changes like the above code. But it doesn't recreate the entire set of DOM elements. Instead, it will change the content of existing DOM elements.
 
-
-<br>
 ## Prerequisites
 
 * Backbone.js v1.0.0 or higher
 * Underscore.js v1.4.4 or higher
 * jQuery v1.8.3 or higher
 
-
-<br>
 ### Availability
 You can download the zip/tarball as normal and include it with your other JS assets, but you can now alternatively link to it on [CDNJS](http://www.cdnjs.com/), the free to use, community maintained CDN.
 
 To do this, just drop a reference to the minified version of the plugin into your document's `<head>` as follows, replacing the version number with whatever the latest one is:
-````
+```html
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.modelbinder/1.0.4/Backbone.ModelBinder.min.js"></script>
-````
+```
 
-
-<br>
 ##Defining Binding Scope with jQuery##
 
 One of the most powerful capabilities of the ModelBinder class is that it allows you to define scope when you create your bindings using jQuery.
@@ -97,52 +88,49 @@ bind(model, rootEl, bindings, options);
 unbind();
 ```
 
-<br>
 The `bind()` function's 3rd argument `bindings` is optional.  The `bindings` arg is useful for defining binding scope and formatting and will be discussed later.
 If `bindings` is not defined, then `bind()` will locate all of the child elements under the rootEl that define a `name` attribute.
 Each of the elements with a `name` attribute will be bound to the model's attributes - the value of the element's name attribute will be used as the model's attribute name.
 
 In the example below, the model's address attribute will be bound to the input text field with the name of 'address'.  This binding is bi-directional between the view and the model.
 
-````
+```html
 <!-- The html -->
 <input type="text" name="address"/>
-````
+```
 
-````
-<!-- The javascript -->
+```javascript
+// The javascript
 SomeView = Backbone.View.extend({
     render: function(){
         this.modelBinder.bind(this.model, this.el);
     }
 });
-````
+```
 
-<br>
 ## Binding after elements created, rootEl ##
 
-The bind() functions `rootEl` parameter should contain all of the elements that you want to bind to.
+The `bind()` functions `rootEl` parameter should contain all of the elements that you want to bind to.
 Your rootEl might be the view.el property or it could be any valid html element.  It does not matter if the rootEl is displayed in a browser.
 
 The example below shows how the rootEl argument is the result of the jQuery selection "#outerDiv".  This will work just like the previous example.
 
-````
+```html
 <!-- The html -->
 <div id="outerDiv">
     <input type="text" name="address"/>
 </div>
-````
+```
 
-````
-<!-- The javascript -->
+```javascript
+// The javascript
 SomeView = Backbone.View.extend({
     render: function(){
         this.modelBinder.bind(this.model, this.$('#outerDiv'));
     }
 });
-````
+```
 
-<br>
 ## Elements are recursively bound ##
 
 If you do not pass the `bindings` 3rd parameter to the bind() function, <b>all</b> child elements under the rootEl with a "name" attribute are bound.
@@ -150,7 +138,7 @@ This includes any nested child elements that define the "name" attribute.
 
 In the example below, the "address" and the "city" elements will be bound to the model.
 
-````
+```html
 <!-- The html -->
 <div id="outerDiv">
     <input type="text" name="address"/>
@@ -158,47 +146,43 @@ In the example below, the "address" and the "city" elements will be bound to the
             <input type="text" name="city"/>
         </div>
 </div>
-````
+```
 
-````
+```javascript
 <!-- The javascript -->
 SomeView = Backbone.View.extend({
     render: function(){
         this.modelBinder.bind(this.model, this.el);
     }
 });
-````
+```
 
-
-<br>
 ## Binding multiple html elements to the same model attribute ##
 
 In the example below, the `<span>` and the `<input>` elements are both bound to the model.firstName attribute.
 If you modified the firstName input element you would see the span automatically updated because the Model would have been updated.
 
-````
+```html
 <!-- The html -->
 Welcome, <span name="firstName"></span>
 
 Edit your information:
 <input type="text" name="firstName"/>
-````
+```
 
-````
-<!-- The javascript -->
+```javascript
+// The javascript
 SomeView = Backbone.View.extend({
     render: function(){
         this.modelBinder.bind(this.model, this.el);
     }
 });
-````
+```
 
-<br>
-If your View element definitions are simple you can rely on having properly defined "name" attributes in your html elements that match your Model attribute names.
-Remember that **all** of the rootEl's child elements (recursive) with a "name" attribute will be bound to your Model.
+If your View element definitions are simple you can rely on having properly defined `name` attributes in your html elements that match your Model attribute names.
+Remember that **all** of the rootEl's child elements (recursive) with a `name` attribute will be bound to your Model.
 
 If your views require formatting, conversion or more scoping due to nested or complex views you'll need to define a `bindings` parameter to the `bind()` function as discussed in the next section.
-
 
 ***
 
@@ -211,87 +195,89 @@ The bindings hash keys are the model's attribute names and the values, in the si
 
 The example below binds model.address to the element with the id="address":
 
-````
+```html
 <input type='text' id='address'/>
 
+<script>
 var bindings = {address: '#address'};
 modelBinder.bind(this.model, this.el, bindings);
-````
+</script>
+```
 
 The example below binds model.homeAddress to the element with name="homeAddress" and model.workAddress to the element with name="workAddress":
 
-````
+```html
 <input type="text" name="homeAddress"/>
 <input type="text" name="workAddress "/>
 
+<script>
 var bindings = {homeAddress: '[name=homeAddress]', workAddress : '[name=workAddress ]'};
 modelBinder.bind(this.model, this.el, bindings);
-````
+</script>
+```
 
 The example below binds model.city to `<input type="text" id="city"/>`:
 
-````
+```javascript
 var bindings = {city: '#city'};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
 You can use any jQuery selector that you like, as long as the selector returns at least a single element.
 In the example below, both the `<span>` and the `<input>` elements are bound to the model.firstName attribute.
 In this situation, you could also eliminate the bindings and get the same behavior.
 
-````
+```html
 <!-- The html -->
 Welcome, <span name="firstName"></span>
 
-Edit your information:
+<!-- Edit your information: -->
 <input type="text" name="firstName"/>
-````
+```
 
-````
-<!-- The javascript -->
+```javascript
+// The javascript
 var bindings = {firstName: '[name=firstName]'};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
-<br>
 Here are a few more examples of the bindings hash syntax.
 
-````
-    Html                                            bindings entry
-    -----------------------------------------------------------------------------------------------
-    <input type="text" id="firstName"/>             firstName: '#firstName'
+```
+Html                                            bindings entry
+-----------------------------------------------------------------------------------------------
+<input type="text" id="firstName"/>             firstName: '#firstName'
 
-    <input type="text" name="firstName"/>           firstName: '[name=firstName]'
+<input type="text" name="firstName"/>           firstName: '[name=firstName]'
 
-    <select name="operatorSelectEl">                operator: '[name=operatorSelectEl]'
-      <option value="1">Dan</option>
-      <option value="2">Eli</option>
-      <option value="3">Frank</option>
-    </select>
+<select name="operatorSelectEl">                operator: '[name=operatorSelectEl]'
+  <option value="1">Dan</option>
+  <option value="2">Eli</option>
+  <option value="3">Frank</option>
+</select>
 
-    <input type="radio" name="isOk" value="yes">    isOk: '[name=isOk]'
+<input type="radio" name="isOk" value="yes">    isOk: '[name=isOk]'
 
-    <input type="text" class="myTestClass"          myTestAttribute: '[class~=myTestClass]'
-        name="address"/>
-````
+<input type="text" class="myTestClass"          myTestAttribute: '[class~=myTestClass]'
+    name="address"/>
+```
 
-<br>
 ## You can define multiple jQuery selectors ##
 
 The binding entries can be defined as strings as shown in all previous examples but internally the string is converted to the type of entry shown below.
 
-````
+```javascript
  firstName: {selector: '#firstName'}
-````
+```
 
 The jQuery string is a hash parameter named `selector`.
 You can define arrays of `selector` arguments in your bindings as shown in the example below.
 
-````
+```javascript
  firstName: [{selector: '#firstName'}, {selector: '#title'}]
-````
+```
 
-In the example above, model.firstName is bound to an element with the id of "firstName" and an element with the id of "title".
+In the example above, model.firstName is bound to an element with the id of `firstName` and an element with the id of `title`.
 To define multiple selectors, just define them as an array.
 
 The jQuery bindings leverage the jQuery delegate mechanism - which means they should be fairly efficient.
@@ -304,11 +290,10 @@ makes sense to have the inner HTML simply be the appropriate model value.
 
 In those cases, simply use an empty string as your selector:
 
-````
+```javascript
  firstName: { selector: '' }
-````
+```
 
-<br>
 ***
 
 ##Formatting and converting values##
@@ -320,7 +305,7 @@ Converters help you format values in your views but help keep them clean in your
 
 A simple of example of using a converter to format a phone number is shown below.
 
-````
+```javascript
 var phoneConverter = function(direction, value){
   // direction is either ModelToView or ViewToModel
   // Return either a formatted value for the view or an un-formatted value for the model
@@ -328,9 +313,8 @@ var phoneConverter = function(direction, value){
 
 var bindings = {phoneNumber: {selector: '[name=phoneNumber]', converter: phoneConverter}}
 modelBinder.bind(this.model, this.el, bindings );
-````
+```
 
-<br>
 A converter function is passed 4 parameters.
 
 * direction - either ModelToView or ViewToModel
@@ -348,14 +332,12 @@ Be very careful when accessing the els directly because any state you set into t
 For example, if a converter is called with the direction 'ModelToView' and inside the converter the code updates the el values directly those values will be overwritten with the value returned from the converter function.
 The els array is more valuable if you need to set other properties etc. on the els.  In most situations you should not need the els parameter.
 
-
-<br>
 Converters can be used for simple formatting operations like phone numbers but they can also be used for more advanced situations like when you want to convert between a model and some description of the model.
 You might want to display a list of models in a `<select>` element - a converter could allow you to convert between a model and a model's id making this type of binding easy to do.
 
 The example below shows how this could work.  The `CollectionConverter` shown is defined in the ModelBinder.js file.
 
-````
+```html
 <!-- The html -->
     <select name="nestedModel">
         <option value="">Please Select Something</option>
@@ -363,10 +345,10 @@ The example below shows how this could work.  The `CollectionConverter` shown is
           <option value="<%= modelChoice.id %>"><%= modelChoice.description %></option>
         <% }); %>
     </select>
-````
+```
 
-````
-<!-- The javascript -->
+```javascript
+// The javascript
 SomeView = Backbone.View.extend({
     render: function(){
         // An example of what might be passed to the template function
@@ -380,9 +362,8 @@ SomeView = Backbone.View.extend({
                                            converter: new Backbone.ModelBinder.CollectionConverter(nestedModelChoices).convert} };
 
         binder.bind(this.model, this.el, bindingsHash);
-````
+```
 
-<br>
 ## Converters can display calculated attributes ##
 
 Sometimes your models will have computed attributes.
@@ -390,9 +371,9 @@ You could cache computed values inside a model's attribute collection and it wou
 I favor this solution but it's not perfect because when you save models back to the server, the calculated attributes are sent.
 
 If your model's computed attribute is calculated via a function we can use a converter for the binding.
-In the example below, we have a simple computed attribute named hoursLeft calculated by the function calculateHoursLeft().
+In the example below, we have a simple computed attribute named hoursLeft calculated by the function `calculateHoursLeft()`.
 
-````
+```javascript
 SomeModel = Backbone.Model.extend({
     defaults: {currentHours: 3, totalHours: 8},
 
@@ -404,25 +385,20 @@ SomeModel = Backbone.Model.extend({
 // Here is how how we could create a binding for a calculated attribute
 var bindings = {currentHours: {selector: '[name=hoursLeft]', converter: this.model.calculateHoursLeft}};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
 In the example above, we are binding to the model's attribute 'currentHours' because when currentHours changes the hoursLeft calculated value will change - the converter will be invoked at that time.
 The converter is simply the model's calculateHoursLeft() function. The function just ignores the parameters passed to it and calculates the hours left.
 
-<br>
 If the currentHours attribute is also bound to another html element you could specify an array of element bindings in the binding definition like the example shown below.
 
-````
+```javascript
 var bindings = {currentHours: [ {selector: '[name=hoursLeft]', converter: this.model.calculateHoursLeft},
                                 {selector: '[name=currentHours]']};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
 If converters need any other special logic they can be defined in another function outside of the Model because the converter function is passed the Model as a parameter.
-
-
-
-<br>
 
 ***
 
@@ -431,39 +407,34 @@ If converters need any other special logic they can be defined in another functi
 You can also define bindings to be bound to any html element's attribute like enabled, class, style or any other attribute you define.
 The example below shows how to use the `elAttribute` option.  In this example, the address element will be enabled depending on what the Model.isAddressEnabled attribute is.
 
-````
+```javascript
 var bindings = {isAddressEnabled: {selector: '[name=address]',  elAttribute: 'enabled'}};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
-<br>
 You could also extend the example above to be a bit more complicated.  Let's pretend the Model has an attribute called customerType and if customerType == 'residential' we want the address to enabled, otherwise we want it disabled.  We can handle this type of binding by leveraging both `converter` and `elAttribute`.  The example below shows how this would work.  When the Model.customerType is updated, the address input element's enabled attribute would be updated.
 
-````
+```javascript
 var addressEnabledConverter = function(direction, value) { return value === 'residential'; };
 
 var bindings = {customerType: {selector: '[name=address]',  elAttribute: 'enabled', converter: addressEnabledConverter}};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
-<br>
 You could also bind to an element's class property as shown in the example below.
 
-````
+```html
 <!-- The html -->
 <div id="patientPic" class="patientPic"></div>
-````
+```
 
-````
-<!-- The javascript -->
+```javascript
+// The javascript
 var bindings = {gender: {selector: '#patientPicture',  elAttribute: 'class'}};
 modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
 In this example, the model.gender value is either "M" or "F".  The CSS files define styles for "patientPic" with either "M" or "F" to show the correct type of avatar.
-
-
-<br>
 
 ***
 
@@ -472,12 +443,12 @@ In this example, the model.gender value is either "M" or "F".  The CSS files def
 Sometimes you'll have nested models displayed in nested views.
 An example of a nested backbone model is shown below.  The personModel has a nested homeAddressModel.
 
-````
+```javascript
 var personModel = new Backbone.Model({firstName: 'Herman', lastName: 'Munster'});
 var homeAddressModel = new Backbone.Model({street: '1313 Mockingbird Lane', city: 'Mockingbird Heights'});
 
 personModel.set({homeAddress: homeAddressModel});
-````
+```
 
 In the example above, the nested model is also a backbone.Model but sometimes your nested models are raw javascript objects.  I'll talk about that situation a bit later.
 
@@ -488,13 +459,12 @@ There are 2 basic ways to bind nested Models in a View:
 1. With a scoped `rootEl` that only contains html elements specific to the nested Model.
 2. With scoped bindings selectors in the bindings hash.
 
-<br>
 ##Nested View option 1: A scoped `rootEl`##
 
 If your nested view can be defined under a single parent element such as a `<div>` you can pass that parent element as the `rootEl` for your nested ModelBinder as shown in the example below.
 It refers to the personModel and homeAddressModels defined in a previous code snippet.
 
-````
+```html
 <!-- html -->
 <div id="personFields">
   <input type="text" name="firstName"/>
@@ -504,13 +474,13 @@ It refers to the personModel and homeAddressModels defined in a previous code sn
   <input type="text" name="street"/>
   <input type="text" name="city"/>
 </div>
-````
+```
 
-````
-<!-- javascript -->
+```javascript
+// javascript
 personBinder.bind(this.personModel, this.$('#personFields'));
 addressBinder.bind(this.personModel.get('homeAddress'), this.$('#homeAddressFields'));
-````
+```
 
 In the example above, the nested homeAddressModel is bound to the correct fields because they are scoped by a single parent element.
 The personModel bindings also needed to be separately scoped as well.
@@ -518,30 +488,26 @@ The personModel bindings also needed to be separately scoped as well.
 If the personModel fields were defined on a level that also included the homeAddressFields then the homeAddressFields would have appeared in the personModel.
 The next option shows how to avoid that situation.
 
-<br>
 ##Nested View option 2: scoped bindings##
 
 If your parent and nested Model html elements cannot live under their own parent elements then you'll need to define the `bindings` with jQuery selectors that are properly scoped as shown in the example below.
 
-````
+```html
 <!-- Html -->
 <input type="text" name="firstName"/>
 <input type="text" name="lastName"/>
 <input type="text" name="street"/>
 <input type="text" name="city"/>
-````
+```
 
-````
-<!-- javascript -->
+```javascript
+// javascript
 var personBindings = {firstName: '[name=firstName]', lastName: '[name=lastName]'};
 personBinder.bind(this.personModel, this.el, personBindings);
 
 var addressBindings = {street: '[name=street]', city: '[name=city]'};
 addressBinder.bind(this.personModel.get('homeAddress'), this.el, addressBindings);
-````
-
-
-<br>
+```
 
 ***
 
@@ -552,22 +518,19 @@ To limit the scope of which fields are bound, you just need to properly scope yo
 
 In the example below, the modelBinder will ignore the "phone" and "fax" elements.
 
-````
+```html
 <!-- Html -->
 <input type="text" name="firstName"/>
 <input type="text" name="lastName"/>
 <input type="text" name="phone"/>
 <input type="text" name="fax"/>
-````
+```
 
-````
-<!-- javascript -->
+```javascript
+// javascript
 var personBindings = {firstName: '[name=firstName]', lastName: '[name=lastName]'};
 modelBinder.bind(this.personModel, this.el, personBindings);
-````
-
-
-<br>
+```
 
 ***
 
@@ -579,7 +542,7 @@ The utility function Backbone.ModelBinder.createDefaultBindings can help you in 
 
 The Backbone.ModelBinder.createDefaultBindings( ) is shown below.
 
-````
+```javascript
 // A static helper function to create a default set of bindings that you can customize before calling the bind() function
 // rootEl - where to find all of the bound elements
 // attributeType - probably 'name' or 'id' in most cases
@@ -588,7 +551,7 @@ The Backbone.ModelBinder.createDefaultBindings( ) is shown below.
 Backbone.ModelBinder.createDefaultBindings = function(rootEl, attributeType, converter, elAttribute){
     ...
 }
-````
+```
 
 You can use this function to gather all of the elements under the rootEl with a "name" or "id" attribute and quickly create all of the bindings and then modify those bindings.
 You might want to delete one or more of the bindings, add converters or elAttributes to bindings etc.
@@ -596,7 +559,7 @@ Be careful when you use this with radio buttons - you might not get the proper s
 
 An example of how you might use createDefaultBindings( ) is shown below.
 
-````
+```javascript
 // The view has several form element with a name attribute that should be bound
 // but one binding requires a converter and one of the bindings should be removed
 var bindings = Backbone.ModelBinder.createDefaultBindings(this.el, 'name');
@@ -604,41 +567,37 @@ bindings['phone'].converter = this._phoneConverterFunction;
 delete bindings['complicatedAttribute'];
 
 this._modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
 ###Change attribute used for binding###
 
 By default, the `name` attribute of your elements is used to create bindings.  Changing this can be accomplished easily in one of two ways.  First, by using `createDefaultBindings`:
 
-````
+```javascript
 var bindings = Backbone.ModelBinder.createDefaultBindings(this.el, 'data-custom');
 this._modelBinder.bind(this.model, this.el, bindings);
-````
+```
 
 Alternatively, setting `boundAttribute` on the options hash given to bind can point it at any attribute.
 
-````
+```javascript
 // Set the default bindings based on the data-custom attribute rather than name.
 this._modelBinder.bind(this.model, this.el, null, { boundAttribute: 'data-custom' });
-````
-
-<br>
+```
 
 ***
-
-<br>
 
 ## The Power of jQuery ##
 Your jQuery selectors can be based off of a class attribute or anything else you'd like as shown in the example below.
 
-````
+```html
 <!-- html -->
     <input type="text" class="partOne" name="address"/>
     <input type="text" class="partOne" name="phone"/>
     <input type="text" class="partOne" name="fax"/>
-````
+```
 
-````
+```javascript
 <!-- javascript -->
 SomeView = Backbone.View.extend({
     render: function(){
@@ -648,11 +607,10 @@ SomeView = Backbone.View.extend({
 
         this.modelBinder.bind(this.model, this.el, bindingsHash);
     }
-````
+```
 
 In this example, all 3 html elements enabled attribute are bound to the Model's isPartOneEnabled attribute.
-This is because the jQuery selector '[class~=partOne]' returned all 3 elements.
-
+This is because the jQuery selector `[class~=partOne]` returned all 3 elements.
 
 <br>
 
@@ -660,7 +618,7 @@ This is because the jQuery selector '[class~=partOne]' returned all 3 elements.
 
 ## Calling bind() multiple times ##
 
-Calling ModelBinder.bind() will automatically internally call the unbind() function to unbind the previous model.
+Calling `ModelBinder.bind()` will automatically internally call the `unbind()` function to unbind the previous model.
 You can reuse the same ModelBinder instance with multiple models or even rootEls - just be aware that all previous bindings will be removed.
 
 <br>
@@ -678,15 +636,12 @@ You can also directly invoke the function modelBinder.copyViewValuesToModel() at
 
 When you copy explicitly from the view to the model on bind() or via copyViewValuesToModel() text values and checkboxes will be inserted into the model as blank strings or false if the values have not been set.
 
-
 <br>
 ## Cleaning up with unbind() ##
 
 When your views are closed you should always call the unbind() function.  The unbind() function will un-register from the model's change events and the view's jQuery change delegate.
 
 If you don't call unbind() you might end up with zombie views and ModelBinders.  This is particularly important for large client side applications that are not frequently refreshed.
-
-
 
 <br>
 ## The '.' syntax for nested models ##
@@ -702,14 +657,12 @@ The nested models are just plain javascript objects with the deep-model plugin. 
 <br>
 The [backbone-nested](https://github.com/afeld/backbone-nested) project also seems to work with the ModelBinder.
 
-
 ***
 
 <br>
 ## AMD / Require.js support
 
 AMD / Require.js support was added in version 0.1.4
-
 
 ***
 
@@ -725,7 +678,6 @@ You can read about it [here](https://github.com/theironcook/Backbone.ModelBinder
 ## Examples
 Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbone.ModelBinder/wiki/Interactive-JSFiddle-Examples).
 <br>The same examples are also under the (examples)[https://github.com/theironcook/Backbone.ModelBinder/tree/master/examples] directory.
-
 
 <br><br>
 
@@ -745,17 +697,17 @@ Values set at the instance level will eclipse / override values that are set wit
 * changeTriggers - an object where the keys are jQuery selectors and the values are jQuery events.  These are the events that trigger when values are copied from the view into the model.
 The default for change triggers is added below.  You can define your own if needed.
 
-````
+```javascript
 {'': 'change', '[contenteditable]': 'blur'}
-````
+```
 
 * modelSetOptions - this is an option that you might want sent by default to the Model.set function.
 Whenever a bound element changes, it will call the Model.set function as pass the modelSetOptions as the options to the set() function.
 If you wanted to turn on backbone model validation for your entire project you might do something like this.
 
-````
+```javascript
 Backbone.ModelBinder.SetOptions({modelSetOptions: {validate: true}});
-````
+```
 
 The ModelBinder injects this value into the set options for every set() function.
 changeSource = 'ModelBinder'
@@ -768,10 +720,15 @@ This allows custom logic to determine if the source of the model attribute chang
 * converter - a default converter for all binders or a single binder.  Probably only really useful for when you want view empty strings to map to nulls or undefined. The default is empty string.
 If you define a converter, you might want to pay attention to the converter's 5th parameter of bound els.  You might want to only convert values for specific element types.
 
-<br>
-<br>
-
 ## Release Notes / Versions
+### v 1.1.0 June 1, 2015
+* Fixed createEl code not to require that Backbone.View#render returns this
+* Don't sort elements on add event (only do so on sort)
+* Fixed package.json to make NPM publishing possible (fixes #195)
+* Use jQuery .on instead of .delegate for event binding (to move off of deprecated .delegate function)
+* Use .prop("checked") instead of .attr("checked") (fixes #199)
+* Fixed autoSort behavior to actually work when the collection changes
+
 ### v 1.0.6 November 5, 2014
 * Made the CollectionBinder loadable via AMD
 
@@ -808,11 +765,9 @@ If you would like to use this option, simply pass a compiled _.template instead 
 * Added the changeTriggers to customize which view events trigger the model binder copies values from the view to the model
 * Added the modelSetOptions to allow the ModelBinder to send messages to the Model.set function and corresponding callbacks
 
-
 ### v 0.1.6 August 27, 2012
 
 * Bugfix for issue 51
-
 
 ### v 0.1.5 June 20, 2012
 
@@ -841,8 +796,6 @@ If you would like to use this option, simply pass a compiled _.template instead 
 ### v 0.1.0
 
 * Initial version starting April 16th.  Future api changes will have updated version numbers.
-
-
 
 # Legal Info (MIT License)
 

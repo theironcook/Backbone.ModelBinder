@@ -1,5 +1,5 @@
-// Backbone.ModelBinder v1.0.6
-// (c) 2013 Bart Wood
+// Backbone.ModelBinder v1.1.0
+// (c) 2015 Bart Wood
 // Distributed Under MIT License
 
 (function (factory) {
@@ -33,7 +33,7 @@
     };
 
     // Current version of the library.
-    Backbone.ModelBinder.VERSION = '1.0.6';
+    Backbone.ModelBinder.VERSION = '1.1.0';
     Backbone.ModelBinder.Constants = {};
     Backbone.ModelBinder.Constants.ModelToView = 'ModelToView';
     Backbone.ModelBinder.Constants.ViewToModel = 'ViewToModel';
@@ -241,7 +241,7 @@
 
         _bindViewToModel: function () {
             _.each(this._options['changeTriggers'], function (event, selector) {
-                $(this._rootEl).delegate(selector, event, this._onElChanged);
+                $(this._rootEl).on(event, selector, this._onElChanged);
             }, this);
 
             if(this._options['initialCopyDirection'] === Backbone.ModelBinder.Constants.ViewToModel){
@@ -252,7 +252,7 @@
         _unbindViewToModel: function () {
             if(this._options && this._options['changeTriggers']){
                 _.each(this._options['changeTriggers'], function (event, selector) {
-                    $(this._rootEl).undelegate(selector, event, this._onElChanged);
+                    $(this._rootEl).off(event, selector, this._onElChanged);
                 }, this);
             }
         },

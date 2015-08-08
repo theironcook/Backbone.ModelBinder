@@ -688,6 +688,7 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 * suppressThrows
 * boundAttribute
 * converter
+* context
 
 Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
 Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
@@ -719,6 +720,8 @@ This allows custom logic to determine if the source of the model attribute chang
 
 * converter - a default converter for all binders or a single binder.  Probably only really useful for when you want view empty strings to map to nulls or undefined. The default is empty string.
 If you define a converter, you might want to pay attention to the converter's 5th parameter of bound els.  You might want to only convert values for specific element types.
+
+* context - object to be passed as the context (`this`) when executing converter functions.
 
 ## Release Notes / Versions
 ### v 1.1.0 June 1, 2015

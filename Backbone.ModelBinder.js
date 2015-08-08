@@ -472,12 +472,13 @@
         },
 
         _getConvertedValue: function (direction, elementBinding, value) {
+            var context = this._options.context;
 
             if (elementBinding.converter) {
-                value = elementBinding.converter(direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
+                value = elementBinding.converter.call(context, direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
             }
             else if(this._options['converter']){
-                value = this._options['converter'](direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
+                value = this._options['converter'].call(this, direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
             }
 
             return value;

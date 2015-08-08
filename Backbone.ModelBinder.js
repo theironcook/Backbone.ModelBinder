@@ -478,7 +478,7 @@
                 value = elementBinding.converter.call(context || elementBinding, direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
             }
             else if(this._options['converter']){
-                value = this._options['converter'].call(context || this, direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
+                value = this._options['converter'].call(context || this._options, direction, value, elementBinding.attributeBinding.attributeName, this._model, elementBinding.boundEls);
             }
 
             return value;

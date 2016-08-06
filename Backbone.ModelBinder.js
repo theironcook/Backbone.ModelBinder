@@ -50,7 +50,7 @@
             if (!this._model) this._throwException('model must be specified');
             if (!this._rootEl) this._throwException('rootEl must be specified');
 
-            if(attributeBindings){
+            if(!_.isEmpty(attributeBindings)){
                 // Create a deep clone of the attribute bindings
                 this._attributeBindings = $.extend(true, {}, attributeBindings);
 

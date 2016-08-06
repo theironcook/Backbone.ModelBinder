@@ -426,6 +426,7 @@
             }
             else if(el.is('input') || el.is('select') || el.is('textarea')){
                 el.val(convertedValue || (convertedValue === 0 ? '0' : ''));
+                el.trigger('change');
             }
             else {
                 el.text(convertedValue || (convertedValue === 0 ? '0' : ''));

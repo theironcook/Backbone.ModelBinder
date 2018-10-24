@@ -232,7 +232,12 @@
                 },
 
                 isElContained: function(findEl){
-                    return this._el === findEl || $(this._el).has(findEl).length > 0;
+                    if(this._el === findEl){
+                        return true;
+                    }
+
+                    var $el = $(this._el);
+                    return $el.has(findEl).length > 0 || $el.is(findEl);
                 },
 
                 getModel: function(){
@@ -295,7 +300,7 @@
                 },
 
                 isElContained: function(findEl){
-                    return this._view.el === findEl || this._view.$el.has(findEl).length > 0;
+                    return this._view.el === findEl || this._view.$el.has(findEl).length > 0 || this._view.$el.is(findEl);
                 },
 
                 getModel: function(){

@@ -20,7 +20,7 @@
 }(function(_, $, Backbone){
 
     if(!Backbone){
-        throw 'Please include Backbone.js before Backbone.ModelBinder.js';
+        throw new Error('Please include Backbone.js before Backbone.ModelBinder.js');
     }
 
     Backbone.ModelBinder = function(){
@@ -490,7 +490,7 @@
                 }
             }
             else {
-                throw message;
+                throw new Error(message);
             }
         }
     });
@@ -499,7 +499,7 @@
         this._collection = collection;
 
         if(!this._collection){
-            throw 'Collection must be defined';
+            throw new Error('Collection must be defined');
         }
         _.bindAll(this, 'convert');
     };

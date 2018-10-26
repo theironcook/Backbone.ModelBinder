@@ -23,11 +23,11 @@
 (function(_, $, Backbone){
 
     if(!Backbone){
-        throw 'Please include Backbone.js before Backbone.ModelBinder.js';
+        throw new Error('Please include Backbone.js before Backbone.ModelBinder.js');
     }
 
     if(!Backbone.ModelBinder){
-        throw 'Please include Backbone.ModelBinder.js before Backbone.CollectionBinder.js';
+        throw new Error('Please include Backbone.ModelBinder.js before Backbone.CollectionBinder.js');
     }
 
     Backbone.CollectionBinder = function(elManagerFactory, options){
@@ -35,7 +35,7 @@
         this._elManagers = {};
 
         this._elManagerFactory = elManagerFactory;
-        if(!this._elManagerFactory) throw 'elManagerFactory must be defined.';
+        if(!this._elManagerFactory) throw new Error('elManagerFactory must be defined.');
 
         // Let the factory just use the trigger function on the view binder
         this._elManagerFactory.trigger = this.trigger;
@@ -54,8 +54,8 @@
         bind: function(collection, parentEl){
             this.unbind();
 
-            if(!collection) throw 'collection must be defined';
-            if(!parentEl) throw 'parentEl must be defined';
+            if(!collection) throw new Error('collection must be defined');
+            if(!parentEl) throw new Error('parentEl must be defined');
 
             this._collection = collection;
             this._elManagerFactory._setParentEl(parentEl);
@@ -184,7 +184,7 @@
         this._elHtml = elHtml;
         this._bindings = bindings;
 
-        if(!_.isFunction(this._elHtml) && ! _.isString(this._elHtml)) throw 'elHtml must be a compliled template or an html string';
+        if(!_.isFunction(this._elHtml) && ! _.isString(this._elHtml)) throw new Error('elHtml must be a compliled template or an html string');
     };
 
     _.extend(Backbone.CollectionBinder.ElManagerFactory.prototype, {
@@ -215,7 +215,7 @@
                             this._modelBinder.bind(this._model, this._el, this._bindings);
                         }
                         else {
-                            throw 'Unsupported bindings type, please use a boolean or a bindings hash';
+                            throw new Error('Unsupported bindings type, please use a boolean or a bindings hash');
                         }
                     }
 
@@ -257,7 +257,7 @@
         _.bindAll.apply(_, [this].concat(_.functions(this)));
         this._viewCreator = viewCreator;
 
-        if(!_.isFunction(this._viewCreator)) throw 'viewCreator must be a valid function that accepts a model and returns a backbone view';
+        if(!_.isFunction(this._viewCreator)) throw new Error('viewCreator must be a valid function that accepts a model and returns a backbone view');
     };
 
     _.extend(Backbone.CollectionBinder.ViewManagerFactory.prototype, {

@@ -692,7 +692,7 @@ Some JSFiddle examples can be found [here](https://github.com/theironcook/Backbo
 Configuration options can either be set for all ModelBinder instances via Backbone.ModelBinder.SetOptions() or for individual ModelBinder instances via the 4th parameter to the bind() function.
 Values set at the instance level will eclipse / override values that are set with the SetOptions() function.
 
-* initialCopyDirection - can either be Backbone.ModelBinder.Constants.ModelToView or Backbone.ModelBinder.Constants.ViewToModel.  This property is dicussed in a previous section
+* initialCopyDirection - can either be Backbone.ModelBinder.Constants.ModelToView or Backbone.ModelBinder.Constants.ViewToModel.  This property is discussed in a previous section
 
 * changeTriggers - an object where the keys are jQuery selectors and the values are jQuery events.  These are the events that trigger when values are copied from the view into the model.
 The default for change triggers is added below.  You can define your own if needed.

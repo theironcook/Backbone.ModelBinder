@@ -721,6 +721,10 @@ This allows custom logic to determine if the source of the model attribute chang
 If you define a converter, you might want to pay attention to the converter's 5th parameter of bound els.  You might want to only convert values for specific element types.
 
 ## Release Notes / Versions
+### v 1.1.1 March 9, 2020
+* Use syntax highlighting in README (#219)
+* Better exceptions management : using Error instead of String when throwing something (#233)
+
 ### v 1.1.0 June 1, 2015
 * Fixed createEl code not to require that Backbone.View#render returns this
 * Don't sort elements on add event (only do so on sort)

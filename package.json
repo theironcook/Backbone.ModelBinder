@@ -1,7 +1,7 @@
 {
   "name": "backbone.modelbinder",
   "description": "Simple, flexible and powerful Model-View binding for Backbone.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Bart Wood",
   "bugs": {
     "url": "https://github.com/theironcook/Backbone.ModelBinder/issues"

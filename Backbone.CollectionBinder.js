@@ -1,5 +1,5 @@
-// Backbone.CollectionBinder v1.1.0
-// (c) 2015 Bart Wood
+// Backbone.CollectionBinder v1.1.1
+// (c) 2020 Bart Wood
 // Distributed Under MIT License
 
 (function (factory) {
@@ -48,7 +48,7 @@
         Backbone.CollectionBinder.options = options;
     };
 
-    Backbone.CollectionBinder.VERSION = '1.1.0';
+    Backbone.CollectionBinder.VERSION = '1.1.1';
 
     _.extend(Backbone.CollectionBinder.prototype, Backbone.Events, {
         bind: function(collection, parentEl){
